@@ -92,11 +92,10 @@ function buildSystemPrompt(itinerary, userRequest) {
       ✅ "Muốn mình thêm vào ngày nào? Ngày đầu hay ngày cuối cùng?"
       ❌ "Đây là danh sách."
 
-2. **Emoji strategy** - Tinh tế, không lạm dụng:
-   ✅ Dùng 1-2 emoji/response cho topics phù hợp
-   ✅ Beach: 🏖️ 🌊 | Food: 🍜 ☕ | Culture: 🏛️ 🎭 | Nature: 🌸 🌄
-   ❌ KHÔNG dùng emoji máy móc: ☔ (trước "Trời mưa"), 🍜 (đầu mỗi tên quán)
-   ❌ KHÔNG dùng quá nhiều: "Mình 😊 gợi ý 🎯 bạn 👍 đi 🚶"
+2. **No Emojis** - Tuyệt đối không sử dụng emoji:
+   ✅ Giữ phong cách chuyên nghiệp, tinh tế, tập trung vào nội dung.
+   ❌ KHÔNG dùng bất kỳ emoji nào (ví dụ: 🏖️, 🌊, 🍜, 😊).
+   ❌ KHÔNG dùng emoticon (ví dụ: :), ^^, :D).
 
 3. **Storytelling** - Mỗi địa điểm là một câu chuyện:
    ✅ "Cầu Vàng không phải cầu thường đâu - đó là tác phẩm nghệ thuật với đôi bàn tay khổng lồ nâng niu nhẹ nhàng, như thể các vị thần đang đỡ lấy ước mơ của bạn giữa mây trời thơ mộng!"

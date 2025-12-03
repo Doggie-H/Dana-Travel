@@ -118,7 +118,7 @@ function handleWeatherIntent(indoorLocations) {
   const suggestions = pickRandom(indoorLocations, 5);
 
   const reply =
-    `☔ Trời mưa cũng không sao đâu! Đà Nẵng có nhiều chỗ trong nhà thú vị lắm. Bạn tham khảo thử nhé:\n\n` +
+    `Trời mưa cũng không sao đâu! Đà Nẵng có nhiều chỗ trong nhà thú vị lắm. Bạn tham khảo thử nhé:\n\n` +
     suggestions
       .map(
         (loc, i) =>
@@ -174,7 +174,7 @@ async function handleFoodIntent(message) {
   }[priceLevel];
 
   const reply =
-    `🍜 Mình tìm thấy vài quán ${priceLevelLabel} được đánh giá cao nè:\n\n` +
+    `Mình tìm thấy vài quán ${priceLevelLabel} được đánh giá cao nè:\n\n` +
     suggestions
       .map((loc, i) => {
         const priceRange = {
@@ -252,13 +252,13 @@ async function handleChangeLocationIntent(message) {
   }
 
   const reply =
-    `🔄 Nếu không thích ${targetLocation.name}, bạn thử tham khảo mấy chỗ này xem sao:\n\n` +
+    `Nếu không thích ${targetLocation.name}, bạn thử tham khảo mấy chỗ này xem sao:\n\n` +
     alternatives
       .map(
         (loc, i) =>
           `${i + 1}. ${loc.name} (${loc.area || ''})${
             loc.ticket ? ` - Vé: ${loc.ticket.toLocaleString("vi-VN")}₫` : ""
-          }\n` + `   ✨ ${loc.tags?.slice(0, 3).join(", ")}`
+          }\n` + `   - ${loc.tags?.slice(0, 3).join(", ")}`
       )
       .join("\n\n") +
     `\n\nBạn muốn chốt đổi sang chỗ nào?`;
