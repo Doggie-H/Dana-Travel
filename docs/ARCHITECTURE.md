@@ -16,73 +16,63 @@ Dana Travel is a **Full-Stack Travel Planning System** with AI-powered chatbot, 
 
 ```mermaid
 graph TB
-    subgraph "CLIENT TIER - Port 5173"
-        A1[React SPA - Vite]
+    subgraph "TẦNG CLIENT - Port 5173"
+        A1[React SPA]
         A1 --> A2[React Router]
-        A2 --> A3[HomePage<br/>Landing + Trip Form]
-        A2 --> A4[ItineraryResultsPage<br/>Map + Timeline]
-        A2 --> A5[ChatPage<br/>AI Chatbot Interface]
-        A2 --> A6[AdminDashboardPage<br/>Admin Panel]
+        A2 --> A3[Trang Chủ]
+        A2 --> A4[Trang Lịch Trình]
+        A2 --> A5[Trang Chat]
+        A2 --> A6[Trang Quản Trị]
     end
     
-    subgraph "API GATEWAY - Port 3000"
+    subgraph "TẦNG API - Port 3000"
         B1[Express.js Server]
         B1 --> B2[CORS Middleware]
-        B1 --> B3[Auth Middleware<br/>JWT Verification]
-        B1 --> B4[Logger Middleware<br/>Access Logs]
+        B1 --> B3[Auth Middleware]
+        B1 --> B4[Logger Middleware]
     end
     
-    subgraph "APPLICATION TIER - Business Logic"
-        C1[Routes Layer]
-        C1 --> C2[Controllers Layer<br/>Request Validation]
-        C2 --> C3[Services Layer]
+    subgraph "TẦNG BUSINESS LOGIC"
+        C1[Routes - Định tuyến]
+        C1 --> C2[Controllers - Xử lý request]
+        C2 --> C3[Services - Nghiệp vụ]
         
-        C3 --> S1[itinerary.service.js<br/>TSP Algorithm]
-        C3 --> S2[chatbot.service.js<br/>RAG + Intent Detection]
-        C3 --> S3[budget.service.js<br/>Cost Calculation]
-        C3 --> S4[location.service.js<br/>Location Queries]
-        C3 --> S5[auth.service.js<br/>JWT + bcrypt]
-        C3 --> S6[admin.service.js<br/>Admin CRUD]
+        C3 --> S1[itinerary.service<br/>Thuật toán TSP]
+        C3 --> S2[chatbot.service<br/>RAG + NLP]
+        C3 --> S3[budget.service<br/>Tính ngân sách]
+        C3 --> S4[location.service<br/>Truy vấn địa điểm]
+        C3 --> S5[auth.service<br/>JWT + bcrypt]
+        C3 --> S6[admin.service<br/>Quản lý admin]
     end
     
-    subgraph "DATA ACCESS TIER"
+    subgraph "TẦNG TRUY CẬP DỮ LIỆU"
         D1[Prisma ORM]
         D1 --> D2[Query Builder]
         D1 --> D3[Schema Definition]
-        D1 --> D4[Migration Manager]
     end
     
-    subgraph "DATABASE TIER"
-        E1[(SQLite<br/>Development)]
-        E2[(PostgreSQL<br/>Production)]
+    subgraph "TẦNG DATABASE"
+        E1[(SQLite - Dev)]
+        E2[(PostgreSQL - Production)]
         
-        E1 --> E3[Location<br/>30+ places]
-        E1 --> E4[Admin<br/>Users]
-        E1 --> E5[Knowledge<br/>Q&A Base]
-        E1 --> E6[AccessLog<br/>Analytics]
-        E1 --> E7[SearchTrend<br/>Trends]
-        E1 --> E8[ChatLog<br/>History]
+        E1 --> E3[Bảng Location]
+        E1 --> E4[Bảng Admin]
+        E1 --> E5[Bảng Knowledge]
+        E1 --> E6[Bảng AccessLog]
     end
     
-    subgraph "EXTERNAL SERVICES"
-        F1[Google Gemini API<br/>AI/NLP Processing]
-        F2[OpenStreetMap<br/>Map Tiles]
+    subgraph "DỊCH VỤ NGOÀI"
+        F1[Google Gemini API]
+        F2[OpenStreetMap]
     end
     
-    A1 -.HTTP/HTTPS<br/>Fetch API.-> B1
+    A1 --> B1
     B4 --> C1
     C3 --> D1
     D2 --> E1
-    D2 -.Production.-> E2
-    S2 -.AI Request.-> F1
-    A4 -.Leaflet.-> F2
-    
-    style A1 fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    style B1 fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style C3 fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    style D1 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
-    style E1 fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    style F1 fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    D2 --> E2
+    S2 --> F1
+    A4 --> F2
 ```
 
 ### 1.2 Core Design Principles
@@ -102,11 +92,11 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph "Frontend Modules"
-        FE1[Trip Form Module<br/>useForm + validation]
-        FE2[Itinerary Module<br/>Map + Timeline]
-        FE3[Chatbot Module<br/>Chat Interface]
-        FE4[Admin Module<br/>CRUD Operations]
+    subgraph "Module Frontend"
+        FE1[Form Lập Lịch Trình]
+        FE2[Module Itinerary]
+        FE3[Module Chatbot]
+        FE4[Module Quản Trị]
     end
     
     subgraph "API Endpoints"
@@ -116,47 +106,36 @@ graph LR
         API4[GET /api/admin/locations]
     end
     
-    subgraph "Backend Services"
-        BE1[Itinerary Service<br/>generateItinerary]
-        BE2[Chatbot Service<br/>processChatMessage]
-        BE3[Auth Service<br/>verifyAdmin + JWT]
-        BE4[Location Service<br/>getAllLocations]
+    subgraph "Services Backend"
+        BE1[Itinerary Service]
+        BE2[Chatbot Service]
+        BE3[Auth Service]
+        BE4[Location Service]
     end
     
-    subgraph "Data Access"
-        DB1[Prisma Client<br/>Type-safe queries]
-        DB2[(Database<br/>SQLite/PostgreSQL)]
+    subgraph "Truy Cập Dữ Liệu"
+        DB1[Prisma Client]
+        DB2[(Database)]
     end
     
-    FE1 -->|User submits form| API1
-    FE3 -->|User sends message| API2
-    FE4 -->|Admin login| API3
-    FE4 -->|Fetch data| API4
+    FE1 -->|Gửi form| API1
+    FE3 -->|Gửi tin nhắn| API2
+    FE4 -->|Đăng nhập| API3
+    FE4 -->|Lấy dữ liệu| API4
     
-    API1 -->|Validates & calls| BE1
-    API2 -->|Validates & calls| BE2
-    API3 -->|Validates & calls| BE3
-    API4 -->|Validates & calls| BE4
+    API1 --> BE1
+    API2 --> BE2
+    API3 --> BE3
+    API4 --> BE4
     
-    BE1 -->|prisma.location.findMany| DB1
-    BE2 -->|prisma.knowledge.findMany| DB1
-    BE3 -->|prisma.admin.findUnique| DB1
-    BE4 -->|prisma.location.findMany| DB1
+    BE1 --> DB1
+    BE2 --> DB1
+    BE3 --> DB1
+    BE4 --> DB1
     
-    DB1 -->|SQL queries| DB2
+    DB1 --> DB2
     
-    BE2 -.AI fallback.-> GEMINI[Google Gemini API]
-    
-    style FE1 fill:#bbdefb,stroke:#1976d2
-    style FE2 fill:#bbdefb,stroke:#1976d2
-    style FE3 fill:#bbdefb,stroke:#1976d2
-    style FE4 fill:#bbdefb,stroke:#1976d2
-    style API1 fill:#c8e6c9,stroke:#388e3c
-    style API2 fill:#c8e6c9,stroke:#388e3c
-    style BE1 fill:#f8bbd0,stroke:#c2185b
-    style BE2 fill:#f8bbd0,stroke:#c2185b
-    style DB1 fill:#ffe0b2,stroke:#f57c00
-    style GEMINI fill:#fff59d,stroke:#f9a825
+    BE2 -.AI.-> GEMINI[Google Gemini API]
 ```
 
 ### 2.2 Module Dependency Graph
