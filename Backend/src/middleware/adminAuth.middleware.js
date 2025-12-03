@@ -1,15 +1,19 @@
-// file: backend/middleware/adminAuth.js
-
 /**
- * Admin authentication middleware
- * Accepts: 1) Session tokens from login (base64 encoded)
- *          2) Legacy ADMIN_TOKEN from .env for backward compatibility
+ * ADMIN AUTH MIDDLEWARE
+ * 
+ * Middleware này chịu trách nhiệm xác thực quyền truy cập của Admin.
+ * Nó kiểm tra token từ Header hoặc Cookie để đảm bảo người dùng có quyền thực hiện hành động.
+ * 
+ * Hỗ trợ 2 loại token:
+ * 1. Session Token: Token base64 chứa ID và timestamp (được tạo khi đăng nhập).
+ * 2. Legacy Token: Token tĩnh từ file .env (dùng cho backward compatibility hoặc super admin).
  */
 
 export function adminAuth(req, res, next) {
-  // 1) Header Bearer token
+  // 1. Lấy token từ Header (Bearer Token)
   let token = (req.headers["authorization"] || "").replace(/^Bearer\s+/i, "");
-  // 2) Or cookie `admin_token`
+
+  // 2. Nếu không có trong Header, tìm trong Cookie `admin_token`
   if (!token) {
     const cookieHeader = req.headers["cookie"] || "";
     const cookies = Object.fromEntries(
@@ -27,46 +31,47 @@ export function adminAuth(req, res, next) {
     if (cookies.admin_token) token = cookies.admin_token;
   }
 
+  // Nếu vẫn không tìm thấy token -> Trả về lỗi 401 Unauthorized
   if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({ error: "Chưa xác thực (Unauthorized)" });
   }
 
-  // Check if it's a session token (base64 encoded with format "adminID:timestamp")
-  // or legacy ADMIN_TOKEN from .env
+  // 3. Kiểm tra tính hợp lệ của Token
   const legacyToken = process.env.ADMIN_TOKEN || "";
-
-  // Accept either session token or legacy token
   let isValid = false;
 
-  // Try legacy token first
+  // Trường hợp 1: Token tĩnh (Legacy/Super Admin)
   if (legacyToken && token === legacyToken) {
     isValid = true;
   } else {
-    // Try to decode session token
+    // Trường hợp 2: Session Token (Base64 encoded "adminID:timestamp")
     try {
       const decoded = Buffer.from(token, "base64").toString("utf8");
-      // Format: "adminID:timestamp"
+      
       if (decoded.includes(":")) {
         const [adminId, timestamp] = decoded.split(":");
-        // Basic validation: check if timestamp is reasonable (within last 8 hours)
+        
+        // Kiểm tra thời hạn token (8 tiếng)
         const now = Date.now();
         const tokenTime = parseInt(timestamp);
         const eightHours = 8 * 60 * 60 * 1000;
+        
         if (adminId && tokenTime && now - tokenTime < eightHours) {
           isValid = true;
-          // Optionally attach admin info to request
+          // Gắn thông tin Admin ID vào request để các middleware/controller sau sử dụng
           req.adminId = adminId;
         }
       }
     } catch (e) {
-      // Not a valid base64 token, will fail below
+      // Token không đúng định dạng base64 -> Bỏ qua, isValid vẫn là false
     }
   }
 
   if (!isValid) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({ error: "Token không hợp lệ hoặc đã hết hạn" });
   }
 
+  // Token hợp lệ, cho phép đi tiếp
   next();
 }
 

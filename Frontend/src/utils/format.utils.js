@@ -1,15 +1,16 @@
-// file: frontend/src/utils/formatUtils.js
-
 /**
- * Format Utilities - frontend version
- *
- * Vai trò: format tiền, ngày giờ cho display
+ * FORMAT UTILITIES (FRONTEND)
+ * 
+ * Bộ công cụ định dạng dữ liệu hiển thị cho phía Client.
+ * Đảm bảo tính nhất quán trong việc hiển thị tiền tệ, ngày tháng và thời gian.
  */
 
 /**
- * Format số tiền VND
- * @param {number} amount
- * @returns {string} - "1.500.000 ₫"
+ * Định dạng số tiền sang chuẩn Việt Nam Đồng (VND).
+ * Ví dụ: 1500000 -> "1.500.000 ₫"
+ * 
+ * @param {number} amount - Số tiền cần định dạng.
+ * @returns {string} - Chuỗi tiền tệ đã định dạng.
  */
 export function formatCurrency(amount) {
   if (typeof amount !== "number" || isNaN(amount)) {
@@ -19,26 +20,31 @@ export function formatCurrency(amount) {
 }
 
 /**
- * Format ngày dd/MM/yyyy
- * @param {Date|string} date
- * @returns {string}
+ * Định dạng ngày tháng sang chuẩn Việt Nam (dd/MM/yyyy).
+ * Ví dụ: 2023-11-20 -> "20/11/2023"
+ * 
+ * @param {Date|string} date - Đối tượng Date hoặc chuỗi ngày tháng.
+ * @returns {string} - Chuỗi ngày tháng đã định dạng.
  */
 export function formatDate(date) {
   const d = date instanceof Date ? date : new Date(date);
+  // Kiểm tra tính hợp lệ của ngày
   if (isNaN(d.getTime())) {
     return "Invalid date";
   }
 
   const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 }
 
 /**
- * Format thời gian HH:mm
- * @param {Date|string} time
- * @returns {string}
+ * Định dạng thời gian sang chuẩn 24h (HH:mm).
+ * Ví dụ: 14:05
+ * 
+ * @param {Date|string} time - Đối tượng Date hoặc chuỗi thời gian.
+ * @returns {string} - Chuỗi thời gian đã định dạng.
  */
 export function formatTime(time) {
   const t = time instanceof Date ? time : new Date(time);
@@ -52,9 +58,12 @@ export function formatTime(time) {
 }
 
 /**
- * Format datetime cho input datetime-local
- * @param {Date|string} datetime
- * @returns {string} - "2025-11-15T08:00"
+ * Định dạng ngày giờ chuẩn ISO cho input type="datetime-local".
+ * Định dạng yêu cầu: YYYY-MM-DDTHH:mm
+ * Ví dụ: "2025-11-15T08:00"
+ * 
+ * @param {Date|string} datetime - Đối tượng Date hoặc chuỗi thời gian.
+ * @returns {string} - Chuỗi dùng cho thuộc tính value của input.
  */
 export function formatDateTimeLocal(datetime) {
   const d = datetime instanceof Date ? datetime : new Date(datetime);
@@ -62,7 +71,6 @@ export function formatDateTimeLocal(datetime) {
     return "";
   }
 
-  // Format: YYYY-MM-DDTHH:mm
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
@@ -73,16 +81,20 @@ export function formatDateTimeLocal(datetime) {
 }
 
 /**
- * Get today datetime string cho default input value
- * @returns {string}
+ * Lấy chuỗi ngày giờ hiện tại đã định dạng cho input.
+ * Thường dùng để set giá trị mặc định (Default Value).
+ * 
+ * @returns {string} - Chuỗi ngày giờ hiện tại.
  */
 export function getTodayDateTime() {
   return formatDateTimeLocal(new Date());
 }
 
 /**
- * Get tomorrow datetime string
- * @returns {string}
+ * Lấy chuỗi ngày giờ của ngày mai đã định dạng cho input.
+ * Thường dùng cho ngày về (Return Date) mặc định.
+ * 
+ * @returns {string} - Chuỗi ngày giờ ngày mai.
  */
 export function getTomorrowDateTime() {
   const tomorrow = new Date();

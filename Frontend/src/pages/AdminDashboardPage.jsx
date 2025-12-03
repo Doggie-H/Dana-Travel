@@ -1,4 +1,18 @@
-// Admin Panel - Refactored with RBAC & Modular Components
+/**
+ * ADMIN DASHBOARD PAGE
+ * 
+ * Trang quản trị chính của hệ thống.
+ * Tích hợp đầy đủ các chức năng quản lý thông qua các Component con.
+ * 
+ * Tính năng chính:
+ * 1. Xác thực & Phân quyền (RBAC): Chỉ hiển thị các tab mà user có quyền truy cập.
+ * 2. Dashboard: Thống kê lưu lượng, xu hướng tìm kiếm, nhật ký truy cập.
+ * 3. Quản lý Địa điểm: CRUD địa điểm du lịch.
+ * 4. Quản lý Kiến thức AI: Dạy Chatbot các câu hỏi/trả lời mới.
+ * 5. Quản lý Tài khoản: Thêm/Xóa tài khoản Admin/Staff.
+ * 6. Nhật ký Chat: Xem lịch sử tương tác của người dùng với Bot.
+ */
+
 import { useEffect, useState } from "react";
 import { can, PERMISSIONS } from "../features/admin/utils/permissions";
 
@@ -12,7 +26,10 @@ import AdminKnowledge from "../features/admin/components/AdminKnowledge";
 import AdminAccounts from "../features/admin/components/AdminAccounts";
 import ErrorBoundary from "../components/ErrorBoundary";
 
-// Version Modal
+/**
+ * Modal hiển thị lịch sử thay đổi của một địa điểm.
+ * Giúp Admin theo dõi ai đã sửa gì và vào lúc nào.
+ */
 function VersionHistoryModal({ versions, onClose }) {
   if (!versions) return null;
   return (
@@ -68,18 +85,17 @@ export default function Admin() {
 }
 
 function AdminContent() {
-  // API Config
-  // Force port 3002 to match running backend (use IP to avoid localhost issues)
+  // Cấu hình API Base URL
   const API_BASE = "/api";
 
-  // State
-  const [authed, setAuthed] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [activeTab, setActiveTab] = useState("dashboard");
+  // --- STATE QUẢN LÝ ---
+  const [authed, setAuthed] = useState(false); // Trạng thái đăng nhập
+  const [currentUser, setCurrentUser] = useState(null); // Thông tin user hiện tại
+  const [activeTab, setActiveTab] = useState("dashboard"); // Tab đang chọn
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Data State
+  // --- STATE DỮ LIỆU ---
   const [health, setHealth] = useState(null);
   const [locations, setLocations] = useState([]);
   const [chatLogs, setChatLogs] = useState([]);
@@ -89,38 +105,41 @@ function AdminContent() {
   const [knowledgeItems, setKnowledgeItems] = useState([]);
   const [adminAccounts, setAdminAccounts] = useState([]);
   
-  // Modal State
+  // --- STATE MODAL ---
   const [viewingVersions, setViewingVersions] = useState(null);
   const [versions, setVersions] = useState([]);
 
-  // Check auth on mount
+  // Kiểm tra đăng nhập khi component được mount
   useEffect(() => {
     checkAuth();
   }, []);
 
+  /**
+   * Kiểm tra trạng thái xác thực với Server.
+   * Nếu cookie hợp lệ, server sẽ trả về thông tin user.
+   */
   async function checkAuth() {
     try {
-      // Fetch current user details
       const res = await fetch(`${API_BASE}/admin/me`, { credentials: "include" });
       const data = await res.json();
       
       if (res.ok && data.success) {
         setAuthed(true);
         setCurrentUser(data.admin);
-        // Trigger data fetch with user permissions
+        // Tải dữ liệu ban đầu dựa trên quyền hạn
         fetchInitialData(data.admin);
       } else {
         setAuthed(false);
         setCurrentUser(null);
       }
     } catch (e) {
-      console.error("Auth check failed", e);
+      console.error("Lỗi kiểm tra xác thực:", e);
       setAuthed(false);
       setCurrentUser(null);
     }
   }
 
-  // Auto-refresh data every 5 seconds
+  // Tự động làm mới dữ liệu Dashboard mỗi 5 giây (Real-time monitoring)
   useEffect(() => {
     if (!authed) return;
 
@@ -136,7 +155,8 @@ function AdminContent() {
     return () => clearInterval(interval);
   }, [authed, activeTab]);
 
-  // --- Auth Actions ---
+  // --- CÁC HÀM XỬ LÝ AUTH ---
+
   async function login(username, password) {
     setLoading(true);
     setError(null);
@@ -171,9 +191,11 @@ function AdminContent() {
     }
   }
 
-  // --- Data Fetching ---
+  // --- CÁC HÀM TẢI DỮ LIỆU (DATA FETCHING) ---
+
   async function fetchInitialData(user) {
     await fetchHealth();
+    // Kiểm tra quyền trước khi tải dữ liệu nhạy cảm
     if (can(user, PERMISSIONS.VIEW_DASHBOARD)) {
       await fetchTrafficStats();
       await fetchAccessLogs();
@@ -244,12 +266,10 @@ function AdminContent() {
     try {
       const res = await fetch(`${API_BASE}/admin/accounts`, { credentials: "include" });
       const data = await res.json();
-      console.log("Fetched admin accounts:", data);
       if (res.ok) {
         if (Array.isArray(data.data)) {
            setAdminAccounts(data.data);
         } else {
-           console.error("Admin accounts data is not an array:", data.data);
            setAdminAccounts([]);
         }
       }
@@ -267,12 +287,13 @@ function AdminContent() {
     } catch (e) { alert(e.message); }
   }
 
-  // --- Actions ---
+  // --- CÁC HÀM THAO TÁC DỮ LIỆU (ACTIONS) ---
+
   async function saveLocation(loc, mode) {
     const method = mode === "new" ? "POST" : "PUT";
     const url = mode === "new" ? `${API_BASE}/admin/locations` : `${API_BASE}/admin/locations/${mode}`;
     
-    // Clean data
+    // Chuẩn hóa dữ liệu trước khi gửi
     const payload = {
       ...loc,
       lat: Number(loc.lat),
@@ -379,12 +400,14 @@ function AdminContent() {
     } catch (e) { alert(e.message); }
   }
 
-  // --- Render Logic ---
+  // --- RENDER LOGIC ---
+
+  // Nếu chưa đăng nhập -> Hiển thị Form Login
   if (!authed) {
     return <AdminLogin onLogin={login} loading={loading} error={error} />;
   }
 
-  // Define Tabs based on Permissions
+  // Định nghĩa các Tab dựa trên quyền hạn của User
   const tabs = [
     { id: "dashboard", label: "Dashboard", permission: PERMISSIONS.VIEW_DASHBOARD },
     { id: "locations", label: "Địa điểm", permission: PERMISSIONS.VIEW_LOCATIONS },
@@ -393,12 +416,10 @@ function AdminContent() {
     { id: "accounts", label: "Tài khoản", permission: PERMISSIONS.MANAGE_ACCOUNTS },
   ].filter(tab => can(currentUser, tab.permission));
 
-  // Redirect if active tab is not allowed
+  // Chuyển về tab đầu tiên nếu tab hiện tại không được phép truy cập
   if (!tabs.find(t => t.id === activeTab) && tabs.length > 0) {
     setActiveTab(tabs[0].id);
   }
-
-
 
   return (
     <AdminLayout 
@@ -408,27 +429,17 @@ function AdminContent() {
       onTabChange={setActiveTab}
       tabs={tabs}
     >
+      {/* Tab Dashboard */}
       {activeTab === "dashboard" && (
-        <>
-          {/* Debug Info */}
-          <div className="bg-yellow-50 p-4 rounded-lg mb-4 border border-yellow-200 text-xs font-mono text-yellow-800">
-             <p><strong>Debug Info:</strong></p>
-             <p>API_BASE: {API_BASE}</p>
-             <p>Authed: {authed ? "Yes" : "No"}</p>
-             <p>Traffic Stats: {trafficStats?.length} items</p>
-             <p>Trend Stats: {trendStats?.length} items</p>
-             <p>Access Logs: {accessLogs?.length} items</p>
-             <p>Last Error: {error || "None"}</p>
-          </div>
-          <AdminDashboard 
-            accessLogs={accessLogs} 
-            health={health} 
-            trafficStats={trafficStats} 
-            trendStats={trendStats} 
-          />
-        </>
+        <AdminDashboard 
+          accessLogs={accessLogs} 
+          health={health} 
+          trafficStats={trafficStats} 
+          trendStats={trendStats} 
+        />
       )}
       
+      {/* Tab Quản lý Địa điểm */}
       {activeTab === "locations" && (
         <AdminLocations 
           locations={locations} 
@@ -439,6 +450,7 @@ function AdminContent() {
         />
       )}
 
+      {/* Tab Quản lý Kiến thức AI */}
       {activeTab === "knowledge" && (
         <AdminKnowledge 
           knowledgeItems={knowledgeItems}
@@ -449,15 +461,17 @@ function AdminContent() {
         />
       )}
 
+      {/* Tab Nhật ký Chat */}
       {activeTab === "chatlogs" && (
         <AdminChatLogs 
           chatLogs={chatLogs}
           user={currentUser}
           onClearLogs={clearLogs}
-          onFlagEdit={() => {}} // Simplified for now
+          onFlagEdit={() => {}}
         />
       )}
 
+      {/* Tab Quản lý Tài khoản */}
       {activeTab === "accounts" && (
         <AdminAccounts 
           accounts={adminAccounts}
@@ -467,6 +481,7 @@ function AdminContent() {
         />
       )}
 
+      {/* Modal Lịch sử thay đổi */}
       {viewingVersions && (
         <VersionHistoryModal 
           versions={versions} 

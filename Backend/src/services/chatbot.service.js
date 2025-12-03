@@ -1,18 +1,13 @@
-// file: backend/services/suggestionService.js
-
 /**
- * Suggestion Service - xử lý chatbot intent & gợi ý thay thế
- *
- * Vai trò: parse user message, detect intent, trả về suggestions
- * Input: {message, currentItinerary?}
- * Output: {reply, suggestions[], itineraryPatch?}
- *
- * Supported intents:
- * 1. "mưa" / "weather" -> gợi ý indoor locations
- * 2. "ăn" / "food" -> gợi ý restaurants theo priceLevel
- * 3. "đổi" + location name -> gợi ý thay thế location
- *
- * TODO: Tích hợp Gemini AI để hiểu ngữ cảnh tốt hơn
+ * CHATBOT SERVICE
+ * 
+ * Service này xử lý logic của Chatbot, bao gồm việc phân tích tin nhắn của người dùng (Intent Detection),
+ * tìm kiếm câu trả lời từ Knowledge Base, hoặc sử dụng AI để phản hồi.
+ * 
+ * Các chức năng chính:
+ * 1. processChatMessage: Hàm trung tâm điều phối luồng xử lý tin nhắn.
+ * 2. Xử lý các Intent cụ thể: Thời tiết, Ăn uống, Đổi địa điểm, Ngân sách.
+ * 3. Tích hợp với Gemini AI khi không khớp các kịch bản có sẵn.
  */
 
 import { getAllLocations } from "./location.service.js";
@@ -20,10 +15,18 @@ import { pickRandom } from "../utils/array.utils.js";
 import { processChatWithAI } from "../adapters/gemini.adapter.js";
 import { matchKnowledge } from "./knowledge.service.js";
 
+/**
+ * Xử lý tin nhắn từ người dùng và trả về phản hồi.
+ * 
+ * @param {string} message - Nội dung tin nhắn của user.
+ * @param {Object} context - Ngữ cảnh cuộc trò chuyện (lịch trình hiện tại, v.v.).
+ * @returns {Promise<Object>} - Đối tượng chứa câu trả lời (reply), gợi ý (suggestions), và hành động (itineraryPatch).
+ */
 export async function processChatMessage(message, context = {}) {
   const lowerMsg = message.toLowerCase().trim();
 
-  // 0) Check Knowledge Base
+  // 0. Ưu tiên 1: Kiểm tra Knowledge Base (Câu hỏi thường gặp)
+  // Nếu câu hỏi khớp với dữ liệu đã huấn luyện, trả về ngay lập tức.
   const kb = await matchKnowledge(lowerMsg);
   if (kb) {
     return {
@@ -33,7 +36,8 @@ export async function processChatMessage(message, context = {}) {
     };
   }
 
-  // 1. Intent: Weather / Rain
+  // 1. Intent: Thời tiết / Mưa (Weather)
+  // Gợi ý các địa điểm trong nhà khi trời mưa.
   if (
     lowerMsg.includes("mưa") ||
     lowerMsg.includes("weather") ||
@@ -44,7 +48,8 @@ export async function processChatMessage(message, context = {}) {
     return handleWeatherIntent(indoorLocations);
   }
 
-  // 2. Intent: Food
+  // 2. Intent: Ăn uống (Food)
+  // Gợi ý nhà hàng, quán ăn dựa trên mức giá (rẻ, sang trọng...).
   if (
     lowerMsg.includes("ăn") ||
     lowerMsg.includes("food") ||
@@ -55,7 +60,8 @@ export async function processChatMessage(message, context = {}) {
     return handleFoodIntent(lowerMsg);
   }
 
-  // 3. Intent: Change Location
+  // 3. Intent: Đổi địa điểm (Change Location)
+  // Xử lý yêu cầu thay thế một địa điểm trong lịch trình bằng địa điểm khác.
   if (
     lowerMsg.includes("đổi") ||
     lowerMsg.includes("thay") ||
@@ -65,30 +71,35 @@ export async function processChatMessage(message, context = {}) {
     return handleChangeLocationIntent(lowerMsg);
   }
 
-  // 4. Intent: Budget
+  // 4. Intent: Ngân sách (Budget)
+  // (Hiện tại chưa implement logic chi tiết, có thể mở rộng sau)
   if (
     lowerMsg.includes("ngân sách") ||
     lowerMsg.includes("budget") ||
     lowerMsg.includes("tiền") ||
     lowerMsg.includes("chi phí")
   ) {
-    return handleBudgetIntent(context);
+    // return handleBudgetIntent(context);
   }
 
-  // Default: Use AI
+  // 5. Fallback: Sử dụng AI (Gemini)
+  // Nếu không khớp các kịch bản trên, gửi tin nhắn sang AI để xử lý tự nhiên.
   try {
     const aiResponse = await processChatWithAI(message, context);
     if (aiResponse) {
-      // Handle AI Actions
+      // Xử lý các hành động đặc biệt từ AI (nếu có)
+      
+      // Action: Thêm địa điểm
       if (aiResponse.action === "add_location" && aiResponse.data?.locationName) {
         return await handleAddLocationIntent(aiResponse.data.locationName, aiResponse.reply);
       }
       
+      // Action: Đổi địa điểm (AI phát hiện ý định đổi)
       if (aiResponse.action === "replace_location" && aiResponse.data?.locationName) {
-         // Re-use existing logic but triggered by AI
          return handleChangeLocationIntent(`đổi ${aiResponse.data.locationName}`);
       }
 
+      // Trả về phản hồi thông thường từ AI
       return {
         reply: aiResponse.reply,
         quickReplies: aiResponse.quickReplies || [],
@@ -97,10 +108,10 @@ export async function processChatMessage(message, context = {}) {
       };
     }
   } catch (err) {
-    console.error("AI adapter error:", err);
+    console.error("Lỗi khi gọi AI adapter:", err);
   }
 
-  // Fallback
+  // 6. Fallback cuối cùng (Nếu AI lỗi)
   return {
     reply:
       `Chào bạn, mình là trợ lý du lịch riêng của bạn.\n\n` +
@@ -114,7 +125,14 @@ export async function processChatMessage(message, context = {}) {
   };
 }
 
+// --- CÁC HÀM XỬ LÝ INTENT (INTENT HANDLERS) ---
+
+/**
+ * Xử lý intent "Thời tiết/Mưa".
+ * Gợi ý các địa điểm trong nhà.
+ */
 function handleWeatherIntent(indoorLocations) {
+  // Chọn ngẫu nhiên 5 địa điểm trong nhà
   const suggestions = pickRandom(indoorLocations, 5);
 
   const reply =
@@ -143,9 +161,14 @@ function handleWeatherIntent(indoorLocations) {
   };
 }
 
+/**
+ * Xử lý intent "Ăn uống".
+ * Gợi ý quán ăn theo mức giá.
+ */
 async function handleFoodIntent(message) {
-  let priceLevel = "moderate";
+  let priceLevel = "moderate"; // Mặc định là trung bình
 
+  // Phân tích mức giá từ tin nhắn
   if (
     message.includes("rẻ") ||
     message.includes("bình dân") ||
@@ -160,11 +183,8 @@ async function handleFoodIntent(message) {
     priceLevel = "expensive";
   }
 
-  // Fetch only restaurants with specific price level (or all if moderate/default)
-  // Note: If priceLevel is moderate, we might want to show cheap too? Or just moderate.
-  // Let's fetch strictly for now to be precise.
+  // Lấy danh sách nhà hàng phù hợp
   const restaurants = await getAllLocations({ type: "restaurant", priceLevel });
-
   const suggestions = pickRandom(restaurants, 5);
 
   const priceLevelLabel = {
@@ -200,7 +220,12 @@ async function handleFoodIntent(message) {
   };
 }
 
+/**
+ * Xử lý intent "Đổi địa điểm".
+ * Tìm địa điểm thay thế tương tự.
+ */
 async function handleChangeLocationIntent(message) {
+  // Trích xuất tên địa điểm muốn đổi từ tin nhắn
   const match = message.match(/(?:đổi|thay|change)\s+(.+)/i);
 
   if (!match) {
@@ -214,11 +239,11 @@ async function handleChangeLocationIntent(message) {
 
   const searchTerm = match[1].trim();
   const searchResults = await getAllLocations({ search: searchTerm });
-  const targetLocation = searchResults[0]; // Take best match
+  const targetLocation = searchResults[0]; // Lấy kết quả tìm kiếm tốt nhất
 
   if (!targetLocation) {
-    // Fallback suggestions
-    const randomLocs = await getAllLocations(); // Fallback to random
+    // Nếu không tìm thấy, gợi ý random
+    const randomLocs = await getAllLocations();
     return {
       reply:
         `Mình tìm không thấy địa điểm "${searchTerm}". Hay là bạn thử mấy chỗ này xem:\n\n` +
@@ -229,11 +254,11 @@ async function handleChangeLocationIntent(message) {
     };
   }
 
-  // Find alternatives of same type
+  // Tìm các địa điểm thay thế cùng loại (ví dụ: cùng là bảo tàng, cùng là công viên)
   const sameType = await getAllLocations({ type: targetLocation.type });
   const alternativesList = sameType.filter(l => l.id !== targetLocation.id);
 
-  // Simple tag matching if tags exist
+  // Ưu tiên các địa điểm có cùng tag (ví dụ: cùng tag 'văn hóa')
   const withOverlap = alternativesList.filter((loc) =>
     Boolean(
       Array.isArray(loc.tags) &&
@@ -263,6 +288,7 @@ async function handleChangeLocationIntent(message) {
       .join("\n\n") +
     `\n\nBạn muốn chốt đổi sang chỗ nào?`;
 
+  // Tạo patch để cập nhật lịch trình (Frontend sẽ xử lý cái này)
   const itineraryPatch = {
     action: "replace",
     oldLocationId: targetLocation.id,
@@ -283,6 +309,9 @@ async function handleChangeLocationIntent(message) {
   };
 }
 
+/**
+ * Xử lý intent "Thêm địa điểm" (thường được gọi từ AI).
+ */
 async function handleAddLocationIntent(locationName, aiReply) {
   const searchTerm = locationName.trim();
   const searchResults = await getAllLocations({ search: searchTerm });
@@ -295,7 +324,7 @@ async function handleAddLocationIntent(locationName, aiReply) {
     };
   }
 
-  // Create patch to add location
+  // Tạo patch để thêm địa điểm
   const itineraryPatch = {
     action: "add",
     locationId: targetLocation.id,

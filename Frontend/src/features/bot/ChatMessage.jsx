@@ -1,47 +1,49 @@
-// file: frontend/src/features/bot/ChatMessage.jsx
-
 /**
- * ChatMessage Component - Hiển thị một tin nhắn trong đoạn chat
+ * CHAT MESSAGE COMPONENT
  * 
- * Vai trò: 
- * - Hiển thị bong bóng chat (bubble) cho người dùng hoặc bot.
- * - Hiển thị avatar của bot.
- * - Hiển thị các gợi ý nhanh (Quick Replies) nếu có.
+ * Component hiển thị một tin nhắn đơn lẻ trong giao diện Chat.
+ * Xử lý hiển thị cho cả tin nhắn của User và Bot.
  * 
- * Style: Minimalist Luxury (Tailwind CSS)
+ * Chức năng:
+ * 1. Bong bóng chat (Chat Bubble): Style khác nhau cho User (Phải, Đen) và Bot (Trái, Trắng).
+ * 2. Avatar: Chỉ hiển thị cho Bot để tăng tính nhận diện thương hiệu.
+ * 3. Quick Replies: Hiển thị các gợi ý trả lời nhanh (nếu có) từ Bot.
+ * 4. Timestamp: Hiển thị thời gian gửi tin nhắn.
+ * 
+ * Style: Minimalist Luxury (Sử dụng Tailwind CSS).
  */
 
-// import botAvatar from "../../assets/chatbot-avatar.png"; // Removed: Using SVG icon instead
-
 export default function ChatMessage({ message, onQuickReply }) {
-  // Kiểm tra xem tin nhắn này là của User hay Bot
+  // Xác định người gửi là User hay Bot
   const isUser = message.sender === "user";
 
   return (
-    // Container chính: Flexbox để căn trái (Bot) hoặc phải (User)
+    // Container chính: Flexbox để căn chỉnh vị trí (Trái/Phải)
     <div className={`flex items-end gap-3 mb-6 ${isUser ? "justify-end" : "justify-start"}`}>
       
-      {/* 1. Avatar (Chỉ hiển thị cho Bot) */}
+      {/* --- 1. AVATAR (CHỈ DÀNH CHO BOT) --- */}
       {!isUser && (
         <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center shadow-sm flex-shrink-0">
+          {/* Bot Icon (SVG) */}
           <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
           </svg>
         </div>
       )}
 
-      {/* 2. Bong bóng chat (Chat Bubble) */}
+      {/* --- 2. CHAT BUBBLE (NỘI DUNG TIN NHẮN) --- */}
       <div
         className={`relative max-w-[85%] md:max-w-[70%] px-5 py-3.5 rounded-2xl shadow-sm text-sm leading-relaxed ${
           isUser
-            ? "bg-gray-900 text-white rounded-br-none" // Style cho User: Màu tối, bo góc
-            : "bg-white text-gray-800 border border-gray-100 rounded-bl-none" // Style cho Bot: Màu trắng, viền nhẹ
+            ? "bg-gray-900 text-white rounded-br-none" // Style User: Nền tối, bo góc đặc biệt
+            : "bg-white text-gray-800 border border-gray-100 rounded-bl-none" // Style Bot: Nền trắng, viền nhẹ
         }`}
       >
-        {/* Nội dung tin nhắn */}
+        {/* Text Content: Hỗ trợ xuống dòng (whitespace-pre-line) */}
         <div className="whitespace-pre-line">{message.text}</div>
 
-        {/* 3. Quick Replies (Gợi ý trả lời nhanh - Chỉ dành cho Bot) */}
+        {/* --- 3. QUICK REPLIES (GỢI Ý TRẢ LỜI) --- */}
+        {/* Chỉ hiển thị cho Bot và khi có danh sách gợi ý */}
         {!isUser && message.quickReplies && message.quickReplies.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {message.quickReplies.map((reply, index) => (
@@ -56,7 +58,7 @@ export default function ChatMessage({ message, onQuickReply }) {
           </div>
         )}
 
-        {/* 4. Thời gian gửi */}
+        {/* --- 4. TIMESTAMP (THỜI GIAN) --- */}
         <div className={`text-[10px] mt-2 font-medium ${isUser ? "text-gray-400" : "text-gray-400"}`}>
           {new Date(message.timestamp).toLocaleTimeString("vi-VN", {
             hour: "2-digit",

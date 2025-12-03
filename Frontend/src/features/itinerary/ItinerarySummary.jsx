@@ -1,10 +1,17 @@
-// file: frontend/src/features/itinerary/ItinerarySummary.jsx
-
 /**
- * ItinerarySummary Component - tóm tắt ngân sách
- *
- * Vai trò: hiển thị summary (total cost, variance, tips)
- * Style: Minimalist Luxury
+ * ITINERARY SUMMARY COMPONENT
+ * 
+ * Component hiển thị bảng tóm tắt ngân sách của chuyến đi.
+ * Giúp người dùng so sánh chi phí ước tính với ngân sách dự kiến ban đầu.
+ * 
+ * Chức năng:
+ * 1. Hiển thị Tổng chi phí ước tính (Estimated Total).
+ * 2. Hiển thị Chi phí bình quân đầu người (Per Person).
+ * 3. So sánh với ngân sách (Variance):
+ *    - Hợp lý (Green): Chênh lệch thấp.
+ *    - Vượt ngân sách (Red): Cao hơn dự kiến > 10%.
+ *    - Dư nhiều (Accent): Thấp hơn dự kiến > 15%.
+ * 4. Hiển thị các gợi ý tối ưu ngân sách (Tips).
  */
 
 import { formatCurrency } from "../../utils/format.utils";
@@ -14,7 +21,7 @@ export default function ItinerarySummary({ summary }) {
 
   const { estimatedTotal, perPerson, variancePercent, tips } = summary;
 
-  // Determine status
+  // --- XÁC ĐỊNH TRẠNG THÁI NGÂN SÁCH (STATUS LOGIC) ---
   let statusColor = "text-green-600";
   let statusBg = "bg-green-50 border-green-100";
   let statusIcon = (
@@ -22,6 +29,7 @@ export default function ItinerarySummary({ summary }) {
   );
   let statusText = "Hợp lý";
 
+  // Logic: Nếu vượt quá 10% ngân sách
   if (variancePercent > 10) {
     statusColor = "text-red-600";
     statusBg = "bg-red-50 border-red-100";
@@ -29,7 +37,9 @@ export default function ItinerarySummary({ summary }) {
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
     );
     statusText = "Vượt dự kiến";
-  } else if (variancePercent < -15) {
+  } 
+  // Logic: Nếu tiết kiệm hơn 15% ngân sách
+  else if (variancePercent < -15) {
     statusColor = "text-accent-600";
     statusBg = "bg-accent-50 border-accent-100";
     statusIcon = (
@@ -40,6 +50,7 @@ export default function ItinerarySummary({ summary }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-soft border border-gray-100 mb-8 overflow-hidden">
+      {/* Header */}
       <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100">
         <div className="w-8 h-8 rounded-lg bg-accent-50 flex items-center justify-center text-accent-600">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
@@ -51,7 +62,8 @@ export default function ItinerarySummary({ summary }) {
 
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Total Estimated */}
+          
+          {/* 1. Tổng Ước Tính */}
           <div className="p-5 rounded-2xl bg-gray-50 border border-gray-100 transition-all hover:shadow-sm">
             <small className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
               Tổng Ước Tính
@@ -61,7 +73,7 @@ export default function ItinerarySummary({ summary }) {
             </h3>
           </div>
 
-          {/* Per Person */}
+          {/* 2. Chi Phí/Người */}
           <div className="p-5 rounded-2xl bg-gray-50 border border-gray-100 transition-all hover:shadow-sm">
             <small className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
               Chi Phí/Người
@@ -71,7 +83,7 @@ export default function ItinerarySummary({ summary }) {
             </h3>
           </div>
 
-          {/* Variance */}
+          {/* 3. So Với Dự Kiến (Variance) */}
           <div className={`p-5 rounded-2xl border transition-all hover:shadow-sm ${statusBg}`}>
             <small className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block opacity-75">
               So Với Dự Kiến
@@ -89,7 +101,7 @@ export default function ItinerarySummary({ summary }) {
           </div>
         </div>
 
-        {/* Tips */}
+        {/* --- TIPS SECTION (GỢI Ý) --- */}
         {tips && tips.length > 0 && (
           <div className="mt-6 pt-6 border-t border-gray-100">
             <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">

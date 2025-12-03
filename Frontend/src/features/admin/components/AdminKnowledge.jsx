@@ -1,3 +1,20 @@
+/**
+ * ADMIN KNOWLEDGE MANAGEMENT
+ * 
+ * Component quản lý cơ sở tri thức (Knowledge Base) cho Chatbot AI.
+ * Cho phép Admin thêm, sửa, xóa các cặp câu hỏi - câu trả lời mẫu.
+ * 
+ * Chức năng:
+ * 1. Danh sách kiến thức: Hiển thị Pattern (Input) và Reply (Output).
+ * 2. Thêm/Sửa kiến thức: Form nhập liệu với các tùy chọn nâng cao (Fuzzy matching, Tags).
+ * 3. Kích hoạt/Vô hiệu hóa: Bật tắt nhanh một mục kiến thức.
+ * 
+ * Các loại khớp (Pattern Types):
+ * - Contains: Chứa từ khóa.
+ * - Exact: Khớp chính xác 100%.
+ * - Fuzzy: Khớp mờ (dùng thuật toán so sánh chuỗi).
+ */
+
 import { useState } from "react";
 import { can, PERMISSIONS } from "../utils/permissions";
 
@@ -18,6 +35,7 @@ export default function AdminKnowledge({
     meta_threshold: 0.78,
   });
 
+  // Kiểm tra quyền truy cập
   if (!can(user, PERMISSIONS.MANAGE_KNOWLEDGE)) {
     return (
       <div className="text-center py-20 bg-gray-50 rounded-2xl border border-gray-100">
@@ -32,6 +50,7 @@ export default function AdminKnowledge({
     );
   }
 
+  // --- FORM HANDLERS ---
   function startCreate() {
     setEditingKnowledge("new");
     setKnowledgeForm({
@@ -71,7 +90,7 @@ export default function AdminKnowledge({
 
   return (
     <div className="space-y-6">
-      {/* Toolbar */}
+      {/* --- TOOLBAR --- */}
       <div className="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
         <h3 className="text-lg font-bold text-gray-900">Cơ sở dữ liệu AI</h3>
         <button
@@ -85,7 +104,7 @@ export default function AdminKnowledge({
         </button>
       </div>
 
-      {/* Editor */}
+      {/* --- EDITOR FORM --- */}
       {editingKnowledge && (
         <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-xl animate-fadeIn">
           <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
@@ -98,6 +117,7 @@ export default function AdminKnowledge({
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
+            {/* Cột trái: Pattern & Config */}
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -127,6 +147,7 @@ export default function AdminKnowledge({
                     <option value="fuzzy">Gần đúng (Fuzzy AI)</option>
                   </select>
                 </div>
+                {/* Hiển thị thanh trượt độ chính xác nếu chọn Fuzzy */}
                 {knowledgeForm.patternType === "fuzzy" && (
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -159,6 +180,7 @@ export default function AdminKnowledge({
               </div>
             </div>
 
+            {/* Cột phải: Reply & Status */}
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -197,7 +219,7 @@ export default function AdminKnowledge({
         </div>
       )}
 
-      {/* List */}
+      {/* --- KNOWLEDGE LIST --- */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">

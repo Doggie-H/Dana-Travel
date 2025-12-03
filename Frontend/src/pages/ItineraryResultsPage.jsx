@@ -1,30 +1,38 @@
-// file: frontend/src/pages/Results.jsx
+// file: frontend/src/pages/ItineraryResultsPage.jsx
 
 /**
- * Results Page - hiển thị lịch trình đã tạo
- *
- * Vai trò: phối ghép ItineraryCard + ItinerarySummary + action buttons
- * Actions: In, Mở Maps, Tải JSON, Chat
+ * ItineraryResultsPage Component
+ * 
+ * Trang hiển thị kết quả lịch trình du lịch đã được tạo.
+ * Đây là nơi người dùng xem chi tiết kế hoạch, tổng quan chi phí và thực hiện các hành động tiếp theo.
+ * 
+ * Các chức năng chính:
+ * 1. Hiển thị tổng quan (Summary): Chi phí, số ngày, số người.
+ * 2. Hiển thị chi tiết (Details): Danh sách hoạt động theo từng ngày.
+ * 3. Tích hợp bản đồ (Maps): Mở Google Maps với lộ trình đã lên.
+ * 4. Xuất dữ liệu (Export): In ấn hoặc tải về file JSON.
+ * 5. Điều hướng sang Chatbot: Để chỉnh sửa lịch trình nếu cần.
  */
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ItineraryCard, ItinerarySummary } from "../features/itinerary";
 import { loadItinerary, loadUserRequest } from "../services/storage.service.js";
-import Notification from "../components/Notification";
 
-export default function Results() {
+export default function ItineraryResultsPage() {
   const navigate = useNavigate();
+  
+  // State lưu trữ dữ liệu lịch trình và yêu cầu gốc của user
   const [itinerary, setItinerary] = useState(null);
   const [userRequest, setUserRequest] = useState(null);
 
+  // Load dữ liệu từ LocalStorage khi trang được mount
   useEffect(() => {
-    // Load from storage
     const savedItinerary = loadItinerary();
     const savedRequest = loadUserRequest();
 
+    // Nếu không có dữ liệu (user chưa tạo lịch trình), quay về trang chủ
     if (!savedItinerary) {
-      // Redirect to home if no itinerary
       navigate("/");
       return;
     }
@@ -33,6 +41,7 @@ export default function Results() {
     setUserRequest(savedRequest);
   }, [navigate]);
 
+  // Hiển thị màn hình Loading nếu chưa có dữ liệu
   if (!itinerary) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -50,13 +59,23 @@ export default function Results() {
     );
   }
 
-  // Actions
+  // --- CÁC HÀM XỬ LÝ HÀNH ĐỘNG (ACTIONS) ---
+
+  /**
+   * In lịch trình ra giấy hoặc lưu PDF (sử dụng trình duyệt).
+   */
   const handlePrint = () => {
     window.print();
   };
 
+  /**
+   * Mở Google Maps với lộ trình của một ngày cụ thể.
+   * Tạo URL với điểm đi, điểm đến và các điểm trung gian (waypoints).
+   * 
+   * @param {Object} day - Dữ liệu của ngày cần xem bản đồ.
+   */
   const handleOpenDayMap = (day) => {
-    // Tạo lộ trình Google Maps cho một ngày
+    // Lọc ra các item có tọa độ hợp lệ
     const locations = day.items
       .filter((item) => item.lat && item.lng)
       .map((item) => `${item.lat},${item.lng}`);
@@ -66,10 +85,10 @@ export default function Results() {
       return;
     }
 
-    // Google Maps Directions URL với waypoints
-    const origin = locations[0];
-    const destination = locations[locations.length - 1];
-    const waypoints = locations.slice(1, -1).join("|");
+    // Xây dựng Google Maps Directions URL
+    const origin = locations[0]; // Điểm bắt đầu
+    const destination = locations[locations.length - 1]; // Điểm kết thúc
+    const waypoints = locations.slice(1, -1).join("|"); // Các điểm ghé qua
 
     let mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
 
@@ -77,9 +96,14 @@ export default function Results() {
       mapsUrl += `&waypoints=${waypoints}`;
     }
 
+    // Mở tab mới
     window.open(mapsUrl, "_blank");
   };
 
+  /**
+   * Tải lịch trình về máy dưới dạng file JSON.
+   * Giúp người dùng lưu trữ hoặc chia sẻ dữ liệu thô.
+   */
   const handleDownloadJSON = () => {
     const dataStr = JSON.stringify(itinerary, null, 2);
     const dataBlob = new Blob([dataStr], { type: "application/json" });
@@ -93,6 +117,9 @@ export default function Results() {
     URL.revokeObjectURL(url);
   };
 
+  /**
+   * Chuyển hướng sang trang Chat để nhờ AI chỉnh sửa lịch trình.
+   */
   const handleGoToChat = () => {
     navigate("/chat");
   };
@@ -100,12 +127,14 @@ export default function Results() {
   return (
     <div className="min-h-screen bg-white pt-24 pb-20 px-6 lg:px-12">
       <div className="container mx-auto max-w-screen-xl">
-        {/* Header Section */}
+        
+        {/* --- HEADER SECTION --- */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16 border-b border-gray-100 pb-8">
           <div>
             <h1 className="font-display text-4xl md:text-5xl font-medium text-gray-900 mb-4">
               Lịch Trình Của Bạn
             </h1>
+            {/* Thông tin tóm tắt metadata */}
             <div className="flex flex-wrap gap-6 text-sm font-medium text-gray-500 uppercase tracking-widest">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
@@ -131,7 +160,7 @@ export default function Results() {
             </div>
           </div>
 
-          {/* Action Buttons - Minimalist */}
+          {/* Action Buttons (Ẩn khi in) */}
           <div className="flex gap-4 no-print">
             <button
               className="px-6 py-3 text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-gray-900 transition-colors"
@@ -148,12 +177,12 @@ export default function Results() {
           </div>
         </div>
 
-        {/* Summary Section */}
+        {/* --- SUMMARY SECTION (TỔNG QUAN CHI PHÍ) --- */}
         <div className="mb-16">
           <ItinerarySummary summary={itinerary.summary} />
         </div>
 
-        {/* Days Detail */}
+        {/* --- DAYS DETAIL (CHI TIẾT TỪNG NGÀY) --- */}
         <div className="space-y-16">
           <div className="flex items-center gap-4 mb-8">
             <h2 className="font-display text-3xl text-gray-900">Chi Tiết Hành Trình</h2>
@@ -166,7 +195,10 @@ export default function Results() {
               <div className="absolute left-0 top-0 bottom-0 w-px bg-gray-100 md:hidden"></div>
               
               <div className="mb-8">
+                {/* Component hiển thị thẻ lịch trình của 1 ngày */}
                 <ItineraryCard day={day} numPeople={userRequest?.numPeople || 1} />
+                
+                {/* Nút xem bản đồ ngày đó */}
                 <div className="mt-6 flex justify-end no-print">
                   <button
                     className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 flex items-center gap-2 transition-colors"
@@ -181,7 +213,7 @@ export default function Results() {
           ))}
         </div>
 
-        {/* Chat CTA - Elegant */}
+        {/* --- CHAT CTA (KÊU GỌI HÀNH ĐỘNG) --- */}
         <div className="mt-24 bg-gray-50 p-12 text-center border border-gray-100 no-print">
           <h3 className="font-display text-3xl text-gray-900 mb-4">Cần Điều Chỉnh?</h3>
           <p className="text-gray-500 font-light mb-8 max-w-lg mx-auto">

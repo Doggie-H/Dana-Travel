@@ -1,4 +1,15 @@
-// file: backend/routes/adminRoutes.js
+/**
+ * ADMIN ROUTES
+ * 
+ * Định tuyến xử lý các chức năng quản trị (Admin Panel).
+ * Bao gồm:
+ * 1. Xác thực (Login/Logout/Me).
+ * 2. Quản lý tài khoản Admin (CRUD).
+ * 3. Quản lý địa điểm (Locations).
+ * 4. Quản lý kiến thức Chatbot (Knowledge Base).
+ * 5. Thống kê & Logs (Stats, Access Logs, Chat Logs).
+ * 6. Upload ảnh.
+ */
 
 import express from "express";
 import fs from "fs";
@@ -33,38 +44,45 @@ import {
 import prisma from "../utils/prisma.js";
 
 const router = express.Router();
-console.log("Loading admin routes...");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- Public: Admin login with username/password ---
+// --- 1. XÁC THỰC (AUTHENTICATION) ---
+
+/**
+ * Đăng nhập Admin.
+ * POST /api/admin/login
+ */
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ error: "Username and password required" });
+      return res.status(400).json({ error: "Vui lòng nhập Username và Password" });
     }
 
-    // Verify credentials
+    // Kiểm tra thông tin đăng nhập
     const admin = await verifyAdmin(username, password);
     if (!admin) {
-      return res.status(401).json({ error: "Invalid username or password" });
+      return res.status(401).json({ error: "Sai tên đăng nhập hoặc mật khẩu" });
     }
 
-    // Generate session token (simple: just use admin ID + timestamp)
+    // Tạo session token đơn giản (Admin ID + Timestamp)
+    // Trong thực tế nên dùng JWT hoặc Session Store chuyên dụng.
     const sessionToken = Buffer.from(`${admin.id}:${Date.now()}`).toString(
       "base64"
     );
 
-    // Set httpOnly cookie
+    // Thiết lập Cookie bảo mật (HttpOnly)
     res.cookie?.("admin_token", sessionToken, {
       httpOnly: true,
       sameSite: "lax",
-      secure: false,
+      secure: false, // Set true nếu chạy HTTPS
       path: "/api/admin",
-      maxAge: 8 * 60 * 60 * 1000, // 8 hours
+      maxAge: 8 * 60 * 60 * 1000, // 8 giờ
     });
+    
+    // Fallback nếu res.cookie không hoạt động (một số môi trường Express cũ)
     if (!res.cookie) {
       res.setHeader(
         "Set-Cookie",
@@ -84,11 +102,15 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ error: "Login failed" });
+    console.error("Lỗi đăng nhập:", error);
+    return res.status(500).json({ error: "Đăng nhập thất bại" });
   }
 });
 
+/**
+ * Đăng xuất Admin.
+ * POST /api/admin/logout
+ */
 router.post("/logout", (req, res) => {
   res.clearCookie?.("admin_token", { path: "/api/admin" });
   if (!res.clearCookie) {
@@ -97,13 +119,15 @@ router.post("/logout", (req, res) => {
   return res.json({ success: true });
 });
 
-// Apply auth for the rest
-// Debug route
-router.get("/ping", (req, res) => res.json({ message: "Admin Router Alive" }));
+// Kiểm tra trạng thái Router
+router.get("/ping", (req, res) => res.json({ message: "Admin Router đang hoạt động" }));
 
-// Get current admin info
+/**
+ * Lấy thông tin Admin hiện tại (Check Session).
+ * GET /api/admin/me
+ */
 router.get("/me", adminAuth, (req, res) => {
-  if (!req.admin) return res.status(401).json({ error: "Not authenticated" });
+  if (!req.admin) return res.status(401).json({ error: "Chưa xác thực" });
   return res.json({
     success: true,
     admin: {
@@ -115,11 +139,12 @@ router.get("/me", adminAuth, (req, res) => {
   });
 });
 
-// Apply auth for the rest
+// --- ÁP DỤNG MIDDLEWARE BẢO VỆ CHO CÁC ROUTE BÊN DƯỚI ---
 router.use(adminAuth);
 
-// --- Admin Account Management Routes (Protected) ---
-// Get all admin accounts
+// --- 2. QUẢN LÝ TÀI KHOẢN ADMIN (ACCOUNTS) ---
+
+// Lấy danh sách Admin
 router.get("/accounts", async (req, res) => {
   try {
     const admins = await getAllAdmins();
@@ -129,13 +154,13 @@ router.get("/accounts", async (req, res) => {
   }
 });
 
-// Create new admin account
+// Tạo tài khoản Admin mới
 router.post("/accounts", async (req, res) => {
   try {
     const { username, password, email, role } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ error: "Username and password required" });
+      return res.status(400).json({ error: "Thiếu thông tin bắt buộc" });
     }
 
     const newAdmin = await createAdmin({ username, password, email, role });
@@ -145,7 +170,7 @@ router.post("/accounts", async (req, res) => {
   }
 });
 
-// Update admin account
+// Cập nhật thông tin Admin
 router.put("/accounts/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -158,7 +183,7 @@ router.put("/accounts/:id", async (req, res) => {
   }
 });
 
-// Delete (deactivate) admin account
+// Xóa tài khoản Admin
 router.delete("/accounts/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -169,32 +194,28 @@ router.delete("/accounts/:id", async (req, res) => {
   }
 });
 
-// Change password
+// Đổi mật khẩu
 router.post("/change-password", async (req, res) => {
   try {
     const { adminId, oldPassword, newPassword } = req.body;
 
     if (!adminId || !oldPassword || !newPassword) {
-      return res.status(400).json({ error: "All fields required" });
+      return res.status(400).json({ error: "Thiếu thông tin mật khẩu" });
     }
 
     await changePassword(adminId, oldPassword, newPassword);
     return res.json({
       success: true,
-      message: "Password changed successfully",
+      message: "Đổi mật khẩu thành công",
     });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
 });
 
-// --- Location Management Routes (Protected) ---
+// --- 3. QUẢN LÝ ĐỊA ĐIỂM (LOCATIONS) ---
 
-// --- Location Management Routes (Protected) ---
-// Note: Validation is now handled in the service or can be added here if needed.
-
-
-// GET all locations (with optional version history fetch param ?versions=true)
+// Lấy tất cả địa điểm
 router.get("/locations", async (req, res) => {
   try {
     const all = await repoGetAllLocations();
@@ -204,13 +225,10 @@ router.get("/locations", async (req, res) => {
   }
 });
 
-
-
-// POST create location (supports reason)
+// Tạo địa điểm mới
 router.post("/locations", async (req, res) => {
   try {
     const loc = req.body || {};
-    // Basic validation could be here or in service
     const created = await repoCreateLocation(loc);
     return res.status(201).json({ success: true, data: created });
   } catch (e) {
@@ -218,7 +236,7 @@ router.post("/locations", async (req, res) => {
   }
 });
 
-// PUT update location (supports reason field)
+// Cập nhật địa điểm
 router.put("/locations/:id", async (req, res) => {
   try {
     const updates = req.body;
@@ -229,7 +247,7 @@ router.put("/locations/:id", async (req, res) => {
   }
 });
 
-// DELETE location (supports reason)
+// Xóa địa điểm
 router.delete("/locations/:id", async (req, res) => {
   try {
     await repoDeleteLocation(req.params.id);
@@ -239,44 +257,9 @@ router.delete("/locations/:id", async (req, res) => {
   }
 });
 
-// Health endpoint
-router.get("/health", async (req, res) => {
-  try {
-    const all = await repoGetAllLocations();
-    res.json({
-      success: true,
-      ts: new Date().toISOString(),
-      count: all.length,
-    });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
+// --- 4. THỐNG KÊ & LOGS (STATS) ---
 
-// GET chat logs (last 50 interactions)
-router.get("/chat-logs", async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 50;
-    const logs = await getRecentChatLogs(limit);
-    res.json({ success: true, data: logs, count: logs.length });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// DELETE chat logs (clear all)
-router.delete("/chat-logs", async (req, res) => {
-  try {
-    await clearChatLogs();
-    res.json({ success: true, message: "Chat logs cleared" });
-  } catch (e) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// --- Stats (Protected) ---
-// import prisma from "../utils/prisma.js"; // Moved to top
-
+// Thống kê truy cập (Traffic)
 router.get("/stats/traffic", async (req, res) => {
   try {
     const sevenDaysAgo = new Date();
@@ -291,14 +274,14 @@ router.get("/stats/traffic", async (req, res) => {
       select: {
         timestamp: true,
         role: true,
-        method: true // Added method
+        method: true
       }
     });
 
-    // Aggregate
+    // Tổng hợp dữ liệu theo ngày
     const stats = {};
     logs.forEach(log => {
-      // Convert to Vietnam Time (UTC+7)
+      // Chuyển đổi sang giờ Việt Nam (UTC+7)
       const date = new Date(new Date(log.timestamp).getTime() + 7 * 60 * 60 * 1000)
         .toISOString()
         .split('T')[0];
@@ -309,14 +292,14 @@ router.get("/stats/traffic", async (req, res) => {
       if (['admin', 'manager', 'staff', 'SUPER_ADMIN'].includes(role)) {
         stats[date].internal++;
       } else {
-        // Only count "VISIT" method as a visitor session
+        // Chỉ tính method VISIT là một lượt truy cập thực
         if (log.method === 'VISIT') {
           stats[date].visitors++;
         }
       }
     });
 
-    // Sort by date
+    // Sắp xếp theo ngày
     const result = Object.values(stats).sort((a, b) => a.date.localeCompare(b.date));
 
     res.json({ success: true, data: result });
@@ -325,6 +308,7 @@ router.get("/stats/traffic", async (req, res) => {
   }
 });
 
+// Thống kê xu hướng tìm kiếm (Trends)
 router.get("/stats/trends", async (req, res) => {
   try {
     const trends = await prisma.searchTrend.findMany({
@@ -344,11 +328,11 @@ router.get("/stats/trends", async (req, res) => {
       } catch {}
     });
 
-    // Convert to array and sort
+    // Sắp xếp top 10 tags phổ biến nhất
     const result = Object.entries(tagCounts)
       .map(([tag, count]) => ({ tag, count }))
       .sort((a, b) => b.count - a.count)
-      .slice(0, 10); // Top 10 tags
+      .slice(0, 10);
 
     res.json({ success: true, data: result });
   } catch (e) {
@@ -356,6 +340,7 @@ router.get("/stats/trends", async (req, res) => {
   }
 });
 
+// Lấy Access Logs (Nhật ký truy cập)
 router.get("/access-logs", async (req, res) => {
   try {
     const logs = await prisma.accessLog.findMany({
@@ -368,7 +353,29 @@ router.get("/access-logs", async (req, res) => {
   }
 });
 
-// --- Knowledge Management (Protected) ---
+// Lấy Chat Logs (Lịch sử chat)
+router.get("/chat-logs", async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 50;
+    const logs = await getRecentChatLogs(limit);
+    res.json({ success: true, data: logs, count: logs.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Xóa toàn bộ Chat Logs
+router.delete("/chat-logs", async (req, res) => {
+  try {
+    await clearChatLogs();
+    res.json({ success: true, message: "Đã xóa toàn bộ lịch sử chat" });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// --- 5. QUẢN LÝ KIẾN THỨC (KNOWLEDGE BASE) ---
+
 router.get("/knowledge", async (req, res) => {
   try {
     const items = await getAllKnowledge();
@@ -380,11 +387,8 @@ router.get("/knowledge", async (req, res) => {
 
 router.post("/knowledge", async (req, res) => {
   try {
-    const { pattern, reply, patternType, tags, source, meta, active } =
-      req.body || {};
-    const createdBy = req.adminId || "admin";
+    const { pattern, reply, tags } = req.body || {};
     
-    // Map to Prisma model
     const item = await addKnowledge({
       question: pattern,
       answer: reply,
@@ -420,10 +424,11 @@ router.put("/knowledge/:id", async (req, res) => {
   }
 });
 
-// --- Image Upload (Protected) ---
-// Store under ../uploads/<areaSlug>/filename
+// --- 6. UPLOAD HÌNH ẢNH (IMAGE UPLOAD) ---
+
 const uploadsRoot = path.resolve(__dirname, "../uploads");
 
+// Hàm tạo slug an toàn cho tên file/thư mục
 function slugify(input = "misc") {
   return (
     String(input)
@@ -435,12 +440,13 @@ function slugify(input = "misc") {
   );
 }
 
+// Cấu hình Multer để lưu file
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const area = req.query.area || "misc";
     const areaSlug = slugify(area);
     const dir = path.join(uploadsRoot, areaSlug);
-    fs.mkdirSync(dir, { recursive: true });
+    fs.mkdirSync(dir, { recursive: true }); // Tạo thư mục nếu chưa có
     cb(null, dir);
   },
   filename: (req, file, cb) => {
@@ -454,10 +460,11 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
+    // Chỉ cho phép upload ảnh
     if (/^image\//.test(file.mimetype)) return cb(null, true);
-    cb(new Error("Only image uploads are allowed"));
+    cb(new Error("Chỉ cho phép upload file hình ảnh"));
   },
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 }, // Giới hạn 5MB
 });
 
 router.post("/upload-image", upload.single("file"), (req, res) => {
@@ -467,7 +474,7 @@ router.post("/upload-image", upload.single("file"), (req, res) => {
     const relPath = `/uploads/${areaSlug}/${req.file.filename}`;
     return res.status(201).json({ success: true, url: relPath, path: relPath });
   } catch (e) {
-    return res.status(400).json({ error: e.message || "Upload failed" });
+    return res.status(400).json({ error: e.message || "Upload thất bại" });
   }
 });
 

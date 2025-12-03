@@ -1,20 +1,40 @@
-// file: backend/data/locations.js
-
 /**
- * Seed data địa điểm du lịch Đà Nẵng - EXTENDED VERSION (150+ locations)
- *
- * Vai trò: database giả trong bộ nhớ, cung cấp dữ liệu địa điểm phong phú
- * Schema: {id, type, name, area, address, lat, lng, ticket?, indoor?, tags[], priceLevel?, suggestedDuration?}
- * suggestedDuration: thời gian tham quan đề xuất (phút)
+ * DỮ LIỆU ĐỊA ĐIỂM DU LỊCH (LOCATIONS DATA)
+ * 
+ * File này chứa dữ liệu mẫu (seed data) cho các địa điểm du lịch tại Đà Nẵng.
+ * Được sử dụng để khởi tạo cơ sở dữ liệu hoặc làm dữ liệu giả lập (mock data) cho ứng dụng.
+ * 
+ * Cấu trúc dữ liệu (Schema) cho mỗi địa điểm:
+ * @typedef {Object} Location
+ * @property {string} id - Mã định danh duy nhất của địa điểm (VD: "loc_001").
+ * @property {string} type - Loại địa điểm (VD: "attraction", "beach", "restaurant", "hotel").
+ * @property {string} name - Tên hiển thị của địa điểm.
+ * @property {string} area - Khu vực hành chính (Quận/Huyện) (VD: "Hải Châu", "Sơn Trà").
+ * @property {string} address - Địa chỉ chi tiết.
+ * @property {number} lat - Vĩ độ (Latitude) dùng cho bản đồ.
+ * @property {number} lng - Kinh độ (Longitude) dùng cho bản đồ.
+ * @property {number} [ticket] - Giá vé tham quan (VNĐ) (0 nếu miễn phí).
+ * @property {boolean} indoor - Xác định địa điểm là trong nhà (true) hay ngoài trời (false).
+ * @property {string[]} tags - Danh sách các thẻ phân loại (VD: "nature", "culture", "family").
+ * @property {number} [suggestedDuration] - Thời gian tham quan đề xuất (tính bằng phút).
+ * @property {string[]} [bestTime] - Thời điểm lý tưởng để tham quan (VD: ["morning", "afternoon"]).
+ * @property {string} [priceLevel] - Mức giá (chỉ dùng cho nhà hàng/khách sạn) (VD: "cheap", "moderate", "expensive").
  */
 
+/**
+ * Lấy danh sách tất cả địa điểm.
+ * 
+ * @returns {Array<Object>} Mảng chứa các đối tượng địa điểm.
+ */
 export function getAllLocations() {
   return locations;
 }
 
 export const locations = [
   // =================================================================
-  // 1. ATTRACTIONS (Văn hóa, Lịch sử, Check-in, Thiên nhiên)
+  // =================================================================
+  // 1. DANH LAM THẮNG CẢNH (ATTRACTIONS)
+  // Bao gồm: Di tích lịch sử, địa điểm văn hóa, điểm check-in, cảnh quan thiên nhiên.
   // =================================================================
   {
     id: "loc_001",
@@ -420,7 +440,9 @@ export const locations = [
   },
 
   // =================================================================
-  // 2. BEACHES (Biển, Thiên nhiên)
+  // =================================================================
+  // 2. BÃI BIỂN & THIÊN NHIÊN (BEACHES)
+  // Bao gồm: Các bãi biển nổi tiếng và khu vực ven biển.
   // =================================================================
   {
     id: "loc_006",
@@ -557,7 +579,9 @@ export const locations = [
   },
 
   // =================================================================
-  // 3. THEME PARKS & ENTERTAINMENT
+  // =================================================================
+  // 3. CÔNG VIÊN GIẢI TRÍ & VUI CHƠI (THEME PARKS & ENTERTAINMENT)
+  // Bao gồm: Các khu vui chơi, công viên nước, trung tâm giải trí.
   // =================================================================
   {
     id: "loc_004",
@@ -653,7 +677,9 @@ export const locations = [
   },
 
   // =================================================================
-  // 4. FOOD & RESTAURANTS (Ẩm thực)
+  // =================================================================
+  // 4. ẨM THỰC & NHÀ HÀNG (FOOD & RESTAURANTS)
+  // Bao gồm: Quán ăn đường phố, nhà hàng địa phương, ẩm thực đặc sản.
   // =================================================================
   // --- Cheap / Street Food ---
   {
@@ -1119,7 +1145,9 @@ export const locations = [
   },
 
   // =================================================================
-  // 5. NIGHTLIFE (Cuộc sống đêm)
+  // =================================================================
+  // 5. CUỘC SỐNG VỀ ĐÊM (NIGHTLIFE)
+  // Bao gồm: Quán Bar, Pub, Chợ đêm, Câu lạc bộ.
   // =================================================================
   {
     id: "loc_041",
@@ -1249,7 +1277,9 @@ export const locations = [
   },
 
   // =================================================================
-  // 6. HOTELS & RESORTS (Lưu trú)
+  // =================================================================
+  // 6. KHÁCH SẠN & KHU NGHỈ DƯỠNG (HOTELS & RESORTS)
+  // Bao gồm: Các khách sạn cao cấp, resort ven biển.
   // =================================================================
   {
     id: "loc_014",
@@ -1432,7 +1462,9 @@ export const locations = [
     tags: ["accommodation", "resort", "luxury"],
   },
   // =================================================================
-  // 5. ACCOMMODATIONS (Lưu trú)
+  // =================================================================
+  // 7. LƯU TRÚ KHÁC (ACCOMMODATIONS)
+  // Bao gồm: Homestay, Hostel, Nhà nghỉ bình dân.
   // =================================================================
   // --- Homestays (Budget: 200k - 500k) ---
   {

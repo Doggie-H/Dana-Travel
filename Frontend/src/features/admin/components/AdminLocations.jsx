@@ -1,3 +1,16 @@
+/**
+ * ADMIN LOCATIONS MANAGEMENT
+ * 
+ * Component quản lý danh sách địa điểm du lịch.
+ * Cho phép Admin thêm, sửa, xóa và xem lịch sử thay đổi của địa điểm.
+ * 
+ * Chức năng:
+ * 1. Danh sách địa điểm: Hiển thị tên, loại, khu vực, giá vé.
+ * 2. Tìm kiếm & Lọc: Tìm theo tên và lọc theo loại hình (Tham quan, Ăn uống...).
+ * 3. Thêm/Sửa địa điểm: Form nhập liệu chi tiết (Tên, Tọa độ, Giá vé, Tags...).
+ * 4. Lịch sử thay đổi: Xem các phiên bản trước đó của địa điểm (Versioning).
+ */
+
 import { useRef, useState } from "react";
 import { can, PERMISSIONS } from "../utils/permissions";
 
@@ -15,6 +28,7 @@ export default function AdminLocations({
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  // State lưu trữ dữ liệu form
   const [form, setForm] = useState({
     id: "",
     name: "",
@@ -26,17 +40,16 @@ export default function AdminLocations({
     indoor: false,
     priceLevel: "",
     tags: "",
-
   });
 
-  // Filter logic
+  // --- FILTER LOGIC ---
   const filteredLocations = locations.filter((loc) => {
     const matchSearch = loc.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchType = filterType === "all" || loc.type === filterType;
     return matchSearch && matchType;
   });
 
-  // Handlers
+  // --- HANDLERS ---
   function startCreate() {
     setEditing("new");
     setForm({
@@ -50,7 +63,6 @@ export default function AdminLocations({
       indoor: false,
       priceLevel: "",
       tags: "",
-
     });
   }
 
@@ -68,20 +80,12 @@ export default function AdminLocations({
     cancelEdit();
   }
 
-  // Image Upload Logic (Simplified for component)
-  // In a real app, this might be passed as a prop "onUploadImage"
-  // For now, we'll assume the parent handles the actual API call or we pass a handler
-  // But to keep it simple, let's assume the parent passes an upload function
-  // Wait, the original code had the upload logic inside. 
-  // Let's make this component accept an `onUpload` prop.
-  
-  // NOTE: I will need to update the parent to pass `onUpload`
-  
   return (
     <div className="space-y-6">
-      {/* Toolbar */}
+      {/* --- TOOLBAR (SEARCH & FILTER) --- */}
       <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
         <div className="flex gap-4 w-full md:w-auto">
+          {/* Search Input */}
           <div className="relative flex-1 md:w-64">
             <input
               type="text"
@@ -104,6 +108,8 @@ export default function AdminLocations({
               ></path>
             </svg>
           </div>
+
+          {/* Filter Dropdown */}
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
@@ -116,6 +122,7 @@ export default function AdminLocations({
           </select>
         </div>
 
+        {/* Add Button (Permission Check) */}
         {can(user, PERMISSIONS.CREATE_LOCATION) && (
           <button
             onClick={startCreate}
@@ -139,7 +146,7 @@ export default function AdminLocations({
         )}
       </div>
 
-      {/* Edit Form */}
+      {/* --- EDIT FORM --- */}
       {editing && (
         <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-xl animate-fadeIn">
           <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
@@ -167,6 +174,7 @@ export default function AdminLocations({
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
+            {/* Cột trái: Thông tin cơ bản */}
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -241,6 +249,7 @@ export default function AdminLocations({
               </div>
             </div>
 
+            {/* Cột phải: Tags & Thuộc tính */}
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -254,8 +263,6 @@ export default function AdminLocations({
                   placeholder="vd: nature, outdoor, family"
                 />
               </div>
-              
-              {/* Image Input would go here, simplified for brevity */}
               
               <div className="flex items-center gap-3 pt-4">
                 <label className="flex items-center gap-3 cursor-pointer group">
@@ -315,7 +322,7 @@ export default function AdminLocations({
         </div>
       )}
 
-      {/* Locations Table */}
+      {/* --- LOCATIONS TABLE --- */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
@@ -361,6 +368,7 @@ export default function AdminLocations({
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {/* View Versions Button */}
                       <button
                         onClick={() => onFetchVersions(loc.id)}
                         className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
@@ -369,6 +377,7 @@ export default function AdminLocations({
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                       </button>
                       
+                      {/* Edit Button */}
                       {can(user, PERMISSIONS.EDIT_LOCATION) && (
                         <button
                           onClick={() => startEdit(loc)}
@@ -379,6 +388,7 @@ export default function AdminLocations({
                         </button>
                       )}
 
+                      {/* Delete Button */}
                       {can(user, PERMISSIONS.DELETE_LOCATION) && (
                         <button
                           onClick={() => onDelete(loc.id)}

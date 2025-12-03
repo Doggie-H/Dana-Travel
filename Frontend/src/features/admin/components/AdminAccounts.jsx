@@ -1,3 +1,16 @@
+/**
+ * ADMIN ACCOUNTS MANAGEMENT
+ * 
+ * Component quản lý danh sách tài khoản nhân viên (Staff/Manager).
+ * Chỉ dành cho Super Admin.
+ * 
+ * Chức năng:
+ * 1. Xem danh sách tài khoản.
+ * 2. Tạo tài khoản mới (Staff, Manager, Super Admin).
+ * 3. Xóa tài khoản.
+ * 4. Phân quyền (RBAC) thông qua việc gán Role.
+ */
+
 import { useState } from "react";
 import { can, PERMISSIONS, ROLES } from "../utils/permissions";
 
@@ -14,6 +27,7 @@ export default function AdminAccounts({
     role: ROLES.STAFF,
   });
 
+  // Kiểm tra quyền truy cập: Chỉ Super Admin mới được vào
   if (!can(user, PERMISSIONS.MANAGE_ACCOUNTS)) {
     return (
       <div className="text-center py-20 bg-gray-50 rounded-2xl border border-gray-100">
@@ -28,6 +42,7 @@ export default function AdminAccounts({
     );
   }
 
+  // Bắt đầu quy trình tạo mới
   function startCreate() {
     setEditingAccount("new");
     setAccountForm({
@@ -48,7 +63,7 @@ export default function AdminAccounts({
 
   return (
     <div className="space-y-6">
-      {/* Toolbar */}
+      {/* --- TOOLBAR --- */}
       <div className="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
         <h3 className="text-lg font-bold text-gray-900">Danh sách nhân sự</h3>
         <button
@@ -62,7 +77,7 @@ export default function AdminAccounts({
         </button>
       </div>
 
-      {/* Editor */}
+      {/* --- EDITOR FORM --- */}
       {editingAccount && (
         <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-xl animate-fadeIn">
           <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
@@ -73,6 +88,7 @@ export default function AdminAccounts({
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
+            {/* Cột trái: Thông tin đăng nhập */}
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -98,6 +114,7 @@ export default function AdminAccounts({
               </div>
             </div>
 
+            {/* Cột phải: Phân quyền */}
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
@@ -128,7 +145,7 @@ export default function AdminAccounts({
         </div>
       )}
 
-      {/* List */}
+      {/* --- ACCOUNTS LIST --- */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
@@ -161,6 +178,7 @@ export default function AdminAccounts({
                     {acc.lastLogin ? new Date(acc.lastLogin).toLocaleString("vi-VN") : "Chưa đăng nhập"}
                   </td>
                   <td className="px-6 py-4 text-right">
+                    {/* Không cho phép xóa chính mình hoặc tài khoản admin gốc */}
                     {user && acc.username !== "admin" && acc.username !== user.username && (
                       <button
                         onClick={() => onDelete(acc.id)}

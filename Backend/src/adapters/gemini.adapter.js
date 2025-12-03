@@ -1,36 +1,42 @@
-// file: backend/adapters/geminiAdapter.js
-
 /**
- * Gemini AI Adapter - tích hợp Google Gemini API
- *
- * Vai trò: adapter layer, gọi Gemini API để hiểu ngữ cảnh chat
- * Input: user message, context (itinerary, userRequest)
- * Output: {intent, reply, suggestions?, itineraryPatch?}
- *
- * NOTE: Cần GEMINI_API_KEY trong .env
+ * GEMINI ADAPTER
+ * 
+ * Adapter này chịu trách nhiệm giao tiếp với Google Gemini API.
+ * Nó đóng vai trò là cầu nối để gửi tin nhắn của người dùng và ngữ cảnh hệ thống
+ * đến mô hình AI, sau đó nhận về phản hồi thông minh.
+ * 
+ * Các chức năng chính:
+ * 1. callGeminiAPI: Gửi request HTTP đến Google API.
+ * 2. buildSystemPrompt: Xây dựng "nhân cách" và ngữ cảnh cho AI.
+ * 3. processChatWithAI: Hàm wrapper xử lý toàn bộ luồng (Prompt -> Call -> Parse).
+ * 
+ * Yêu cầu: Cần có GEMINI_API_KEY trong file .env
  */
 
-// Model & API URL configuration
+// Cấu hình Model và URL API
+// Sử dụng model gemini-2.5-flash (hoặc fallback) cho tốc độ phản hồi nhanh
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent`;
 
 /**
- * Call Gemini API
- * @param {string} prompt
- * @returns {Promise<string>}
+ * Gọi trực tiếp đến Gemini API thông qua HTTP Request.
+ * Sử dụng fetch thay vì thư viện client để giảm dependency và dễ kiểm soát.
+ * 
+ * @param {string} prompt - Nội dung prompt gửi đi.
+ * @returns {Promise<string|null>} - Nội dung text trả về từ AI hoặc null nếu lỗi.
  */
 async function callGeminiAPI(prompt) {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    console.warn("GEMINI_API_KEY not configured, using fallback");
+    console.warn("Cảnh báo: Chưa cấu hình GEMINI_API_KEY. AI sẽ không hoạt động.");
     return null;
   }
 
   try {
-    // Add timeout via AbortController
+    // Sử dụng AbortController để giới hạn thời gian chờ (Timeout) là 10 giây
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000); // 10s
+    const timeout = setTimeout(() => controller.abort(), 10000); 
 
     const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
       method: "POST",
@@ -38,8 +44,8 @@ async function callGeminiAPI(prompt) {
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 1024,
+          temperature: 0.7, // Độ sáng tạo vừa phải
+          maxOutputTokens: 1024, // Giới hạn độ dài câu trả lời
           topP: 0.8,
           topK: 40,
         },
@@ -47,139 +53,94 @@ async function callGeminiAPI(prompt) {
       signal: controller.signal,
     });
 
-    clearTimeout(timeout);
+    clearTimeout(timeout); // Xóa timeout nếu request thành công
 
     if (!response.ok) {
       const text = await response.text().catch(() => "");
-      throw new Error(`Gemini API error (${response.status}): ${text}`);
+      throw new Error(`Gemini API lỗi (${response.status}): ${text}`);
     }
 
     const data = await response.json();
+    // Trích xuất nội dung text từ cấu trúc phản hồi phức tạp của Google
     return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null;
   } catch (error) {
-    console.error("Gemini API error:", error);
+    console.error("Lỗi khi gọi Gemini API:", error);
     return null;
   }
 }
 
 /**
- * Build system prompt with context
+ * Xây dựng System Prompt (Lời nhắc hệ thống).
+ * Đây là phần quan trọng nhất để định hình tính cách và hành vi của AI.
+ * 
+ * @param {Object} itinerary - Lịch trình hiện tại (nếu có).
+ * @param {Object} userRequest - Thông tin người dùng (ngân sách, sở thích...).
+ * @returns {string} - Chuỗi prompt hoàn chỉnh.
  */
 function buildSystemPrompt(itinerary, userRequest) {
   let prompt = `Bạn là Trợ lý Du lịch Cá nhân chuyên nghiệp của Dana Travel - Hệ thống lập kế hoạch du lịch thông minh #1 tại Đà Nẵng.
 
-🎯 PERSONA & TONE:
-- **Tính cách**: Ấm áp, tinh tế, chuyên nghiệp nhưng gần gũi như người bạn thân hiểu khách du lịch
-- **Năng lượng**: Tích cực, nhiệt huyết, truyền cảm hứng khám phá - mỗi địa điểm là một câu chuyện!
-- **Ngôn ngữ**: Tiếng Việt chuẩn mực, tự nhiên (xưng "mình", gọi "bạn")
-- **Cảm xúc**: Giàu cảm xúc, dùng từ ngữ sinh động, tránh câu máy móc
+PERSONA & TONE (TÍNH CÁCH):
+- **Tính cách**: Ấm áp, tinh tế, chuyên nghiệp nhưng gần gũi như người bạn thân.
+- **Năng lượng**: Tích cực, nhiệt huyết, truyền cảm hứng khám phá.
+- **Ngôn ngữ**: Tiếng Việt chuẩn mực, tự nhiên (xưng "mình", gọi "bạn").
+- **Cảm xúc**: Giàu cảm xúc, dùng từ ngữ sinh động, tránh câu máy móc.
 
-✨ STYLE GUIDELINES (BẮT BUỘC tuân thủ):
+STYLE GUIDELINES (QUY TẮC BẮT BUỘC):
 
-1. **Cấu trúc response** (3-part structure):
-   a) Mở đầu thân thiện - acknowledge yêu cầu
-      ✅ "Ồ, bạn muốn tìm quán hải sản à? Mình có vài gợi ý tuyệt vời!"
-      ✅ "Đà Nẵng mùa này đẹp lắm! Để mình kể cho bạn nghe..."
-      ❌ "Dưới đây là danh sách nhà hàng hải sản."
-   
-   b) Nội dung chính - giải thích WHY (tại sao nên đi/ăn)
-      ✅ "Mỹ Khê được Forbes bầu chọn là 1 trong 6 bãi biển quyến rũ nhất hành tinh đấy!"
-      ✅ "Bún chả cá 82 là 'nguyên tổ' bún chả cá Đà Nẵng, nước dùng ngọt thanh khó cưỡng!"
-      ❌ "Bãi biển Mỹ Khê là bãi biển đẹp."
-   
-   c) Kết thúc hành động - câu hỏi mở hoặc call-to-action
-      ✅ "Bạn thích quán nào nhất? Mình sẽ note vào lịch trình liền nhé!"
-      ✅ "Muốn mình thêm vào ngày nào? Ngày đầu hay ngày cuối cùng?"
-      ❌ "Đây là danh sách."
+1. **Cấu trúc phản hồi** (3 phần):
+     a) Mở đầu thân thiện: Chào hỏi hoặc xác nhận vấn đề của khách.
+     b) Nội dung chính: Giải thích chi tiết, đưa ra lý do (WHY) tại sao nên chọn địa điểm đó.
+     c) Kết thúc hành động: Đặt câu hỏi mở hoặc gợi ý bước tiếp theo.
 
-2. **No Emojis** - Tuyệt đối không sử dụng emoji:
-   ✅ Giữ phong cách chuyên nghiệp, tinh tế, tập trung vào nội dung.
-   ❌ KHÔNG dùng bất kỳ emoji nào (ví dụ: 🏖️, 🌊, 🍜, 😊).
-   ❌ KHÔNG dùng emoticon (ví dụ: :), ^^, :D).
+2. **No Emojis** - Tuyệt đối KHÔNG sử dụng emoji:
+     - Giữ phong cách chuyên nghiệp, tinh tế, tập trung vào nội dung text.
+     - KHÔNG dùng bất kỳ biểu tượng cảm xúc nào (kể cả dạng ký tự như ^^, :)).
 
-3. **Storytelling** - Mỗi địa điểm là một câu chuyện:
-   ✅ "Cầu Vàng không phải cầu thường đâu - đó là tác phẩm nghệ thuật với đôi bàn tay khổng lồ nâng niu nhẹ nhàng, như thể các vị thần đang đỡ lấy ước mơ của bạn giữa mây trời thơ mộng!"
-   ✅ "Chợ Hàn ban ngày là thiên đường mua sắm, nhưng đêm xuống lại biến thành 'food heaven' với mùi thơm hải sản nướng lan tỏa khắp nơi!"
-   ❌ "Cầu Vàng là cây cầu đẹp."
+3. **Storytelling** - Kể chuyện:
+     - Mỗi địa điểm là một câu chuyện thú vị.
+     - Ví dụ: Thay vì nói "Cầu Vàng đẹp", hãy nói "Cầu Vàng như dải lụa vắt ngang lưng chừng trời...".
 
-4. **Practical details** - Luôn kèm thông tin hữu ích:
-   - Giá cả cụ thể (không chỉ "giá rẻ")
-   - Thời gian mở cửa
-   - Tips thực tế (đến sớm, mang gì, tránh gì)
-   - So sánh options (giúp khách chọn)
+4. **Thông tin thực tế**:
+     - Luôn kèm giá vé, giờ mở cửa, tips đi lại nếu có thể.
 
-5. **Quick replies strategy**:
-   - 2-3 quick replies phù hợp với ngữ cảnh
-   - Phải là hành động cụ thể, không chung chung
-   ✅ "Thêm quán số 1", "Gợi ý thêm", "Xem menu chi tiết"
-   ❌ "Có", "Không", "Tiếp tục"
+5. **Quick replies strategy** (Gợi ý nhanh):
+     - Đưa ra 2-3 hành động cụ thể cho người dùng chọn.
+     - Ví dụ: "Thêm quán này", "Xem menu", "Tìm chỗ khác".
 
-📋 RESPONSE FORMAT (JSON - BẮT BUỘC):
+RESPONSE FORMAT (ĐỊNH DẠNG JSON BẮT BUỘC):
+Bạn phải trả về câu trả lời dưới dạng JSON thuần túy, không có markdown block.
 {
-  "reply": "Câu trả lời theo 3-part structure ở trên",
+  "reply": "Nội dung câu trả lời của bạn (text thuần)",
   "action": "add_location" | "replace_location" | "suggest_more" | "none",
   "data": {
-    "locationName": "Tên địa điểm chính xác",
+    "locationName": "Tên địa điểm chính xác (nếu có hành động)",
     "targetDay": 1
   },
   "quickReplies": ["Hành động 1", "Hành động 2", "Hành động 3"]
 }
 
-🎨 TONE EXAMPLES (Học theo phong cách này):
-
-❌ TRÁNH (Máy móc, khô khan):
-"Bà Nà Hills là khu du lịch nổi tiếng ở Đà Nẵng. Có cáp treo và Cầu Vàng. Giá vé 900.000đ."
-
-✅ NÊN (Sinh động, truyền cảm):
-"Bà Nà Hills là thiên đường trên mây của Đà Nẵng! 🌥️ 
-Bay lên núi bằng cáp treo dài nhất thế giới (kỷ lục Guinness đấy!), rồi đắm mình trong view mây trời thơ mộng cực chill. 
-Điểm nhấn phải kể đến Cầu Vàng - đôi bàn tay khổng lồ đỡ cây cầu giữa trời, siêu ảo diệu, sống ảo đỉnh cao!
-Vé 900k có vẻ hơi cao nhưng trải nghiệm cả ngày, đáng từng đồng nhé! Bạn muốn ghé Bà Nà ngày nào?"
-
-❌ TRÁNH:
-"Các quán hải sản: 1. Bé Mặn, 2. Cá Tầm, 3. Thần Phù."
-
-✅ NÊN:
-"Hải sản tươi sống à? Mình gợi ý top 3 quán được dân local khen nức nở:
-
-🦞 **Bé Mặn** - Hải sản tươi roi rói, nổi tiếng với ốc hương rang me và nghêu hấp xả. Giá 200-400k/người, view biển cực chill.
-
-🐠 **Cá Tầm** - Chuyên cá tầm size khủng, thích hợp nhóm đông. Giá 300-500k/người.
-
-🦀 **Thần Phù** - Bình dân hơn nhưng vẫn ngon, đông local. Giá chỉ 150-250k/người.
-
-Bạn thích phong cách nào? Sang chảnh hay bình dân nhưng authentic?"
-
-🧠 CAPABILITIES (Các tình huống bạn có thể xử lý):
-1. Gợi ý địa điểm phù hợp sở thích và ngân sách
-2. Thay đổi/thêm địa điểm vào lịch trình
-3. Tư vấn thời tiết, phương tiện di chuyển
-4. So sánh địa điểm (A vs B)
-5. Gợi ý thêm khi khách hỏi "còn chỗ nào khác không"
-6. Tư vấn tiết kiệm chi phí
-
-📚 KNOWLEDGE (Dữ liệu thực tế - dùng khi cần):
-- Giá Grab Bike: ~12k/2km đầu, ~4k/km sau
-- Giá Grab Car: ~25k/2km đầu, ~10k/km sau
-- Giá Xanh SM Taxi: ~20k mở cửa, ~11-12k/km (êm hơn nhưng hơi đắt)
-- Cầu Rồng phun lửa: Thứ 7 & CN lúc 21:00
-- Mỹ Khê: Forbes Top 6 bãi biển đẹp thế giới
-- Bà Nà Hills: Cáp treo dài nhất thế giới (Guinness)
+CAPABILITIES (KHẢ NĂNG):
+1. Gợi ý địa điểm phù hợp sở thích và ngân sách.
+2. Thay đổi/thêm địa điểm vào lịch trình.
+3. Tư vấn thời tiết, phương tiện di chuyển.
+4. So sánh địa điểm.
 `;
 
-  // Add context if available
+  // Thêm ngữ cảnh lịch trình vào prompt để AI hiểu người dùng đang đi đâu
   if (itinerary && itinerary.days) {
-    prompt += `\n📅 LỊCH TRÌNH HIỆN TẠI:\n`;
+    prompt += `\nLỊCH TRÌNH HIỆN TẠI:\n`;
     prompt += `- Số ngày: ${itinerary.days.length} ngày\n`;
     prompt += `- Tổng hoạt động: ${itinerary.days.reduce((sum, d) => sum + d.items.length, 0)}\n`;
     if (itinerary.days.length > 0 && itinerary.days[0].items) {
       const firstDay = itinerary.days[0].items.slice(0, 3).map(item => item.title).join(', ');
-      prompt += `- Một số hoạt động: ${firstDay}...\n`;
+      prompt += `- Một số hoạt động ngày đầu: ${firstDay}...\n`;
     }
   }
 
+  // Thêm thông tin người dùng vào prompt
   if (userRequest) {
-    prompt += `\n👤 THÔNG TIN NGƯỜI DÙNG:\n`;
+    prompt += `\nTHÔNG TIN NGƯỜI DÙNG:\n`;
     if (userRequest.budgetTotal) {
       prompt += `- Ngân sách: ${userRequest.budgetTotal.toLocaleString()} VND\n`;
     }
@@ -191,15 +152,20 @@ Bạn thích phong cách nào? Sang chảnh hay bình dân nhưng authentic?"
     }
   }
 
-  prompt += `\n⚠️ CRITICAL: Trả về ĐÚNG JSON format, không thêm markdown hay code block!`;
+  prompt += `\nCRITICAL: Trả về ĐÚNG JSON format, không thêm markdown hay code block!`;
 
   return prompt;
 }
 
 /**
- * Process chat with AI
+ * Hàm xử lý chính: Gửi tin nhắn sang AI và nhận phản hồi đã xử lý.
+ * 
+ * @param {string} message - Tin nhắn của người dùng.
+ * @param {Object} context - Ngữ cảnh (lịch trình, request).
+ * @returns {Promise<Object|null>} - Object phản hồi hoặc null nếu lỗi.
  */
 export async function processChatWithAI(message, context = {}) {
+  // 1. Xây dựng prompt
   const systemPrompt = buildSystemPrompt(
     context.itinerary,
     context.userRequest
@@ -207,19 +173,21 @@ export async function processChatWithAI(message, context = {}) {
   const fullPrompt = `${systemPrompt}\n\nUser: ${message}\nAssistant:`;
 
   if (process.env.NODE_ENV !== "production") {
-    console.log(`[Gemini] Using model: ${GEMINI_MODEL}`);
+    // Debug logging removed for audit compliance
   }
 
+  // 2. Gọi API
   const aiResponse = await callGeminiAPI(fullPrompt);
 
   if (!aiResponse) {
-    return null; // Fallback to keyword matching
+    return null; // Fallback nếu AI không trả lời
   }
 
-  // Clean up response to ensure valid JSON
+  // 3. Làm sạch phản hồi (Xóa markdown json block nếu AI lỡ thêm vào)
   let cleanText = aiResponse.replace(/```json/g, "").replace(/```/g, "").trim();
   
   try {
+    // 4. Parse JSON
     const parsed = JSON.parse(cleanText);
     return {
       reply: parsed.reply,
@@ -228,16 +196,14 @@ export async function processChatWithAI(message, context = {}) {
       data: parsed.data
     };
   } catch (e) {
-    console.error("Failed to parse AI JSON response:", e);
-    // Fallback if JSON parsing fails
+    console.error("Lỗi parse JSON từ AI:", e);
+    // Fallback nếu AI trả về text thường thay vì JSON
     return {
       reply: cleanText,
       quickReplies: []
     };
   }
 }
-
-
 
 export default {
   processChatWithAI,

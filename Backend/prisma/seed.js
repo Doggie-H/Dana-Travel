@@ -1,10 +1,22 @@
+/**
+ * DATABASE SEED SCRIPT
+ * 
+ * Script khởi tạo dữ liệu mẫu cho Database.
+ * Chạy lệnh: `npx prisma db seed`
+ * 
+ * Dữ liệu bao gồm:
+ * 1. Tài khoản Admin mặc định (admin/admin123).
+ * 2. Cơ sở tri thức (Knowledge Base) cho Chatbot (50+ câu hỏi).
+ * 3. Danh sách địa điểm du lịch (Locations) từ file data/locations.js.
+ */
+
 import { PrismaClient } from '@prisma/client';
 import { locations } from './data/locations.js';
 
 const prisma = new PrismaClient();
 
 // ==========================================
-// KNOWLEDGE BASE - 50+ Q&A Entries
+// KNOWLEDGE BASE - DỮ LIỆU TRI THỨC MẪU
 // ==========================================
 const knowledgeData = [
   // ========== DANH MỤC DU LỊCH (20 entries) ==========
@@ -62,12 +74,12 @@ const knowledgeData = [
   // ========== DANH MỤC ẨM THỰC (15 entries) ==========
   {
     question: "Quán hải sản tươi sống ở đâu ngon?",
-    answer: "Top 3 quán hải sản được local khen nức nở:\n\n1. **Bé Mặn** (⭐ 4.8/5)\n- Hải sản tươi roi rói, giá hợp lý\n- Nổi tiếng: Ốc hương rang me, nghêu hấp xả\n- Giá: 200-400k/người\n- Địa chỉ: Võ Văn Kiệt (gần biển)\n\n2. **Cá Tầm**\n- Chuyên cá tầm size khủng\n- View biển cực chill\n- Giá: 300-500k/người\n\n3. **Hải Sản Thần Phù**\n- Bình dân hơn, đông khách local\n- Giá: 150-250k/người\n\nBạn đi mấy người? Mình gợi ý món order cho vừa vặn!",
+    answer: "Top 3 quán hải sản được local khen nức nở:\n\n1. **Bé Mặn** (4.8/5)\n- Hải sản tươi roi rói, giá hợp lý\n- Nổi tiếng: Ốc hương rang me, nghêu hấp xả\n- Giá: 200-400k/người\n- Địa chỉ: Võ Văn Kiệt (gần biển)\n\n2. **Cá Tầm**\n- Chuyên cá tầm size khủng\n- View biển cực chill\n- Giá: 300-500k/người\n\n3. **Hải Sản Thần Phù**\n- Bình dân hơn, đông khách local\n- Giá: 150-250k/người\n\nBạn đi mấy người? Mình gợi ý món order cho vừa vặn!",
     keywords: "food"
   },
   {
     question: "Bún chá cá nổi tiếng nhất ở đâu?",
-    answer: "Có 2 quán bún chá cá siêu ĐỈNH:\n\n1. **Bún Chả Cá 82 Phan Châu Trinh** (Quán gốc)⭐ 4.9/5\n- Được coi là \"nguyên tổ\" bún chá cá Đà Nẵng\n- Chả cá chiên giòn tan, nước dùng ngọt thanh\n- Giá: 35.000đ/tô\n- Tip: Đến trước 11h để không phải xếp hàng!\n\n2. **Bún Chả Cá Nguyễn Tri Phương**\n- Nước dùng đậm đà hơn\n- Nhiều topping hơn\n- Giá: 40.000đ/tô\n\nMình thích quán 82 hơn vì authentic và đúng vị! Bạn muốn thêm vào lịch trình không?",
+    answer: "Có 2 quán bún chá cá siêu ĐỈNH:\n\n1. **Bún Chả Cá 82 Phan Châu Trinh** (Quán gốc) 4.9/5\n- Được coi là \"nguyên tổ\" bún chá cá Đà Nẵng\n- Chả cá chiên giòn tan, nước dùng ngọt thanh\n- Giá: 35.000đ/tô\n- Tip: Đến trước 11h để không phải xếp hàng!\n\n2. **Bún Chả Cá Nguyễn Tri Phương**\n- Nước dùng đậm đà hơn\n- Nhiều topping hơn\n- Giá: 40.000đ/tô\n\nMình thích quán 82 hơn vì authentic và đúng vị! Bạn muốn thêm vào lịch trình không?",
     keywords: "food"
   },
   {
@@ -82,7 +94,7 @@ const knowledgeData = [
   },
   {
     question: "Nhà hàng buffet hải sản nào ngon?",
-    answer: "Top 3 buffet hải sản Đà Nẵng:\n\n1. **Paramount Buffet** (Brilliant Hotel)\n- Hải sản tươi sống: tôm hùm, cua king, sò điệp\n- Hơn 100 món\n- Giá: 599k-799k/người (tùy ngày)\n- Booking: 0236.3888.888\n\n2. **New Cham Buffet** (4.5/5⭐)\n- Buffet lẩu hải sản + nướng\n- Unlimited cua, tôm, mực\n- Giá: 399k-499k/người\n\n3. **BBQ Garden** (Hyatt Regency)\n- Sang trọng nhất\n- BBQ + hải sản\n- Giá: 899k-1.2tr/người\n\nNgân sách của bạn bao nhiêu? Mình sẽ recommend phù hợp nhất!",
+    answer: "Top 3 buffet hải sản Đà Nẵng:\n\n1. **Paramount Buffet** (Brilliant Hotel)\n- Hải sản tươi sống: tôm hùm, cua king, sò điệp\n- Hơn 100 món\n- Giá: 599k-799k/người (tùy ngày)\n- Booking: 0236.3888.888\n\n2. **New Cham Buffet** (4.5/5)\n- Buffet lẩu hải sản + nướng\n- Unlimited cua, tôm, mực\n- Giá: 399k-499k/người\n\n3. **BBQ Garden** (Hyatt Regency)\n- Sang trọng nhất\n- BBQ + hải sản\n- Giá: 899k-1.2tr/người\n\nNgân sách của bạn bao nhiêu? Mình sẽ recommend phù hợp nhất!",
     keywords: "food"
   },
   {
@@ -142,17 +154,17 @@ const knowledgeData = [
 ];
 
 async function main() {
-  console.log('🌱 Start seeding...\n');
+  console.log('Bắt đầu khởi tạo dữ liệu mẫu (Seeding)...\n');
 
   try {
-    // 1. Xóa dữ liệu cũ
-    console.log('🗑️  Deleting old data...');
+    // 1. Xóa dữ liệu cũ để tránh trùng lặp
+    console.log('Đang xóa dữ liệu cũ...');
     await prisma.knowledge.deleteMany();
     await prisma.location.deleteMany();
-    console.log('✅ Deleted old data\n');
+    console.log('Đã xóa dữ liệu cũ\n');
 
-    // 1.5 Seed Admin
-    console.log('👤 Seeding Admin...');
+    // 1.5 Tạo tài khoản Admin mặc định
+    console.log('Đang tạo tài khoản Admin...');
     const adminPassword = await import('bcryptjs').then(m => m.hash('admin123', 10));
     await prisma.admin.upsert({
       where: { username: 'admin' },
@@ -165,10 +177,10 @@ async function main() {
         active: true
       }
     });
-    console.log('✅ Seeded admin account: admin / admin123\n');
+    console.log('Đã tạo tài khoản Admin: admin / admin123\n');
 
-    // 2. Seed Knowledge Base
-    console.log('📚 Seeding Knowledge Base...');
+    // 2. Seed Knowledge Base (Cơ sở tri thức)
+    console.log('Đang nạp dữ liệu tri thức (Knowledge Base)...');
     let knowledgeCount = 0;
     for (const kb of knowledgeData) {
       await prisma.knowledge.create({
@@ -180,13 +192,13 @@ async function main() {
       });
       knowledgeCount++;
     }
-    console.log(`✅ Seeded ${knowledgeCount} knowledge entries\n`);
+    console.log(`Đã nạp ${knowledgeCount} mục tri thức\n`);
 
-    // 3. Seed Locations
-    console.log('📍 Seeding Locations...');
+    // 3. Seed Locations (Địa điểm)
+    console.log('Đang nạp dữ liệu địa điểm (Locations)...');
     let locationCount = 0;
     for (const loc of locations) {
-      // Handle tags: ensure it's a string (JSON)
+      // Xử lý tags: đảm bảo là chuỗi JSON hợp lệ
       let tagsString = '[]';
       if (Array.isArray(loc.tags)) {
         tagsString = JSON.stringify(loc.tags);
@@ -194,7 +206,7 @@ async function main() {
         tagsString = loc.tags;
       }
 
-      // Handle menu: ensure it's a string (JSON)
+      // Xử lý menu: đảm bảo là chuỗi JSON hoặc null
       let menuString = null;
       if (loc.menu) {
           if (typeof loc.menu === 'object') {
@@ -224,11 +236,11 @@ async function main() {
       });
       locationCount++;
     }
-    console.log(`✅ Seeded ${locationCount} locations\n`);
+    console.log(`Đã nạp ${locationCount} địa điểm\n`);
 
-    console.log('🎉 Seeding completed successfully!');
+    console.log('Quá trình khởi tạo dữ liệu hoàn tất!');
   } catch (error) {
-    console.error('❌ Error seeding data:', error);
+    console.error('Lỗi khi khởi tạo dữ liệu:', error);
     process.exit(1);
   }
 }
@@ -241,5 +253,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
-
-

@@ -1,10 +1,22 @@
+/**
+ * FOOTER COMPONENT
+ * 
+ * Chân trang của ứng dụng.
+ * Hiển thị thông tin bản quyền, thương hiệu và các liên kết phụ.
+ * 
+ * Đặc điểm:
+ * - Responsive: Tự động điều chỉnh bố cục trên mobile/desktop.
+ * - Sticky Bottom: Luôn nằm ở dưới cùng của trang (nhờ cấu trúc Flexbox ở App.jsx).
+ */
+
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-gray-100 bg-white py-2">
+    <footer className="mt-auto border-t border-gray-100 bg-white py-6">
       <div className="w-full px-4 md:px-6">
         <div className="max-w-screen-2xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            {/* Brand Info */}
+            
+            {/* Brand Info & Slogan */}
             <div>
               <h3 className="font-display text-[18px] font-medium tracking-[0.02em] text-gray-900 mb-1">
                 Dana Travel
@@ -14,7 +26,7 @@ export default function Footer() {
               </p>
             </div>
 
-            {/* Links */}
+            {/* Footer Links */}
             <div className="flex gap-8 text-[10px] font-bold uppercase tracking-[0.15em]">
               <a href="#" className="text-gray-900 hover:text-gray-500 transition-colors duration-300">
                 Về Chúng Tôi
@@ -26,6 +38,7 @@ export default function Footer() {
                 Điều Khoản
               </a>
             </div>
+            
           </div>
         </div>
       </div>

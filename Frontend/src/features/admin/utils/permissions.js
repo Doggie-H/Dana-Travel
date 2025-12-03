@@ -1,38 +1,45 @@
 /**
- * Role-Based Access Control (RBAC) Definitions
+ * ROLE-BASED ACCESS CONTROL (RBAC) DEFINITIONS
+ * 
+ * Định nghĩa hệ thống phân quyền cho ứng dụng.
+ * Quản lý các vai trò (Roles) và quyền hạn (Permissions) tương ứng.
  */
 
+// --- ĐỊNH NGHĨA VAI TRÒ (ROLES) ---
 export const ROLES = {
-  SUPER_ADMIN: "super_admin",
-  MANAGER: "manager",
-  STAFF: "staff",
+  SUPER_ADMIN: "super_admin", // Quản trị viên cấp cao (Toàn quyền)
+  MANAGER: "manager",         // Quản lý (Giới hạn một số quyền hệ thống)
+  STAFF: "staff",             // Nhân viên (Chỉ xem và chỉnh sửa nội dung cơ bản)
 };
 
+// --- ĐỊNH NGHĨA QUYỀN HẠN (PERMISSIONS) ---
 export const PERMISSIONS = {
-  // Account Management
-  MANAGE_ACCOUNTS: "manage_accounts", // Create/Delete admins
+  // Quản lý tài khoản Admin
+  MANAGE_ACCOUNTS: "manage_accounts", // Tạo, xóa, phân quyền admin khác
   
-  // System
-  VIEW_LOGS: "view_logs",
-  DELETE_LOGS: "delete_logs",
-  VIEW_DASHBOARD: "view_dashboard",
+  // Quản trị hệ thống
+  VIEW_LOGS: "view_logs",             // Xem nhật ký hoạt động
+  DELETE_LOGS: "delete_logs",         // Xóa nhật ký
+  VIEW_DASHBOARD: "view_dashboard",   // Xem thống kê tổng quan
   
-  // Content (Locations)
-  VIEW_LOCATIONS: "view_locations",
-  CREATE_LOCATION: "create_location",
-  EDIT_LOCATION: "edit_location",
-  DELETE_LOCATION: "delete_location",
+  // Quản lý nội dung (Địa điểm)
+  VIEW_LOCATIONS: "view_locations",   // Xem danh sách địa điểm
+  CREATE_LOCATION: "create_location", // Thêm địa điểm mới
+  EDIT_LOCATION: "edit_location",     // Sửa thông tin địa điểm
+  DELETE_LOCATION: "delete_location", // Xóa địa điểm
   
-  // Knowledge Base (AI)
-  MANAGE_KNOWLEDGE: "manage_knowledge",
+  // Quản lý AI Chatbot
+  MANAGE_KNOWLEDGE: "manage_knowledge", // Dạy AI, sửa câu trả lời mẫu
 
-  // New Features
+  // Các tính năng mở rộng (Future Proofing)
   MANAGE_CATEGORIES: "manage_categories",
   MANAGE_PRODUCTS: "manage_products",
   MANAGE_MENUS: "manage_menus",
 };
 
+// --- BẢNG PHÂN QUYỀN (ROLE-PERMISSION MAPPING) ---
 const ROLE_PERMISSIONS = {
+  // Super Admin: Có tất cả các quyền
   [ROLES.SUPER_ADMIN]: [
     PERMISSIONS.MANAGE_ACCOUNTS,
     PERMISSIONS.VIEW_LOGS,
@@ -42,48 +49,56 @@ const ROLE_PERMISSIONS = {
     PERMISSIONS.CREATE_LOCATION,
     PERMISSIONS.EDIT_LOCATION,
     PERMISSIONS.DELETE_LOCATION,
-    PERMISSIONS.DELETE_LOCATION,
     PERMISSIONS.MANAGE_KNOWLEDGE,
     PERMISSIONS.MANAGE_CATEGORIES,
     PERMISSIONS.MANAGE_PRODUCTS,
     PERMISSIONS.MANAGE_MENUS,
   ],
+  
+  // Manager: Quản lý nội dung và AI, không can thiệp hệ thống sâu (Accounts, Logs)
   [ROLES.MANAGER]: [
     PERMISSIONS.VIEW_DASHBOARD,
     PERMISSIONS.VIEW_LOCATIONS,
     PERMISSIONS.CREATE_LOCATION,
     PERMISSIONS.EDIT_LOCATION,
     PERMISSIONS.MANAGE_KNOWLEDGE,
-    // Cannot manage accounts or delete logs/locations
+    // Không có quyền: MANAGE_ACCOUNTS, DELETE_LOGS, DELETE_LOCATION (tránh xóa nhầm)
   ],
+  
+  // Staff: Chỉ làm việc với dữ liệu địa điểm có sẵn
   [ROLES.STAFF]: [
     PERMISSIONS.VIEW_LOCATIONS,
     PERMISSIONS.EDIT_LOCATION,
-    // Can only view and edit existing locations
+    // Không có quyền tạo mới hoặc xóa
   ],
 };
 
 /**
- * Check if a user has a specific permission
- * @param {Object} user - The admin user object
- * @param {string} permission - The permission to check
- * @returns {boolean}
+ * Kiểm tra xem User có quyền thực hiện hành động cụ thể hay không.
+ * 
+ * @param {Object} user - Đối tượng user hiện tại (chứa thông tin role).
+ * @param {string} permission - Quyền cần kiểm tra (lấy từ constant PERMISSIONS).
+ * @returns {boolean} - True nếu có quyền, False nếu không.
  */
 export function can(user, permission) {
   if (!user || !user.role) return false;
   
-  // Normalize role string just in case
+  // Chuẩn hóa role string để tránh lỗi case-sensitive
   const role = user.role.toLowerCase();
   
-  // Super admin fallback (if role name varies)
+  // Fallback: Nếu role là "admin" hoặc "superadmin" (từ hệ thống cũ), cấp full quyền
   if (role === "admin" || role === "superadmin") return true;
 
+  // Lấy danh sách quyền của role tương ứng
   const permissions = ROLE_PERMISSIONS[role] || [];
+  
+  // Kiểm tra xem quyền yêu cầu có trong danh sách không
   return permissions.includes(permission);
 }
 
 /**
- * Get readable role name
+ * Lấy tên hiển thị tiếng Việt của Role.
+ * Dùng để hiển thị trên UI (Badge, Table...).
  */
 export function getRoleLabel(role) {
   switch (role) {
@@ -94,6 +109,10 @@ export function getRoleLabel(role) {
   }
 }
 
+/**
+ * Lấy class màu sắc CSS (Tailwind) cho Badge của Role.
+ * Giúp phân biệt trực quan các cấp độ tài khoản.
+ */
 export function getRoleBadgeColor(role) {
   switch (role) {
     case ROLES.SUPER_ADMIN: return "bg-purple-100 text-purple-800 border-purple-200";

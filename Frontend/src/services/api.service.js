@@ -1,51 +1,57 @@
-// file: frontend/src/services/api.js
-
 /**
- * API Service - axios client cho backend
- *
- * Vai trò: centralized HTTP client, handle errors, base config
- * Không chứa business logic, chỉ HTTP calls
+ * API SERVICE
+ * 
+ * Module quản lý việc giao tiếp với Backend thông qua HTTP Requests (Axios).
+ * 
+ * Vai trò:
+ * 1. Cấu hình Axios Client (Base URL, Timeout, Headers).
+ * 2. Xử lý lỗi tập trung (Response Interceptor).
+ * 3. Định nghĩa các hàm gọi API cụ thể (Generate Itinerary, Chat, Search...).
  */
 
 import axios from "axios";
 
-// Base URL (proxy qua Vite trong dev)
+// Base URL (Lấy từ biến môi trường hoặc mặc định là /api)
+// Trong môi trường Dev, Vite sẽ proxy /api sang backend server.
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
-// Create axios instance
+// Khởi tạo Axios Instance với cấu hình mặc định
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 30000, // Timeout sau 30 giây
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Response interceptor - handle errors
+// --- RESPONSE INTERCEPTOR (XỬ LÝ PHẢN HỒI) ---
 apiClient.interceptors.response.use(
-  (response) => response.data, // Return data directly
+  (response) => response.data, // Trả về dữ liệu trực tiếp (bỏ qua wrapper của axios)
   (error) => {
-    // Format error message
+    // Format thông báo lỗi để hiển thị cho người dùng
     const message =
       error.response?.data?.error?.message ||
       error.message ||
       "Đã xảy ra lỗi khi kết nối server";
 
-    console.error("API Error:", {
+    // Ghi log lỗi để debug
+    console.error("Lỗi API:", {
       url: error.config?.url,
       status: error.response?.status,
       message,
     });
 
-    // Throw formatted error
+    // Ném lỗi ra để component xử lý (hiển thị thông báo)
     throw new Error(message);
   }
 );
 
 /**
- * Generate itinerary
- * @param {Object} userRequest
- * @returns {Promise<Object>} - itinerary
+ * Gọi API tạo lịch trình.
+ * POST /api/itinerary/generate
+ * 
+ * @param {Object} userRequest - Dữ liệu form (budget, dates, preferences...).
+ * @returns {Promise<Object>} - Đối tượng lịch trình đã tạo.
  */
 export async function generateItinerary(userRequest) {
   const response = await apiClient.post("/itinerary/generate", userRequest);
@@ -53,10 +59,12 @@ export async function generateItinerary(userRequest) {
 }
 
 /**
- * Send chat message
- * @param {string} message
- * @param {Object} context - {itinerary?, userRequest?}
- * @returns {Promise<Object>} - chat response
+ * Gọi API gửi tin nhắn Chatbot.
+ * POST /api/chat
+ * 
+ * @param {string} message - Nội dung tin nhắn.
+ * @param {Object} context - Ngữ cảnh (lịch trình hiện tại, request gốc).
+ * @returns {Promise<Object>} - Phản hồi từ Bot.
  */
 export async function sendChatMessage(message, context = {}) {
   const response = await apiClient.post("/chat", { message, context });
@@ -64,10 +72,12 @@ export async function sendChatMessage(message, context = {}) {
 }
 
 /**
- * Search locations
- * @param {string} query - search keyword
- * @param {string} type - location type filter
- * @returns {Promise<Array>} - locations
+ * Gọi API tìm kiếm địa điểm.
+ * GET /api/location/search
+ * 
+ * @param {string} query - Từ khóa tìm kiếm.
+ * @param {string} type - Loại địa điểm (tùy chọn).
+ * @returns {Promise<Array>} - Danh sách địa điểm tìm thấy.
  */
 export async function searchLocations(query = "", type = "") {
   const params = new URLSearchParams();
@@ -79,7 +89,9 @@ export async function searchLocations(query = "", type = "") {
 }
 
 /**
- * Health check
+ * Kiểm tra trạng thái Server (Health Check).
+ * GET /api/ping
+ * 
  * @returns {Promise<Object>}
  */
 export async function ping() {

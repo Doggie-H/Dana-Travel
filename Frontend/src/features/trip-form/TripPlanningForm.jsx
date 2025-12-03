@@ -1,10 +1,16 @@
-// file: frontend/src/features/trip-form/MultiStepUserForm.jsx
+// file: frontend/src/features/trip-form/TripPlanningForm.jsx
 
 /**
- * MultiStepUserForm Component
+ * TripPlanningForm Component
  * 
- * A wizard-style form for collecting user travel preferences.
- * Handles validation, state management, and navigation between steps.
+ * Đây là form chính để người dùng nhập thông tin lập kế hoạch du lịch.
+ * Được thiết kế theo dạng Multi-step Wizard (Từng bước một) để nâng cao trải nghiệm người dùng.
+ * 
+ * Các chức năng chính:
+ * 1. Thu thập thông tin: Ngân sách, Số người, Thời gian, Phương tiện, Sở thích.
+ * 2. Validate dữ liệu: Kiểm tra tính hợp lệ trước khi chuyển bước.
+ * 3. Gợi ý thông minh: Tự động gợi ý ngân sách, tính toán thời lượng chuyến đi.
+ * 4. Quản lý trạng thái: Sử dụng React State để lưu trữ dữ liệu tạm thời.
  */
 
 import { useState, useEffect } from "react";
@@ -12,10 +18,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
-  // State quản lý bước hiện tại (1 -> 5)
+  // --- STATE MANAGEMENT (QUẢN LÝ TRẠNG THÁI) ---
+
+  // Quản lý bước hiện tại của Wizard (1 -> 5)
   const [step, setStep] = useState(1);
 
-  // State quản lý dữ liệu form
+  // Quản lý toàn bộ dữ liệu form
   const [formData, setFormData] = useState({
     budgetTotal: defaultValues.budgetTotal || "",
     numPeople: defaultValues.numPeople || "",
@@ -26,21 +34,29 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
     preferences: defaultValues.preferences || [],
   });
 
-  // State quản lý lỗi validation
+  // Quản lý lỗi validation (để hiển thị thông báo đỏ)
   const [errors, setErrors] = useState({});
 
-  // State gợi ý ngân sách
+  // Quản lý danh sách gợi ý ngân sách (khi người dùng nhập số)
   const [budgetSuggestions, setBudgetSuggestions] = useState([]);
 
-  // State hiển thị thời lượng chuyến đi
+  // Chuỗi hiển thị thời lượng chuyến đi (VD: "3 ngày 2 đêm")
   const [durationString, setDurationString] = useState("");
 
-  // Hàm chuyển bước an toàn
+  // --- LOGIC ĐIỀU HƯỚNG & VALIDATION ---
+
+  /**
+   * Chuyển đổi giữa các bước (Next/Prev).
+   * @param {number} delta - Số bước cần nhảy (+1 hoặc -1).
+   */
   const goto = (delta) => {
     setStep((s) => Math.min(5, Math.max(1, s + delta)));
   };
 
-  // Hàm kiểm tra dữ liệu hợp lệ cho từng bước
+  /**
+   * Kiểm tra tính hợp lệ của dữ liệu trong bước hiện tại.
+   * @returns {boolean} - True nếu hợp lệ, False nếu có lỗi.
+   */
   const validateStep = () => {
     const newErrors = {};
     
@@ -65,35 +81,41 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
       }
     }
 
-    // Bước 3 & 4: Không bắt buộc (có giá trị mặc định), nhưng có thể thêm validate nếu cần
+    // Bước 3 & 4: Không bắt buộc (có giá trị mặc định)
     
     setErrors(newErrors);
-    // Trả về true nếu không có lỗi nào
+    // Trả về true nếu object lỗi rỗng
     return Object.keys(newErrors).length === 0;
   };
 
-  // Xử lý sự kiện Next / Prev / Submit
+  // Xử lý sự kiện bấm nút "Tiếp tục"
   const handleNext = (e) => {
     e.preventDefault();
     if (validateStep()) goto(1);
   };
 
+  // Xử lý sự kiện bấm nút "Quay lại"
   const handlePrev = (e) => {
     e.preventDefault();
     goto(-1);
   };
 
+  // Xử lý sự kiện Submit form ở bước cuối
   const handleSubmit = (e) => {
     e.preventDefault();
     const allOk = validateStep();
     if (allOk) onSubmit(formData);
   };
 
-  // Các hàm xử lý thay đổi input (Helpers)
+  // --- HELPER FUNCTIONS (CÁC HÀM HỖ TRỢ) ---
+
   const cleanNumber = (value) => value.replace(/\D/g, "").replace(/^0+/, "") || "";
   const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-  // Xử lý thay đổi ngân sách và tạo gợi ý
+  /**
+   * Xử lý khi nhập ngân sách.
+   * Tự động tạo các gợi ý số tiền chẵn (VD: nhập 5 -> gợi ý 500k, 5tr...).
+   */
   const handleBudgetChange = (e) => {
     const raw = e.target.value;
     const cleaned = cleanNumber(raw);
@@ -102,7 +124,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
     setFormData((p) => ({ ...p, budgetTotal: numVal }));
     if (errors.budgetTotal) setErrors((p) => ({ ...p, budgetTotal: null }));
 
-    // Logic gợi ý ngân sách thông minh
+    // Logic gợi ý thông minh
     if (cleaned && cleaned.length > 0 && cleaned.length < 9) {
       const base = Number(cleaned);
       const suggestions = [
@@ -138,7 +160,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
     if (errors[name]) setErrors((p) => ({ ...p, [name]: null }));
   };
 
-  // Tính toán thời lượng chuyến đi khi ngày thay đổi
+  // Tự động tính toán chuỗi thời lượng (Duration String) khi ngày thay đổi
   useEffect(() => {
     if (formData.arriveDateTime && formData.leaveDateTime) {
       const start = new Date(formData.arriveDateTime);
@@ -148,7 +170,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
         const diffTime = Math.abs(end - start);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
         
-        // Kiểm tra xem có phải đi về trong ngày không (cùng ngày dương lịch)
+        // Kiểm tra xem có phải đi về trong ngày không
         const isSameDay = start.getDate() === end.getDate() && 
                           start.getMonth() === end.getMonth() && 
                           start.getFullYear() === end.getFullYear();
@@ -156,7 +178,6 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
         if (isSameDay) {
           setDurationString("Đi về trong ngày");
         } else {
-          // Tính số đêm (thường là số ngày - 1)
           const nights = diffDays - 1;
           setDurationString(`${diffDays} ngày ${nights > 0 ? nights + " đêm" : ""}`);
         }
@@ -178,7 +199,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
     }));
   };
 
-  // Danh sách các tùy chọn sở thích
+  // Danh sách các tùy chọn sở thích cố định
   const preferencesOptions = [
     { value: "nature", label: "Thiên nhiên" },
     { value: "beach", label: "Biển" },
@@ -203,16 +224,11 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
     </div>
   );
 
-  // Lấy thời gian hiện tại cho min date
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  const minDateTime = now.toISOString().slice(0, 16);
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Progress />
       
-      {/* --- Bước 1: Ngân sách & Số người --- */}
+      {/* --- BƯỚC 1: NGÂN SÁCH & SỐ NGƯỜI --- */}
       {step === 1 && (
         <div className="space-y-5">
           <div className="grid md:grid-cols-2 gap-5">
@@ -229,7 +245,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
                 } focus:ring-4 outline-none text-gray-900 font-medium placeholder-gray-300`}
                 placeholder="VD: 5.000.000"
               />
-              {/* Gợi ý ngân sách */}
+              {/* Dropdown gợi ý ngân sách */}
               {budgetSuggestions.length > 0 && (
                 <div className="absolute z-10 mt-1 w-full bg-white border border-gray-100 rounded-xl shadow-lg p-2 flex flex-wrap gap-2 animate-fadeIn">
                   {budgetSuggestions.map((amount) => (
@@ -269,10 +285,10 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
         </div>
       )}
 
-      {/* --- Bước 2: Thời gian --- */}
+      {/* --- BƯỚC 2: THỜI GIAN --- */}
       {step === 2 && (
         <div className="space-y-5">
-          {/* Single Date Range Input */}
+          {/* Bộ chọn ngày (Date Range Picker) */}
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">Ngày đi - Ngày về *</label>
             <DatePicker
@@ -314,10 +330,10 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
             )}
           </div>
 
-          {/* Quick Time Selection */}
+          {/* Bộ chọn giờ nhanh (Quick Time Selection) */}
           {formData.arriveDateTime && formData.leaveDateTime && (
             <div className="grid md:grid-cols-2 gap-5 animate-fadeIn">
-              {/* Giờ khởi hành */}
+              {/* Giờ đến */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-3">
                   Giờ đến Đà Nẵng
@@ -326,7 +342,6 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
                   </span>
                 </label>
                 <div className="space-y-2">
-                  {/* Quick select buttons */}
                   <div className="grid grid-cols-4 gap-2">
                     {['06:00', '08:00', '12:00', '14:00', '18:00', '20:00', '22:00'].map((time) => {
                       const [hours, minutes] = time.split(':');
@@ -357,7 +372,6 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
                       );
                     })}
                     
-                    {/* Custom time input */}
                     <input
                       type="time"
                       value={formData.arriveDateTime ? formData.arriveDateTime.split('T')[1] : '08:00'}
@@ -383,7 +397,6 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
                   </span>
                 </label>
                 <div className="space-y-2">
-                  {/* Quick select buttons */}
                   <div className="grid grid-cols-4 gap-2">
                     {['06:00', '08:00', '12:00', '14:00', '18:00', '20:00', '22:00'].map((time) => {
                       const [hours, minutes] = time.split(':');
@@ -414,7 +427,6 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
                       );
                     })}
                     
-                    {/* Custom time input */}
                     <input
                       type="time"
                       value={formData.leaveDateTime ? formData.leaveDateTime.split('T')[1] : '18:00'}
@@ -433,7 +445,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
             </div>
           )}
           
-          {/* Trip Duration Display */}
+          {/* Hiển thị tổng thời gian chuyến đi */}
           {durationString && (
             <div className="flex items-center justify-center p-3 bg-blue-50 text-blue-700 rounded-xl border border-blue-100 animate-fadeIn">
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -443,7 +455,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
         </div>
       )}
 
-      {/* --- Bước 3: Phương tiện & Lưu trú --- */}
+      {/* --- BƯỚC 3: PHƯƠNG TIỆN & LƯU TRÚ --- */}
       {step === 3 && (
         <div className="grid md:grid-cols-2 gap-5">
           <div>
@@ -490,7 +502,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
         </div>
       )}
 
-      {/* --- Bước 4: Sở thích --- */}
+      {/* --- BƯỚC 4: SỞ THÍCH --- */}
       {step === 4 && (
         <div className="space-y-4">
           <label className="block text-sm font-bold text-gray-700">Bạn thích trải nghiệm gì?</label>
@@ -518,7 +530,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
         </div>
       )}
 
-      {/* --- Bước 5: Xác nhận --- */}
+      {/* --- BƯỚC 5: XÁC NHẬN --- */}
       {step === 5 && (
         <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 text-center">
           <h4 className="text-lg font-bold text-gray-900 mb-4">Xác nhận thông tin</h4>
@@ -541,7 +553,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
         </div>
       )}
 
-      {/* --- Navigation Buttons --- */}
+      {/* --- CÁC NÚT ĐIỀU HƯỚNG --- */}
       <div className="flex justify-between items-center pt-4 border-t border-gray-50">
         {step > 1 ? (
           <button

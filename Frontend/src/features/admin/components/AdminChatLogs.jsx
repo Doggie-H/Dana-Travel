@@ -1,6 +1,19 @@
+/**
+ * ADMIN CHAT LOGS COMPONENT
+ * 
+ * Component hiển thị lịch sử trò chuyện giữa người dùng và Chatbot.
+ * Giúp Admin theo dõi chất lượng phản hồi của AI và cải thiện kiến thức.
+ * 
+ * Chức năng:
+ * 1. Xem danh sách logs chat (User Message & Bot Response).
+ * 2. Xóa toàn bộ logs (Chỉ Super Admin).
+ * 3. "Dạy AI": Chuyển đổi nhanh một đoạn chat thành kiến thức mới cho AI.
+ */
+
 import { can, PERMISSIONS } from "../utils/permissions";
 
 export default function AdminChatLogs({ chatLogs, user, onClearLogs, onFlagEdit }) {
+  // Kiểm tra quyền xem logs
   if (!can(user, PERMISSIONS.VIEW_LOGS)) {
     return (
       <div className="text-center py-20 bg-gray-50 rounded-2xl border border-gray-100">
@@ -17,8 +30,11 @@ export default function AdminChatLogs({ chatLogs, user, onClearLogs, onFlagEdit 
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      {/* Header & Actions */}
       <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <h3 className="text-lg font-bold text-gray-900">Lịch sử trò chuyện</h3>
+        
+        {/* Nút xóa logs (Chỉ hiện nếu có quyền) */}
         {can(user, PERMISSIONS.DELETE_LOGS) && (
           <button
             onClick={onClearLogs}
@@ -29,6 +45,7 @@ export default function AdminChatLogs({ chatLogs, user, onClearLogs, onFlagEdit 
         )}
       </div>
       
+      {/* Logs List */}
       <div className="divide-y divide-gray-100">
         {chatLogs.length === 0 ? (
           <div className="p-12 text-center text-gray-400 text-sm">
@@ -37,6 +54,7 @@ export default function AdminChatLogs({ chatLogs, user, onClearLogs, onFlagEdit 
         ) : (
           chatLogs.map((log) => (
             <div key={log.id} className="p-6 hover:bg-gray-50 transition-colors group">
+              {/* User Info & Timestamp */}
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
                   <span className="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center text-xs font-bold">
@@ -51,6 +69,8 @@ export default function AdminChatLogs({ chatLogs, user, onClearLogs, onFlagEdit 
                     </p>
                   </div>
                 </div>
+
+                {/* Quick Action: Teach AI */}
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   {can(user, PERMISSIONS.MANAGE_KNOWLEDGE) && (
                     <button
@@ -69,11 +89,15 @@ export default function AdminChatLogs({ chatLogs, user, onClearLogs, onFlagEdit 
                 </div>
               </div>
 
+              {/* Chat Content */}
               <div className="space-y-3 pl-11">
+                {/* User Message */}
                 <div className="bg-gray-50 p-3 rounded-xl rounded-tl-none text-sm text-gray-700">
                   <span className="font-bold text-gray-900 block mb-1 text-xs uppercase tracking-wider">User</span>
                   {log.message}
                 </div>
+                
+                {/* Bot Response */}
                 <div className="bg-blue-50 p-3 rounded-xl rounded-tr-none text-sm text-gray-700 border border-blue-100">
                   <span className="font-bold text-blue-900 block mb-1 text-xs uppercase tracking-wider">Bot Response</span>
                   {log.response}

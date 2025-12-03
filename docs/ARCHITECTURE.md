@@ -28,53 +28,53 @@ Dana Travel là hệ thống lập kế hoạch du lịch Full-Stack với chatb
 ```mermaid
 graph TB
     subgraph "TẦNG CLIENT - Port 5173"
-        A1[React SPA]
-        A1 --> A2[React Router]
-        A2 --> A3[Trang Chủ]
-        A2 --> A4[Trang Lịch Trình]
-        A2 --> A5[Trang Chat]
-        A2 --> A6[Trang Quản Trị]
+        A1["React SPA"]
+        A1 --> A2["React Router"]
+        A2 --> A3["Trang Chủ"]
+        A2 --> A4["Trang Lịch Trình"]
+        A2 --> A5["Trang Chat"]
+        A2 --> A6["Trang Quản Trị"]
     end
     
     subgraph "TẦNG API - Port 3000"
-        B1[Express.js Server]
-        B1 --> B2[CORS Middleware]
-        B1 --> B3[Auth Middleware]
-        B1 --> B4[Logger Middleware]
+        B1["Express.js Server"]
+        B1 --> B2["CORS Middleware"]
+        B1 --> B3["Auth Middleware"]
+        B1 --> B4["Logger Middleware"]
     end
     
     subgraph "TẦNG BUSINESS LOGIC"
-        C1[Routes - Định tuyến]
-        C1 --> C2[Controllers - Xử lý request]
-        C2 --> C3[Services - Nghiệp vụ]
+        C1["Routes - Định tuyến"]
+        C1 --> C2["Controllers - Xử lý request"]
+        C2 --> C3["Services - Nghiệp vụ"]
         
-        C3 --> S1[itinerary.service<br/>Thuật toán TSP]
-        C3 --> S2[chatbot.service<br/>RAG + NLP]
-        C3 --> S3[budget.service<br/>Tính ngân sách]
-        C3 --> S4[location.service<br/>Truy vấn địa điểm]
-        C3 --> S5[auth.service<br/>JWT + bcrypt]
-        C3 --> S6[admin.service<br/>Quản lý admin]
+        C3 --> S1["itinerary.service<br/>Thuật toán TSP"]
+        C3 --> S2["chatbot.service<br/>RAG + NLP"]
+        C3 --> S3["budget.service<br/>Tính ngân sách"]
+        C3 --> S4["location.service<br/>Truy vấn địa điểm"]
+        C3 --> S5["auth.service<br/>JWT + bcrypt"]
+        C3 --> S6["admin.service<br/>Quản lý admin"]
     end
     
     subgraph "TẦNG TRUY CẬP DỮ LIỆU"
-        D1[Prisma ORM]
-        D1 --> D2[Query Builder]
-        D1 --> D3[Schema Definition]
+        D1["Prisma ORM"]
+        D1 --> D2["Query Builder"]
+        D1 --> D3["Schema Definition"]
     end
     
     subgraph "TẦNG DATABASE"
-        E1[(SQLite - Dev)]
-        E2[(PostgreSQL - Production)]
+        E1[("SQLite - Dev")]
+        E2[("PostgreSQL - Production")]
         
-        E1 --> E3[Bảng Location]
-        E1 --> E4[Bảng Admin]
-        E1 --> E5[Bảng Knowledge]
-        E1 --> E6[Bảng AccessLog]
+        E1 --> E3["Bảng Location"]
+        E1 --> E4["Bảng Admin"]
+        E1 --> E5["Bảng Knowledge"]
+        E1 --> E6["Bảng AccessLog"]
     end
     
     subgraph "DỊCH VỤ NGOÀI"
-        F1[Google Gemini API]
-        F2[OpenStreetMap]
+        F1["Google Gemini API"]
+        F2["OpenStreetMap"]
     end
     
     A1 --> B1
@@ -104,29 +104,29 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Module Frontend"
-        FE1[Form Lập Lịch Trình]
-        FE2[Module Itinerary]
-        FE3[Module Chatbot]
-        FE4[Module Quản Trị]
+        FE1["Form Lập Lịch Trình"]
+        FE2["Module Itinerary"]
+        FE3["Module Chatbot"]
+        FE4["Module Quản Trị"]
     end
     
     subgraph "API Endpoints"
-        API1[POST /api/itinerary/generate]
-        API2[POST /api/chat]
-        API3[POST /api/admin/login]
-        API4[GET /api/admin/locations]
+        API1["POST /api/itinerary/generate"]
+        API2["POST /api/chat"]
+        API3["POST /api/admin/login"]
+        API4["GET /api/admin/locations"]
     end
     
     subgraph "Services Backend"
-        BE1[Itinerary Service]
-        BE2[Chatbot Service]
-        BE3[Auth Service]
-        BE4[Location Service]
+        BE1["Itinerary Service"]
+        BE2["Chatbot Service"]
+        BE3["Auth Service"]
+        BE4["Location Service"]
     end
     
     subgraph "Truy Cập Dữ Liệu"
-        DB1[Prisma Client]
-        DB2[(Database)]
+        DB1["Prisma Client"]
+        DB2[("Database")]
     end
     
     FE1 -->|Gửi form| API1
@@ -146,7 +146,7 @@ graph LR
     
     DB1 --> DB2
     
-    BE2 -.AI.-> GEMINI[Google Gemini API]
+    BE2 -.AI.-> GEMINI["Google Gemini API"]
 ```
 
 ### 2.2 Sơ Đồ Phụ Thuộc Giữa Các Module
@@ -154,16 +154,16 @@ graph LR
 ```mermaid
 graph TD
     subgraph "Các Module Backend"
-        SERVER[server.js<br/>Điểm Khởi Đầu]
+        SERVER["server.js<br/>Điểm Khởi Đầu"]
         
-        ROUTES[routes/*<br/>Định Tuyến API]
-        CONTROLLERS[controllers/*<br/>Xử Lý Request]
-        SERVICES[services/*<br/>Logic Nghiệp Vụ]
-        MIDDLEWARE[middleware/*<br/>Mối Quan Tâm Chung]
-        ADAPTERS[adapters/*<br/>APIs Bên Ngoài]
-        UTILS[utils/*<br/>Hàm Hỗ Trợ]
+        ROUTES["routes/*<br/>Định Tuyến API"]
+        CONTROLLERS["controllers/*<br/>Xử Lý Request"]
+        SERVICES["services/*<br/>Logic Nghiệp Vụ"]
+        MIDDLEWARE["middleware/*<br/>Mối Quan Tâm Chung"]
+        ADAPTERS["adapters/*<br/>APIs Bên Ngoài"]
+        UTILS["utils/*<br/>Hàm Hỗ Trợ"]
         
-        PRISMA[prisma/schema.prisma<br/>Schema Database]
+        PRISMA["prisma/schema.prisma<br/>Schema Database"]
     end
     
     SERVER --> ROUTES
@@ -407,32 +407,32 @@ erDiagram
 ```mermaid
 graph TD
     subgraph "Entry Point"
-        SERVER[server.js]
+        SERVER["server.js"]
     end
     
     subgraph "Routes - API"
-        R_ITINERARY[itinerary.routes.js]
-        R_CHAT[chatbot.routes.js]
-        R_ADMIN[admin.routes.js]
-        R_LOCATION[location.routes.js]
+        R_ITINERARY["itinerary.routes.js"]
+        R_CHAT["chatbot.routes.js"]
+        R_ADMIN["admin.routes.js"]
+        R_LOCATION["location.routes.js"]
     end
     
     subgraph "Controllers - Xử lý"
-        C_ITINERARY[itinerary.controller.js]
-        C_CHAT[chatbot.controller.js]
-        C_ADMIN[admin.controller.js]
+        C_ITINERARY["itinerary.controller.js"]
+        C_CHAT["chatbot.controller.js"]
+        C_ADMIN["admin.controller.js"]
     end
     
     subgraph "Services - Logic"
-        S_ITINERARY[itinerary.service.js]
-        S_CHAT[chatbot.service.js]
-        S_BUDGET[budget.service.js]
-        S_LOCATION[location.service.js]
-        S_AUTH[auth.service.js]
+        S_ITINERARY["itinerary.service.js"]
+        S_CHAT["chatbot.service.js"]
+        S_BUDGET["budget.service.js"]
+        S_LOCATION["location.service.js"]
+        S_AUTH["auth.service.js"]
     end
     
     subgraph "Database"
-        PRISMA[Prisma ORM]
+        PRISMA["Prisma ORM"]
     end
     
     SERVER --> R_ITINERARY
@@ -463,38 +463,38 @@ graph TD
 
 ```mermaid
 graph TD
-    ROOT[main.jsx] --> APP[App.jsx]
+    ROOT["main.jsx"] --> APP["App.jsx"]
     
-    APP --> HOME[Trang Chủ]
-    APP --> ITINERARY[Trang Lịch Trình]
-    APP --> CHAT[Trang Chat]
-    APP --> ADMIN[Trang Admin]
+    APP --> HOME["Trang Chủ"]
+    APP --> ITINERARY["Trang Lịch Trình"]
+    APP --> CHAT["Trang Chat"]
+    APP --> ADMIN["Trang Admin"]
     
     subgraph "Trang Chủ"
-        HOME --> TRIPFORM[Form Lập Lịch]
-        TRIPFORM --> DATE[Chọn Ngày]
-        TRIPFORM --> BUDGET[Nhập Ngân Sách]
-        TRIPFORM --> PREF[Chọn Sở Thích]
+        HOME --> TRIPFORM["Form Lập Lịch"]
+        TRIPFORM --> DATE["Chọn Ngày"]
+        TRIPFORM --> BUDGET["Nhập Ngân Sách"]
+        TRIPFORM --> PREF["Chọn Sở Thích"]
     end
     
     subgraph "Trang Lịch Trình"
-        ITINERARY --> MAP[Bản Đồ]
-        ITINERARY --> TIMELINE[Lịch Trình Chi Tiết]
-        TIMELINE --> DAY[Thẻ Ngày]
-        DAY --> ACTIVITY[Thẻ Hoạt Động]
+        ITINERARY --> MAP["Bản Đồ"]
+        ITINERARY --> TIMELINE["Lịch Trình Chi Tiết"]
+        TIMELINE --> DAY["Thẻ Ngày"]
+        DAY --> ACTIVITY["Thẻ Hoạt Động"]
     end
     
     subgraph "Trang Chat"
-        CHAT --> CHATUI[Giao Diện Chat]
-        CHATUI --> MSG[Tin Nhắn]
-        CHATUI --> INPUT[Ô Nhập Liệu]
+        CHAT --> CHATUI["Giao Diện Chat"]
+        CHATUI --> MSG["Tin Nhắn"]
+        CHATUI --> INPUT["Ô Nhập Liệu"]
     end
     
     subgraph "Trang Admin"
-        ADMIN --> DASHBOARD[Bảng Điều Khiển]
-        DASHBOARD --> LOC_MGR[Quản Lý Địa Điểm]
-        DASHBOARD --> KNOW_MGR[Quản Lý Knowledge]
-        DASHBOARD --> STATS[Thống Kê]
+        ADMIN --> DASHBOARD["Bảng Điều Khiển"]
+        DASHBOARD --> LOC_MGR["Quản Lý Địa Điểm"]
+        DASHBOARD --> KNOW_MGR["Quản Lý Knowledge"]
+        DASHBOARD --> STATS["Thống Kê"]
     end
 ```
 
@@ -503,25 +503,25 @@ graph TD
 ```mermaid
 graph LR
     subgraph "Hành Động User"
-        UA1[Gửi Form]
-        UA2[Gửi Tin Nhắn]
-        UA3[Đăng Nhập Admin]
+        UA1["Gửi Form"]
+        UA2["Gửi Tin Nhắn"]
+        UA3["Đăng Nhập Admin"]
     end
     
     subgraph "React State"
-        STATE1[State Form]
-        STATE2[State Tin Nhắn]
-        STATE3[State User]
+        STATE1["State Form"]
+        STATE2["State Tin Nhắn"]
+        STATE3["State User"]
     end
     
     subgraph "API Calls"
-        API1[generateItinerary]
-        API2[sendChatMessage]
-        API3[adminLogin]
+        API1["generateItinerary"]
+        API2["sendChatMessage"]
+        API3["adminLogin"]
     end
     
     subgraph "Lưu Trữ"
-        LS[LocalStorage]
+        LS["LocalStorage"]
     end
     
     UA1 --> STATE1 --> API1 --> LS
@@ -538,26 +538,26 @@ graph LR
 ```mermaid
 graph TB
     subgraph "Mạng"
-        L1[HTTPS]
-        L2[Firewall]
+        L1["HTTPS"]
+        L2["Firewall"]
     end
     
     subgraph "Ứng Dụng"
-        L3[CORS - Chặn domain lạ]
-        L4[Rate Limit - Chặn spam]
-        L5[Helmet - Header bảo mật]
-        L6[Input Validation - Kiểm tra dữ liệu]
+        L3["CORS - Chặn domain lạ"]
+        L4["Rate Limit - Chặn spam"]
+        L5["Helmet - Header bảo mật"]
+        L6["Input Validation - Kiểm tra dữ liệu"]
     end
     
     subgraph "Xác Thực"
-        L7[JWT Token]
-        L8[Mã hóa mật khẩu]
-        L9[HttpOnly Cookie]
+        L7["JWT Token"]
+        L8["Mã hóa mật khẩu"]
+        L9["HttpOnly Cookie"]
     end
     
     subgraph "Dữ Liệu"
-        L10[Chống SQL Injection]
-        L11[Biến môi trường .env]
+        L10["Chống SQL Injection"]
+        L11["Biến môi trường .env"]
     end
     
     L1 --> L3
@@ -603,13 +603,13 @@ stateDiagram-v2
 ```mermaid
 graph TB
     subgraph "Internet"
-        USER[Người Dùng]
+        USER["Người Dùng"]
     end
 
     subgraph "Server"
-        NGINX[Nginx (Reverse Proxy)]
-        APP[Node.js App (PM2)]
-        DB[(PostgreSQL)]
+        NGINX["Nginx (Reverse Proxy)"]
+        APP["Node.js App (PM2)"]
+        DB[("PostgreSQL")]
     end
     
     USER --> NGINX
@@ -622,17 +622,17 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Development (Máy cá nhân)"
-        DEV_FE[Frontend (Vite)]
-        DEV_BE[Backend (Nodemon)]
-        DEV_DB[(SQLite)]
+        DEV_FE["Frontend (Vite)"]
+        DEV_BE["Backend (Nodemon)"]
+        DEV_DB[("SQLite")]
         
         DEV_FE --> DEV_BE --> DEV_DB
     end
     
     subgraph "Production (Server thật)"
-        PROD_FE[Nginx]
-        PROD_BE[Node.js (PM2)]
-        PROD_DB[(PostgreSQL)]
+        PROD_FE["Nginx"]
+        PROD_BE["Node.js (PM2)"]
+        PROD_DB[("PostgreSQL")]
         
         PROD_FE --> PROD_BE --> PROD_DB
     end

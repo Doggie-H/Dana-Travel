@@ -1,29 +1,51 @@
+/**
+ * ADMIN DASHBOARD COMPONENT
+ * 
+ * Trang tổng quan (Dashboard) của hệ thống quản trị.
+ * Hiển thị các biểu đồ thống kê và nhật ký hoạt động gần đây.
+ * 
+ * Chức năng:
+ * 1. Biểu đồ Line: Thống kê lưu lượng truy cập (Visitors) theo ngày.
+ * 2. Biểu đồ Bar: Thống kê hoạt động nội bộ (Admin/Staff).
+ * 3. Biểu đồ Bar (Full Width): Xu hướng tìm kiếm của người dùng theo thẻ (Tags).
+ * 4. Bảng Logs: Nhật ký truy cập hệ thống gần đây.
+ * 5. Xuất CSV: Cho phép tải về nhật ký truy cập.
+ * 
+ * Thư viện sử dụng: Chart.js
+ */
+
 import { useEffect, useRef } from "react";
 
 export default function AdminDashboard({ accessLogs, health, trafficStats, trendStats }) {
+  // Refs cho Canvas Element
   const visitorChartRef = useRef(null);
   const internalChartRef = useRef(null);
   const trendChartRef = useRef(null);
   
+  // Refs lưu trữ Chart Instance để update/destroy
   const visitorInstanceRef = useRef(null);
   const internalInstanceRef = useRef(null);
   const trendInstanceRef = useRef(null);
 
+  /**
+   * Hàm khởi tạo và vẽ biểu đồ
+   * Sử dụng dynamic import để load Chart.js (tối ưu performance)
+   */
   async function buildCharts() {
     let Chart;
     try {
       const mod = await import("chart.js/auto");
       Chart = mod.default || mod.Chart || mod;
     } catch (e) {
-      console.error("Chart.js load error", e);
+      console.error("Lỗi khi tải thư viện Chart.js", e);
       return;
     }
 
-    // 1. Visitor Traffic (Line)
+    // --- 1. VISITOR TRAFFIC CHART (LINE) ---
     let labels = trafficStats?.length > 0 ? trafficStats.map(s => s.date) : ["Hôm nay"];
     let visitorData = trafficStats?.length > 0 ? trafficStats.map(s => s.visitors) : [0];
 
-    // Fix: If only 1 data point, prepend a dummy point to draw a line
+    // Fix: Nếu chỉ có 1 điểm dữ liệu, thêm điểm giả để vẽ được đường thẳng
     if (visitorData.length === 1) {
       const today = new Date();
       const yesterday = new Date(today);
@@ -35,14 +57,14 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
     }
 
     if (visitorInstanceRef.current) {
-      // Update existing chart
+      // Update chart nếu đã tồn tại
       visitorInstanceRef.current.data.labels = labels;
       visitorInstanceRef.current.data.datasets[0].data = visitorData;
       visitorInstanceRef.current.data.datasets[0].pointRadius = 6;
       visitorInstanceRef.current.data.datasets[0].pointHoverRadius = 8;
       visitorInstanceRef.current.update();
     } else if (visitorChartRef.current) {
-      // Create new chart
+      // Tạo mới chart
       visitorInstanceRef.current = new Chart(visitorChartRef.current.getContext("2d"), {
         type: "line",
         data: {
@@ -53,9 +75,9 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
               data: visitorData,
               borderColor: "#2563eb",
               backgroundColor: "rgba(37, 99, 235, 0.1)",
-              tension: 0.4,
+              tension: 0.4, // Đường cong mềm mại
               fill: true,
-              pointRadius: 6, // Make points visible
+              pointRadius: 6,
               pointHoverRadius: 8,
             },
           ],
@@ -71,7 +93,7 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
       });
     }
 
-    // 2. Internal Activity (Bar)
+    // --- 2. INTERNAL ACTIVITY CHART (BAR) ---
     const internalData = trafficStats?.length > 0 ? trafficStats.map(s => s.internal) : [0];
 
     if (internalInstanceRef.current) {
@@ -102,11 +124,11 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
       });
     }
 
-    // 3. User Trends (Bar)
+    // --- 3. USER TRENDS CHART (BAR - COLORED) ---
     const trendLabels = trendStats?.length > 0 ? trendStats.map(t => t.tag) : ["Chưa có dữ liệu"];
     const trendData = trendStats?.length > 0 ? trendStats.map(t => t.count) : [0];
     
-    // Generate unique colors for each tag
+    // Màu sắc ngẫu nhiên cho từng cột
     const backgroundColors = [
       'rgba(255, 99, 132, 0.6)',
       'rgba(54, 162, 235, 0.6)',
@@ -153,17 +175,12 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
     }
   }
 
+  // Effect: Vẽ lại biểu đồ khi dữ liệu thay đổi
   useEffect(() => {
     buildCharts();
-    // Cleanup only on unmount
-    return () => {
-      // Don't destroy here to allow updates, only destroy if component unmounts
-      // Actually, we should destroy on unmount to prevent memory leaks.
-      // But for updates, we rely on the ref check inside buildCharts.
-    };
   }, [trafficStats, trendStats]);
 
-  // Cleanup on unmount
+  // Effect: Cleanup chart instances khi component unmount
   useEffect(() => {
     return () => {
       if (visitorInstanceRef.current) visitorInstanceRef.current.destroy();
@@ -172,6 +189,9 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
     };
   }, []);
 
+  /**
+   * Xuất dữ liệu Access Logs ra file CSV
+   */
   const exportAccessLogsCSV = () => {
     if (!accessLogs || accessLogs.length === 0) return;
 
@@ -183,7 +203,7 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
       `"${log.ip}"`
     ]);
 
-    const csvContent = "\uFEFF" + [
+    const csvContent = "\uFEFF" + [ // BOM for Excel UTF-8
       headers.join(","),
       ...rows.map(e => e.join(","))
     ].join("\n");
@@ -201,7 +221,7 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
 
   return (
     <div className="space-y-8">
-      {/* Health Status */}
+      {/* --- HEALTH STATUS CARD --- */}
       {health && (
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
           <div>
@@ -218,7 +238,7 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
         </div>
       )}
 
-      {/* Charts Grid */}
+      {/* --- CHARTS GRID --- */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Visitor Traffic */}
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
@@ -238,12 +258,10 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
         </div>
       </div>
 
-      {/* Logs Table */}
+      {/* --- LOGS TABLE --- */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center">
           <h3 className="text-lg font-bold text-gray-900">Nhật ký truy cập (Gần đây)</h3>
-          {/* DEBUG: Inspect data */}
-          <div className="hidden"></div>
           <button
             onClick={exportAccessLogsCSV}
             className="px-4 py-2 bg-gray-50 text-gray-600 text-xs font-bold uppercase rounded-lg hover:bg-gray-100 transition-colors"

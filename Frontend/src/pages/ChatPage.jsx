@@ -1,10 +1,14 @@
-// file: frontend/src/pages/Chat.jsx
-
 /**
- * Chat Page - chatbot interface
- *
- * Vai trò: phối ghép ChatMessage + input + call API
- * Flow: user input → sendChatMessage API → update messages
+ * CHAT PAGE
+ * 
+ * Trang giao diện Chatbot thông minh.
+ * Nơi người dùng tương tác với AI để hỏi đáp, điều chỉnh lịch trình.
+ * 
+ * Chức năng chính:
+ * 1. Hiển thị lịch sử chat (ChatMessage).
+ * 2. Gửi tin nhắn mới (Input Area).
+ * 3. Gợi ý câu trả lời nhanh (Quick Replies).
+ * 4. Tự động tải ngữ cảnh (Context) từ lịch trình đã tạo.
  */
 
 import { useState, useEffect, useRef } from "react";
@@ -21,31 +25,37 @@ import Loading from "../components/Loading";
 
 export default function Chat() {
   const navigate = useNavigate();
+  
+  // State quản lý danh sách tin nhắn, input, loading và context
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [context, setContext] = useState({});
+  
+  // Ref để auto-scroll xuống cuối khung chat
   const messagesEndRef = useRef(null);
 
-  // Load itinerary & chat history on mount
+  // --- 1. KHỞI TẠO (INITIALIZATION) ---
   useEffect(() => {
+    // Tải dữ liệu lịch trình và lịch sử chat từ Storage
     const itinerary = loadItinerary();
     const userRequest = loadUserRequest();
     let history = loadChatHistory();
 
     setContext({ itinerary, userRequest });
 
-    // Check if history contains old robotic messages and clear if necessary
+    // Kiểm tra và xóa lịch sử cũ nếu chứa tin nhắn "máy móc" (Robotic)
+    // Đây là logic dọn dẹp dữ liệu cũ không còn phù hợp với Persona mới
     const isRobotic = history.some(msg => msg.text.includes("Xin chào! Tôi có thể giúp bạn"));
     if (isRobotic) {
       history = [];
-      localStorage.removeItem("chatHistory"); // Force clear from storage
+      localStorage.removeItem("chatHistory"); // Xóa triệt để
     }
 
     if (history.length > 0) {
       setMessages(history);
     } else {
-      // Initial welcome message - Consultant Style
+      // Tin nhắn chào mừng mặc định - Phong cách Tư vấn viên thân thiện
       setMessages([
         {
           sender: "bot",
@@ -67,37 +77,39 @@ export default function Chat() {
     }
   }, []);
 
-  // Auto scroll to bottom
+  // --- 2. AUTO SCROLL ---
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Save chat history
+  // --- 3. AUTO SAVE HISTORY ---
   useEffect(() => {
     if (messages.length > 0) {
       saveChatHistory(messages);
     }
   }, [messages]);
 
-  // Send message
+  // --- 4. XỬ LÝ GỬI TIN NHẮN ---
   const handleSend = async (text) => {
     if (!text.trim() || isLoading) return;
 
+    // Tạo tin nhắn User
     const userMessage = {
       sender: "user",
       text: text.trim(),
       timestamp: new Date().toISOString(),
     };
 
+    // Cập nhật UI ngay lập tức (Optimistic UI)
     setMessages((prev) => [...prev, userMessage]);
     setInputText("");
     setIsLoading(true);
 
     try {
-      // Call API
+      // Gọi API gửi tin nhắn kèm Context (Lịch trình hiện tại)
       const response = await sendChatMessage(text, context);
 
-      // Add bot response
+      // Tạo tin nhắn Bot từ phản hồi
       const botMessage = {
         sender: "bot",
         text: response.reply,
@@ -107,6 +119,7 @@ export default function Chat() {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
+      // Xử lý lỗi
       const errorMessage = {
         sender: "bot",
         text: "Xin lỗi, mình đang gặp chút trục trặc. Bạn thử lại giúp mình nhé.",
@@ -114,19 +127,19 @@ export default function Chat() {
       };
 
       setMessages((prev) => [...prev, errorMessage]);
-      console.error("Chat error:", error);
+      console.error("Lỗi Chat:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle form submit
+  // Xử lý submit form
   const handleSubmit = (e) => {
     e.preventDefault();
     handleSend(inputText);
   };
 
-  // Handle quick reply
+  // Xử lý khi chọn Quick Reply
   const handleQuickReply = (text) => {
     handleSend(text);
   };
@@ -134,7 +147,8 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-white pt-24 pb-10 px-6 lg:px-12 flex flex-col items-center">
       <div className="w-full container mx-auto max-w-screen-lg flex-1 flex flex-col">
-        {/* Header */}
+        
+        {/* Header Section */}
         <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-6">
           <div>
             <h2 className="font-display text-3xl text-gray-900">Trợ Lý Du Lịch</h2>
@@ -148,8 +162,10 @@ export default function Chat() {
           </button>
         </div>
 
-        {/* Chat Container - Clean & Minimal */}
+        {/* Chat Container - Thiết kế tối giản */}
         <div className="flex-1 bg-gray-50 border border-gray-100 flex flex-col relative overflow-hidden">
+          
+          {/* Messages List */}
           <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-6">
             {messages.map((msg, index) => (
               <ChatMessage
@@ -159,6 +175,7 @@ export default function Chat() {
               />
             ))}
 
+            {/* Loading Indicator (Typing animation) */}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-100 px-6 py-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl shadow-sm">
@@ -174,7 +191,7 @@ export default function Chat() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area - Refined */}
+          {/* Input Area */}
           <div className="p-6 bg-white border-t border-gray-100">
             <form onSubmit={handleSubmit} className="relative">
               <input
@@ -190,13 +207,14 @@ export default function Chat() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-gray-900 transition-colors disabled:opacity-50"
                 disabled={isLoading || !inputText.trim()}
               >
+                {/* Send Icon */}
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
               </button>
             </form>
           </div>
         </div>
 
-        {/* Tips - Minimal */}
+        {/* Footer Tips */}
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-400 font-light tracking-wide">
             <span className="font-bold text-gray-600 uppercase tracking-wider mr-2">Gợi ý:</span> 

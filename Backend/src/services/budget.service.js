@@ -1,21 +1,16 @@
-// file: backend/services/budgetService.js
-
 /**
- * Budget Service - tính toán phân bổ & ước tính chi phí
- *
- * Vai trò: business logic thuần cho budget allocation
- * Input: UserRequest (budgetTotal, numPeople, accommodation, numDays...)
- * Output: budget breakdown object {stay, food, transport, activities, buffer}
- *
- * Thuật toán:
- * - Dựa vào BUDGET_ALLOCATION constants để phân bổ theo %
- * - Tính chi phí cho từng category dựa vào số người & số ngày
- * @param {number} params.budgetTotal - tổng ngân sách
- * @param {number} params.numPeople - số người
- * @param {number} params.numDays - số ngày
- * @param {string} params.accommodation - loại chỗ ở
- * @param {string} params.transport - phương tiện
- * @returns {Object} - {stay, food, transport, activities, buffer, total}
+ * BUDGET SERVICE
+ * 
+ * Service này chịu trách nhiệm tính toán và ước lượng chi phí cho chuyến đi.
+ * Nó giúp phân bổ ngân sách cho các hạng mục khác nhau (lưu trú, ăn uống, di chuyển)
+ * và đưa ra các lời khuyên (tips) dựa trên ngân sách của người dùng.
+ * 
+ * Các chức năng chính:
+ * 1. calculateBudgetBreakdown: Phân chia ngân sách tổng thành các khoản nhỏ.
+ * 2. estimateAccommodationCost: Ước tính chi phí khách sạn/homestay.
+ * 3. estimateFoodCost: Ước tính chi phí ăn uống.
+ * 4. estimateTransportCost: Ước tính chi phí di chuyển.
+ * 5. summarizeBudget: Tổng hợp chi phí cuối cùng từ lịch trình chi tiết.
  */
 
 import {
@@ -27,6 +22,18 @@ import {
 } from "../config/app.constants.js";
 import { roundToStep } from "../utils/format.utils.js";
 
+/**
+ * Tính toán phân bổ ngân sách dự kiến.
+ * Dựa trên các hằng số cấu hình (BUDGET_ALLOCATION) để chia ngân sách thành các phần hợp lý.
+ * 
+ * @param {Object} params - Tham số đầu vào.
+ * @param {number} params.budgetTotal - Tổng ngân sách.
+ * @param {number} params.numPeople - Số người.
+ * @param {number} params.numDays - Số ngày.
+ * @param {string} params.accommodation - Loại chỗ ở.
+ * @param {string} params.transport - Phương tiện di chuyển.
+ * @returns {Object} - Đối tượng chứa chi phí phân bổ cho từng hạng mục (stay, food, transport...).
+ */
 export function calculateBudgetBreakdown({
   budgetTotal,
   numPeople,
@@ -34,11 +41,13 @@ export function calculateBudgetBreakdown({
   accommodation,
   transport,
 }) {
-  // Lấy tỉ trọng accommodation
+  // 1. Xác định tỉ trọng cho lưu trú (Accommodation)
+  // Tùy thuộc vào loại hình (hotel, homestay, resort...) mà tỉ trọng sẽ khác nhau.
   const stayAlloc =
     BUDGET_ALLOCATION.STAY[accommodation] || BUDGET_ALLOCATION.STAY["hotel"];
 
-  // Random trong khoảng min-max để tạo variance tự nhiên
+  // 2. Lấy giá trị trung bình của các tỉ trọng (min-max)
+  // Việc này giúp tạo ra một con số ước lượng cân bằng.
   const stayPercent = (stayAlloc.min + stayAlloc.max) / 2;
   const foodPercent =
     (BUDGET_ALLOCATION.FOOD.min + BUDGET_ALLOCATION.FOOD.max) / 2;
@@ -49,7 +58,7 @@ export function calculateBudgetBreakdown({
   const bufferPercent =
     (BUDGET_ALLOCATION.BUFFER.min + BUDGET_ALLOCATION.BUFFER.max) / 2;
 
-  // Normalize để tổng = 100%
+  // 3. Chuẩn hóa tỉ lệ (Normalize) để tổng luôn bằng 100%
   const totalPercent =
     stayPercent +
     foodPercent +
@@ -58,6 +67,7 @@ export function calculateBudgetBreakdown({
     bufferPercent;
   const normalize = 1 / totalPercent;
 
+  // 4. Tính toán số tiền cụ thể cho từng hạng mục
   const breakdown = {
     stay: roundToStep(budgetTotal * stayPercent * normalize),
     food: roundToStep(budgetTotal * foodPercent * normalize),
@@ -66,96 +76,110 @@ export function calculateBudgetBreakdown({
     buffer: roundToStep(budgetTotal * bufferPercent * normalize),
   };
 
+  // Tính tổng lại để đảm bảo khớp
   breakdown.total = Object.values(breakdown).reduce((sum, val) => sum + val, 0);
 
   return breakdown;
 }
 
 /**
- * Ước tính chi phí accommodation
- * @param {string} accommodation - loại chỗ ở
- * @param {number} numPeople - số người
- * @param {number} numDays - số ngày (số đêm = numDays - 1)
- * @returns {number} - tổng chi phí lưu trú
+ * Ước tính chi phí lưu trú (Accommodation Cost).
+ * 
+ * @param {string} accommodation - Loại chỗ ở (hotel, homestay...).
+ * @param {number} numPeople - Số người.
+ * @param {number} numDays - Số ngày đi.
+ * @returns {number} - Tổng chi phí lưu trú ước tính.
  */
 export function estimateAccommodationCost(accommodation, numPeople, numDays) {
+  // Số đêm = Số ngày - 1 (nhưng không được âm)
   const numNights = Math.max(numDays - 1, 0);
   
+  // Nếu ở miễn phí hoặc đi trong ngày (0 đêm) -> Chi phí = 0
   if (accommodation === "free" || numNights === 0) return 0;
 
+  // Lấy đơn giá phòng theo loại hình
   const pricePerNight = ACCOMMODATION_COSTS[accommodation] || ACCOMMODATION_COSTS["hotel"];
   
-  // Tính số phòng cần thiết (giả sử 2 người/phòng)
+  // Tính số phòng cần thiết (Giả định 2 người/phòng)
   const roomsNeeded = Math.ceil(numPeople / 2);
 
   return pricePerNight * roomsNeeded * numNights;
 }
 
 /**
- * Ước tính chi phí ăn uống
- * @param {number} numPeople
- * @param {number} numDays
- * @param {string} foodPreference - 'cheap' | 'moderate' | 'expensive'
- * @returns {number}
+ * Ước tính chi phí ăn uống (Food Cost).
+ * 
+ * @param {number} numPeople - Số người.
+ * @param {number} numDays - Số ngày.
+ * @param {string} foodPreference - Mức độ ăn uống ('cheap', 'moderate', 'expensive').
+ * @returns {number} - Tổng chi phí ăn uống ước tính.
  */
 export function estimateFoodCost(
   numPeople,
   numDays,
   foodPreference = "moderate"
 ) {
+  // Lấy khoảng giá theo sở thích
   const priceRange =
     MEAL_DEFAULTS.priceRanges[foodPreference] ||
     MEAL_DEFAULTS.priceRanges.moderate;
 
-  // Random trong khoảng để tạo variance
+  // Tính giá trung bình mỗi bữa
   const avgMealCost = (priceRange.min + priceRange.max) / 2;
+  
+  // Tổng số bữa ăn = Số người * Số ngày * Số bữa/ngày
   const totalMeals = numPeople * numDays * MEAL_DEFAULTS.mealsPerDay;
 
   return roundToStep(totalMeals * avgMealCost);
 }
 
 /**
- * Ước tính chi phí di chuyển
- * @param {string} transport - 'own' | 'rent' | 'ride-hailing'
- * @param {number} numDays
- * @param {number} estimatedKm - ước tính km/ngày (default: 50km)
- * @returns {number}
+ * Ước tính chi phí di chuyển (Transport Cost).
+ * 
+ * @param {string} transport - Loại phương tiện ('own', 'rent', 'taxi'...).
+ * @param {number} numDays - Số ngày.
+ * @param {number} numPeople - Số người.
+ * @param {number} estimatedKm - Số km ước tính di chuyển mỗi ngày (mặc định 50km).
+ * @returns {number} - Tổng chi phí di chuyển ước tính.
  */
 export function estimateTransportCost(transport, numDays, numPeople, estimatedKm = 50) {
-  // Map 'rent' to 'rental-bike' as default rental option
+  // Chuẩn hóa key cho thuê xe
   const transportKey = transport === "rent" ? "rental-bike" : transport;
   const costs = TRANSPORT_COSTS[transportKey] || TRANSPORT_COSTS["taxi"];
   const capacity = costs.capacity || 2;
   
-  // Số lượng xe cần thiết
+  // Tính số lượng xe cần thiết
   const vehiclesNeeded = Math.ceil(numPeople / capacity);
 
+  // Trường hợp 1: Thuê xe (Xe máy/Ô tô tự lái)
   if (transportKey.includes("rental")) {
-    // Thuê xe: Tính theo ngày + xăng
+    // Chi phí = (Tiền thuê * Số ngày) + (Tiền xăng) + (Gửi xe)
     const rentalCost = (costs.perDay * numDays) * vehiclesNeeded;
     const fuelCost = (estimatedKm * numDays * costs.perKm) * vehiclesNeeded;
     const parkingCost = (costs.parking * numDays) * vehiclesNeeded;
     return roundToStep(rentalCost + fuelCost + parkingCost);
   }
 
+  // Trường hợp 2: Xe cá nhân (Own Vehicle)
   if (transport === "own") {
-    // Xe cá nhân: Chỉ tính xăng + gửi xe
+    // Chi phí = (Tiền xăng) + (Gửi xe)
     const fuelCost = (estimatedKm * numDays * costs.perKm) * vehiclesNeeded;
     const parkingCost = (costs.parking * numDays) * vehiclesNeeded;
     return roundToStep(fuelCost + parkingCost);
   }
 
+  // Trường hợp 3: Phương tiện công cộng (Bus)
   if (transport === "public") {
-    // Xe buýt: Tính theo lượt (ước tính 6 lượt/ngày)
-    const tripsPerDay = 6;
+    // Chi phí = Giá vé * Số lượt * Số người
+    const tripsPerDay = 6; // Ước tính 6 chuyến/ngày
     const totalTrips = tripsPerDay * numDays;
-    const totalCost = costs.base * totalTrips * numPeople; // Vé tính theo người
+    const totalCost = costs.base * totalTrips * numPeople; 
     return roundToStep(totalCost);
   }
 
-  // Taxi / Grab: Tính theo km + phí mở cửa
-  // Ước tính 4 chuyến/ngày
-  const tripsPerDay = 4;
+  // Trường hợp 4: Taxi / Grab (Mặc định)
+  // Chi phí = (Giá mở cửa + Giá theo km) * Số chuyến * Số xe
+  const tripsPerDay = 4; // Ước tính 4 chuyến/ngày
   const totalTrips = tripsPerDay * numDays;
   const kmPerTrip = estimatedKm / tripsPerDay;
   
@@ -166,44 +190,52 @@ export function estimateTransportCost(transport, numDays, numPeople, estimatedKm
 }
 
 /**
- * Generate tips dựa trên budget variance
- * @param {number} variance - % chênh lệch (âm = dư, dương = thiếu)
- * @param {Object} breakdown - budget breakdown
- * @returns {string[]} - array tips
+ * Tạo các lời khuyên (Tips) dựa trên tình trạng ngân sách.
+ * 
+ * @param {number} variance - Tỷ lệ chênh lệch ngân sách ( > 1 là vượt ngân sách).
+ * @param {Object} breakdown - Chi tiết phân bổ (chưa dùng trong logic hiện tại nhưng giữ để mở rộng).
+ * @returns {string[]} - Danh sách các lời khuyên.
  */
 export function generateBudgetTips(variance, breakdown) {
   const tips = [];
 
+  // Kiểm tra nếu vượt ngân sách (Over Budget)
   if (variance > BUDGET_THRESHOLDS.OVER_BUDGET) {
     tips.push(
-      "💰 Ngân sách ước tính VỀT mức dự kiến. Cân nhắc giảm chi phí lưu trú hoặc ăn uống."
+      "Ngân sách ước tính VƯỢT mức dự kiến. Cân nhắc giảm chi phí lưu trú hoặc ăn uống."
     );
     tips.push("Chọn homestay/guesthouse thay vì hotel để tiết kiệm.");
-  } else if (variance < BUDGET_THRESHOLDS.UNDER_BUDGET) {
+  } 
+  // Kiểm tra nếu dư ngân sách (Under Budget)
+  else if (variance < BUDGET_THRESHOLDS.UNDER_BUDGET) {
     tips.push(
-      "✨ Ngân sách dư nhiều! Bạn có thể nâng cấp accommodation hoặc thêm hoạt động."
+      "Ngân sách dư nhiều! Bạn có thể nâng cấp accommodation hoặc thêm hoạt động."
     );
     tips.push("Cân nhắc trải nghiệm nhà hàng cao cấp hoặc tour thêm.");
-  } else {
-    tips.push("✅ Ngân sách hợp lý, phân bổ cân đối.");
+  } 
+  // Ngân sách hợp lý
+  else {
+    tips.push("Ngân sách hợp lý, phân bổ cân đối.");
   }
 
-  // Tips chung
-  tips.push("🍜 Thử món ăn địa phương để tiết kiệm và trải nghiệm văn hóa.");
-  tips.push("🏖️ Nhiều bãi biển & điểm tham quan miễn phí ở Đà Nẵng.");
+  // Thêm các tips chung hữu ích
+  tips.push("Thử món ăn địa phương để tiết kiệm và trải nghiệm văn hóa.");
+  tips.push("Nhiều bãi biển & điểm tham quan miễn phí ở Đà Nẵng.");
 
   return tips;
 }
 
 /**
- * Validate & summarize budget
- * @param {Object} itinerary - lịch trình đã tạo
- * @param {number} budgetTotal - ngân sách ban đầu
- * @param {number} numPeople
- * @returns {Object} - summary object
+ * Tổng hợp và xác nhận ngân sách cuối cùng từ lịch trình chi tiết.
+ * Hàm này chạy sau khi lịch trình đã được tạo xong để tính toán con số thực tế.
+ * 
+ * @param {Object} itinerary - Lịch trình đã tạo (chứa danh sách ngày và hoạt động).
+ * @param {number} budgetTotal - Ngân sách ban đầu của người dùng.
+ * @param {number} numPeople - Số người.
+ * @returns {Object} - Đối tượng tổng hợp (Tổng chi phí, chênh lệch, tips...).
  */
 export function summarizeBudget(itinerary, budgetTotal, numPeople) {
-  // Tính tổng chi phí thực từ itinerary
+  // Tính tổng chi phí thực tế bằng cách cộng dồn từng item trong lịch trình
   let totalCost = 0;
 
   itinerary.days.forEach((day) => {
@@ -215,16 +247,17 @@ export function summarizeBudget(itinerary, budgetTotal, numPeople) {
     });
   });
 
-  const variance = totalCost / budgetTotal;
-  const perPerson = Math.round(totalCost / numPeople);
-  const tips = generateBudgetTips(variance, {});
+  // Tính toán các chỉ số tài chính
+  const variance = totalCost / budgetTotal; // Tỷ lệ chênh lệch
+  const perPerson = Math.round(totalCost / numPeople); // Chi phí bình quân đầu người
+  const tips = generateBudgetTips(variance, {}); // Tạo lời khuyên
 
   return {
     estimatedTotal: totalCost,
     budgetTotal,
     perPerson,
     variance,
-    variancePercent: Math.round((variance - 1) * 100),
+    variancePercent: Math.round((variance - 1) * 100), // % chênh lệch (VD: +10%, -5%)
     tips,
   };
 }

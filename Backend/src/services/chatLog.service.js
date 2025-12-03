@@ -1,5 +1,21 @@
+/**
+ * CHAT LOG SERVICE
+ * 
+ * Service quản lý lịch sử trò chuyện (Chat Logs).
+ * Lưu trữ tương tác giữa người dùng và Chatbot để:
+ * 1. Cải thiện chất lượng câu trả lời của AI.
+ * 2. Admin theo dõi và phân tích nhu cầu người dùng.
+ */
+
 import prisma from "../utils/prisma.js";
 
+/**
+ * Ghi lại một lượt tương tác Chat.
+ * 
+ * @param {string} userMessage - Tin nhắn của người dùng.
+ * @param {string} botResponse - Phản hồi của Bot.
+ * @returns {Promise<Object>} - Record đã lưu.
+ */
 export const logChat = async (userMessage, botResponse) => {
   return await prisma.chatLog.create({
     data: {
@@ -9,6 +25,12 @@ export const logChat = async (userMessage, botResponse) => {
   });
 };
 
+/**
+ * Lấy lịch sử Chat gần đây.
+ * Giới hạn 50 tin nhắn mới nhất để hiển thị trên Dashboard.
+ * 
+ * @returns {Promise<Array>}
+ */
 export const getChatHistory = async () => {
   return await prisma.chatLog.findMany({
     orderBy: { timestamp: "desc" },
@@ -16,6 +38,12 @@ export const getChatHistory = async () => {
   });
 };
 
+/**
+ * Xóa toàn bộ lịch sử Chat.
+ * Dùng cho Admin khi muốn dọn dẹp dữ liệu.
+ * 
+ * @returns {Promise<boolean>}
+ */
 export const clearChatLogs = async () => {
   try {
     await prisma.chatLog.deleteMany({});
@@ -25,8 +53,12 @@ export const clearChatLogs = async () => {
   }
 };
 
-// Alias for adminRoutes compatibility
+// --- ALIASES (Tên gọi khác cho tương thích ngược) ---
+
+// Dùng cho Admin Routes
 export const getRecentChatLogs = getChatHistory;
+
+// Dùng cho Chatbot Service
 export const logChatInteraction = async ({ userMessage, botResponse }) => {
   return logChat(userMessage, botResponse);
 };
