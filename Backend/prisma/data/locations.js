@@ -598,19 +598,7 @@ export const locations = [
     tags: ["family", "entertainment", "nightlife", "food"],
     suggestedDuration: 180, // 3 tiếng
   },
-  {
-    id: "loc_020",
-    type: "theme-park",
-    name: "Khu vui chơi Fantasy Park (Bà Nà Hills)",
-    area: "Hòa Vang",
-    address: "Khu du lịch Bà Nà Hills, Hòa Vang, TP. Đà Nẵng",
-    lat: 15.9971,
-    lng: 107.999,
-    ticket: 0, // Included in Ba Na Hills ticket
-    indoor: true,
-    tags: ["theme-park", "family"],
-    suggestedDuration: 120,
-  },
+
   {
     id: "loc_035",
     type: "theme-park",
@@ -669,8 +657,6 @@ export const locations = [
   // =================================================================
   // --- Cheap / Street Food ---
   {
-    id: "loc_008",
-    type: "restaurant",
     id: "loc_008",
     type: "restaurant",
     name: "Quán Bún Chả Cá 109",

@@ -13,25 +13,6 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// Import các file định tuyến (Routes)
-import itineraryRoutes from "./routes/itinerary.routes.js";
-import chatRoutes from "./routes/chat.routes.js";
-import locationRoutes from "./routes/location.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
-import categoryRoutes from "./routes/category.routes.js";
-import productRoutes from "./routes/product.routes.js";
-import menuRoutes from "./routes/menu.routes.js";
-import { errorHandler, notFoundHandler } from "./middleware/error.handler.middleware.js";
-
-// Load biến môi trường từ file .env (VD: PORT, API_KEY)
-// dotenv.config(); // Loaded at top
-
-const app = express();
 // Cổng mặc định là 3001 nếu không có cấu hình
 const PORT = Number(process.env.PORT) || 3001;
 
@@ -144,9 +125,6 @@ app.use("/api/chat", chatRoutes);           // Xử lý Chatbot AI
 app.use("/api/location", locationRoutes);   // Xử lý địa điểm du lịch
 console.log("Mounting admin routes...");
 app.use("/api/admin", adminRoutes);         // Xử lý quản trị (cần đăng nhập)
-app.use("/api/categories", categoryRoutes); // Xử lý danh mục
-app.use("/api/products", productRoutes);    // Xử lý sản phẩm
-app.use("/api/menus", menuRoutes);          // Xử lý menu
 
 // --- 3. XỬ LÝ LỖI (ERROR HANDLING) ---
 
@@ -164,4 +142,3 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 
 // Xử lý lỗi khởi động (VD: trùng cổng)
 server.on("error", (err) => console.error("Lỗi khởi động Server:", err));
-// Trigger restart
