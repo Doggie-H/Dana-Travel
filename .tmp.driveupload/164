@@ -1,0 +1,10 @@
+0000000000000000000000000000000000000000 d5529b54e58f3c963e34acab3934cf33ccfb55c3 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764750984 +0700	commit (initial): First commit - Dana Travel project
+d5529b54e58f3c963e34acab3934cf33ccfb55c3 0000000000000000000000000000000000000000 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764750993 +0700	Branch: renamed refs/heads/master to refs/heads/main
+0000000000000000000000000000000000000000 d5529b54e58f3c963e34acab3934cf33ccfb55c3 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764750993 +0700	Branch: renamed refs/heads/master to refs/heads/main
+d5529b54e58f3c963e34acab3934cf33ccfb55c3 0000000000000000000000000000000000000000 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764755350 +0700	Branch: renamed refs/heads/main to refs/heads/main
+d5529b54e58f3c963e34acab3934cf33ccfb55c3 d5529b54e58f3c963e34acab3934cf33ccfb55c3 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764755350 +0700	Branch: renamed refs/heads/main to refs/heads/main
+d5529b54e58f3c963e34acab3934cf33ccfb55c3 92388904277b1fcd515933fefc4bed11330031d7 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764755703 +0700	commit: docs: Add comprehensive architecture diagrams and cleanup for academic presentation
+92388904277b1fcd515933fefc4bed11330031d7 e736fd76b76055ee573a8a75277bf3c513fd742f Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764756122 +0700	commit: Update ARCHITECTURE.md
+e736fd76b76055ee573a8a75277bf3c513fd742f 87ebc864442b424007c85a02fccb695287af8e73 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764756154 +0700	commit: Update ARCHITECTURE.md
+87ebc864442b424007c85a02fccb695287af8e73 c1f73495184abc00ab14b6866efc74267055213d Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764756946 +0700	commit: docs: Add initial architecture documentation covering system overview, design principles, and detailed data flow diagrams.
+c1f73495184abc00ab14b6866efc74267055213d 1f474a57576462582da13928b2a47a14c7651739 Doggie-H <156460637+Doggie-H@users.noreply.github.com> 1764757052 +0700	commit: Sửa đổi readme và architure
