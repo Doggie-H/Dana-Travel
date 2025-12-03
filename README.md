@@ -1,129 +1,181 @@
+# Dana Travel - Hệ Thống Lập Kế Hoạch Du Lịch Thông Minh
 
-- 📊 **Traffic Analytics**: Biểu đồ lượt truy cập theo ngày/tuần/tháng (Chart.js)
-- 🔍 **Search Trends**: Phân tích xu hướng tìm kiếm (tags phổ biến, budget trung bình)
-- 🏨 **Location Management**: CRUD locations với upload ảnh, tags, menu, pricing
-- 👥 **User Management**: Quản lý admin accounts với role-based access control (RBAC)
-- 📜 **Access Logs**: Lịch sử truy cập với filter theo method, endpoint, user
+**Ứng dụng web hỗ trợ lập kế hoạch du lịch Đà Nẵng tự động với AI Chatbot**
 
 ---
 
-## 🏗️ Kiến Trúc Hệ Thống
+## Giới Thiệu
 
-```mermaid
-graph TB
-    subgraph "Frontend Layer"
-        UI[React SPA]
-        TripForm[Trip Planning Form]
-        ChatUI[Chat Interface]
-        AdminUI[Admin Dashboard]
-    end
-    
-    subgraph "Backend Layer"
-        API[Express.js REST API]
-        Auth[JWT Authentication]
-        Services[Business Logic Services]
-    end
-    
-    subgraph "Data Layer"
-        DB[(SQLite/PostgreSQL)]
-        Prisma[Prisma ORM]
-    end
-    
-    subgraph "External APIs"
-        Gemini[Google Gemini AI]
-        OSM[OpenStreetMap]
-    end
-    
-    UI --> API
-    TripForm --> API
-    ChatUI --> API
-    AdminUI --> API
-    
-    API --> Auth
-    API --> Services
-    Services --> Prisma
-    Prisma --> DB
-    
-    Services --> Gemini
-    UI --> OSM
-```
+Dana Travel là nền tảng web giúp du khách tự động lập kế hoạch du lịch tại Đà Nẵng dựa trên:
+- Ngân sách có sẵn
+- Thời gian đi và về
+- Sở thích cá nhân (bãi biển, ẩm thực, văn hóa, v.v.)
 
-### 📁 Cấu Trúc Thư Mục
+Hệ thống kết hợp thuật toán tối ưu hóa lộ trình với AI Chatbot để tạo trải nghiệm du lịch được cá nhân hóa.
+
+---
+
+## Vấn Đề Cần Giải Quyết
+
+**Các khó khăn của du khách hiện nay:**
+
+1. **Quá tải thông tin**: Phải mất 2-3 giờ để nghiên cứu và lập kế hoạch du lịch
+2. **Khó tối ưu ngân sách**: Không biết cách phân bổ chi phí hợp lý cho ăn, ở, di chuyển
+3. **Lộ trình không hiệu quả**: Di chuyển lòng vòng, tốn thời gian và tiền bạc
+4. **Thiếu hỗ trợ thời gian thực**: Không có tư vấn khi thay đổi kế hoạch đột xuất
+
+**Giải pháp của Dana Travel:**
+
+1. **Tự động tạo lịch trình** trong dưới 3 giây với thuật toán Greedy + Local Optimization
+2. **Phân bổ ngân sách tự động** dựa trên số người, số ngày và loại chỗ ở
+3. **Tối ưu hóa lộ trình** giảm thiểu quãng đường di chuyển (thuật toán TSP)
+4. **AI Chatbot 24/7** hỗ trợ tư vấn và thay đổi kế hoạch
+
+---
+
+## Tính Năng Chính
+
+### 1. Lập Lịch Trình Tự Động
+
+**Chức năng:**
+- Form đa bước thu thập thông tin: ngày giờ, ngân sách, sở thích
+- Lọc địa điểm theo sở thích (bãi biển, ẩm thực, văn hóa, v.v.)
+- Tự động phân bổ ngân sách cho chỗ ở, ăn uống, di chuyển, tham quan
+- Lên lịch chi tiết theo giờ cho mỗi ngày
+- Hiển thị trên bản đồ tương tác với lộ trình tối ưu
+
+**Thuật toán:**
+- Greedy Selection: Chọn địa điểm phù hợp với ngân sách
+- TSP Optimization: Tối ưu hóa thứ tự thăm quan
+- Day-by-Day Scheduling: Phân bổ thời gian hợp lý
+
+### 2. AI Chatbot Thông Minh
+
+**Chức năng:**
+- Hiểu tiếng Việt tự nhiên ("quán ăn ngon gần đây", "trời mưa đi đâu")
+- Cung cấp thông tin về địa điểm, giá vé, menu
+- Gợi ý thay đổi lịch trình theo tình huống
+- Trả lời câu hỏi về du lịch Đà Nẵng
+
+**Công nghệ:**
+- RAG Architecture: Kết hợp Knowledge Base với Google Gemini AI
+- Intent Detection: Phát hiện ý định người dùng (rule-based + AI)
+- Context-Aware: Hiểu ngữ cảnh cuộc hội thoại
+
+### 3. Bảng Quản Trị Admin
+
+**Chức năng:**
+- Quản lý địa điểm (thêm, sửa, xóa)
+- Quản lý knowledge base cho chatbot
+- Xem thống kê lượt truy cập
+- Phân tích xu hướng tìm kiếm
+- Quản lý tài khoản admin
+
+---
+
+## Kiến Trúc Hệ Thống
+
+### Tổng Quan
+
+Hệ thống được xây dựng theo mô hình Client-Server với các tầng:
+
+**Frontend (React)**
+- Giao diện người dùng
+- Tương tác với API
+- Hiển thị bản đồ và lịch trình
+
+**Backend (Node.js + Express)**
+- API RESTful
+- Xử lý logic nghiệp vụ
+- Tích hợp AI
+- Xác thực JWT
+
+**Database (Prisma + SQLite/PostgreSQL)**
+- Lưu trữ địa điểm
+- Quản lý admin
+- Knowledge base
+- Logs và analytics
+
+**External Services**
+- Google Gemini API: Xử lý AI
+- OpenStreetMap: Bản đồ
+
+### Cấu Trúc Thư Mục
 
 ```
 Dana-Travel/
 ├── Backend/
 │   ├── src/
-│   │   ├── controllers/      # Route handlers
-│   │   ├── services/         # Business logic
-│   │   │   ├── itinerary.service.js    # Thuật toán lập lịch
-│   │   │   ├── chatbot.service.js      # RAG chatbot
-│   │   │   ├── budget.service.js       # Tính toán ngân sách
-│   │   │   └── location.service.js     # CRUD locations
-│   │   ├── routes/           # API routes
-│   │   ├── middleware/       # Auth, Logger, CORS
-│   │   ├── adapters/         # Gemini API adapter
-│   │   └── utils/            # Helpers
+│   │   ├── controllers/       # Xử lý HTTP request
+│   │   ├── services/          # Logic nghiệp vụ
+│   │   │   ├── itinerary.service.js    # Tạo lịch trình
+│   │   │   ├── chatbot.service.js      # Chatbot AI
+│   │   │   ├── budget.service.js       # Tính ngân sách
+│   │   │   └── location.service.js     # Quản lý địa điểm
+│   │   ├── routes/            # Định tuyến API
+│   │   ├── middleware/        # Middleware (Auth, Logger)
+│   │   ├── adapters/          # Tích hợp API ngoài
+│   │   └── utils/             # Hàm tiện ích
 │   ├── prisma/
-│   │   ├── schema.prisma     # Database schema
-│   │   └── migrations/       # DB migrations
-│   └── server.js             # Express entry point
+│   │   ├── schema.prisma      # Schema database
+│   │   └── seed.js            # Dữ liệu mẫu
+│   └── server.js              # Khởi động server
 │
 ├── Frontend/
 │   ├── src/
-│   │   ├── pages/            # Route pages
+│   │   ├── pages/             # Các trang chính
 │   │   │   ├── HomePage.jsx
 │   │   │   ├── ItineraryResultsPage.jsx
 │   │   │   ├── ChatPage.jsx
 │   │   │   └── AdminDashboardPage.jsx
-│   │   ├── features/         # Feature modules
-│   │   │   ├── trip-form/    # Multi-step form
-│   │   │   ├── itinerary/    # Itinerary display
-│   │   │   ├── chatbot/      # Chat components
-│   │   │   └── admin/        # Admin components
-│   │   ├── components/       # Shared components
-│   │   ├── services/         # API client, storage
-│   │   └── styles/           # CSS, Tailwind
+│   │   ├── features/          # Các module tính năng
+│   │   │   ├── trip-form/     # Form lập lịch trình
+│   │   │   ├── itinerary/     # Hiển thị lịch trình
+│   │   │   ├── bot/           # Chatbot
+│   │   │   └── admin/         # Quản trị
+│   │   ├── components/        # Component dùng chung
+│   │   ├── services/          # API client
+│   │   └── styles/            # CSS
 │   └── main.jsx
 │
-└── README.md
+└── docs/
+    ├── ARCHITECTURE.md        # Tài liệu kiến trúc
+    └── API.md                 # Tài liệu API
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## Công Nghệ Sử Dụng
 
 ### Frontend
-- **Framework**: React 18 (Hooks, Context API)
-- **Build Tool**: Vite (Fast HMR, optimized builds)
-- **Routing**: React Router v6
-- **Styling**: Tailwind CSS + Custom CSS
-- **Animations**: Framer Motion
-- **Maps**: React-Leaflet + OpenStreetMap
-- **Date Picker**: React-Datepicker
-- **Charts**: Chart.js + React-Chartjs-2
+
+- **React 18**: Framework UI
+- **Vite**: Build tool
+- **React Router v6**: Điều hướng
+- **Tailwind CSS**: Styling
+- **React-Leaflet**: Bản đồ
+- **Chart.js**: Biểu đồ
 
 ### Backend
-- **Runtime**: Node.js 18+ (ESM)
-- **Framework**: Express.js
-- **ORM**: Prisma
-- **Database**: SQLite (dev) / PostgreSQL (prod)
-- **Authentication**: JWT + HttpOnly Cookies
-- **Validation**: Zod
-- **Security**: Helmet, CORS, bcryptjs, Rate Limiting
-- **AI**: Google Gemini API (RAG)
 
-### DevOps & Tools
-- **Version Control**: Git + GitHub
-- **Package Manager**: npm
-- **Linting**: ESLint
-- **Process Manager**: PM2 (production)
-- **Reverse Proxy**: Nginx
-- **CI/CD**: GitHub Actions
+- **Node.js 18+**: Runtime
+- **Express.js**: Web framework
+- **Prisma**: ORM
+- **SQLite** (dev) / **PostgreSQL** (production): Database
+- **JWT**: Xác thực
+- **bcrypt**: Mã hóa mật khẩu
+- **Google Gemini API**: AI
+
+### DevOps
+
+- **Git**: Version control
+- **npm**: Package manager
+- **PM2**: Process manager (production)
+- **Nginx**: Reverse proxy
 
 ---
 
-## 📦 Cài Đặt
+## Hướng Dẫn Cài Đặt
 
 ### Yêu Cầu Hệ Thống
 
@@ -131,7 +183,7 @@ Dana-Travel/
 - npm >= 9.0.0
 - Git
 
-### Bước 1: Clone Repository
+### Bước 1: Clone Project
 
 ```bash
 git clone https://github.com/yourusername/dana-travel.git
@@ -143,28 +195,18 @@ cd dana-travel
 ```bash
 cd Backend
 npm install
-
-# Tạo file .env
-cp .env.example .env
 ```
 
-**Cấu hình `.env`:**
+Tạo file `.env`:
 ```env
-# Database
 DATABASE_URL="file:./dev.db"
-
-# Google Gemini API
 GEMINI_API_KEY="your_gemini_api_key_here"
-
-# JWT Secret
 JWT_SECRET="your_secret_key_here"
-
-# Server
 PORT=3000
 NODE_ENV=development
 ```
 
-**Khởi tạo Database:**
+Khởi tạo database:
 ```bash
 npx prisma migrate dev --name init
 npx prisma db seed
@@ -179,306 +221,170 @@ npm install
 
 ### Bước 4: Chạy Ứng Dụng
 
-**Development Mode (Khuyến nghị):**
+**Terminal 1 - Backend:**
 ```bash
-# Terminal 1 - Backend
 cd Backend
-npm run dev
-
-# Terminal 2 - Frontend
-cd Frontend
 npm run dev
 ```
 
-**Hoặc dùng script tổng hợp (nếu có):**
+**Terminal 2 - Frontend:**
 ```bash
-npm run dev:all
+cd Frontend
+npm run dev
 ```
 
 **Truy cập:**
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3000
-- Admin Dashboard: http://localhost:5173/admin
 
 ---
 
-## 🔐 Authentication
+## Cấu Trúc Database
 
-### Admin Login
+### Các Bảng Chính
 
-**Default Credentials:**
-```
-Username: admin
-Password: admin123
-```
+**Location** - Địa điểm du lịch
+- id, name, type, area, address
+- lat, lng (tọa độ)
+- ticket (giá vé)
+- indoor (trong nhà hay ngoài trời)
+- priceLevel (mức giá)
+- tags (từ khóa)
+- description, menu
+- suggestedDuration (thời gian gợi ý)
 
-> ⚠️ **Lưu ý**: Đổi mật khẩu ngay sau khi deploy production!
+**Admin** - Tài khoản quản trị
+- id, username, passwordHash
+- email, role, active
+- lastLogin
 
-**JWT Flow:**
-```
-1. POST /api/admin/login → nhận JWT token
-2. Token lưu trong HttpOnly Cookie
-3. Mọi request sau đều gửi kèm cookie
-4. Middleware verify token trước khi cho phép truy cập
-```
+**Knowledge** - Knowledge base cho chatbot
+- id, question, answer
+- keywords (từ khóa tìm kiếm)
 
----
+**AccessLog** - Nhật ký truy cập
+- id, timestamp
+- ipAddress, userAgent
 
-## 📡 API Documentation
+**SearchTrend** - Xu hướng tìm kiếm
+- id, term, count
+- updatedAt
 
-### Base URL
-```
-http://localhost:3000/api
-```
-
-### Public Endpoints
-
-#### 1. Generate Itinerary
-```http
-POST /itinerary/generate
-Content-Type: application/json
-
-{
-  "arriveDateTime": "2025-12-20T08:00:00",
-  "leaveDateTime": "2025-12-23T18:00:00",
-  "numPeople": 4,
-  "budgetTotal": 5000000,
-  "transport": "taxi",
-  "accommodation": "hotel",
-  "preferences": ["beach", "food", "culture"]
-}
-```
-
-**Response:**
-```json
-{
-  "days": [
-    {
-      "dayNumber": 1,
-      "date": "2025-12-20",
-      "items": [
-        {
-          "timeStart": "08:00",
-          "timeEnd": "09:30",
-          "title": "Ăn sáng",
-          "category": "meal",
-          "cost": 120000
-        }
-      ]
-    }
-  ],
-  "summary": {
-    "totalCost": 4440000,
-    "remainingBudget": 560000
-  }
-}
-```
-
-#### 2. Chatbot
-```http
-POST /chat
-Content-Type: application/json
-
-{
-  "message": "Gợi ý quán ăn hải sản ngon",
-  "context": {
-    "itinerary": {...},
-    "userRequest": {...}
-  }
-}
-```
-
-### Protected Endpoints (Require JWT)
-
-#### 3. Get All Locations (Admin)
-```http
-GET /admin/locations
-Authorization: Bearer <token>
-```
-
-#### 4. Create Location (Admin)
-```http
-POST /admin/locations
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "Bãi biển Mỹ Khê",
-  "latitude": 16.0471,
-  "longitude": 108.2425,
-  "type": "beach",
-  "tags": ["beach", "nature"],
-  "cost": 0,
-  "rating": 4.8
-}
-```
-
-📘 **Full API Docs**: Xem chi tiết tại `docs/API.md`
+**ChatLog** - Lịch sử chat
+- id, userMessage, botResponse
+- timestamp
 
 ---
 
-## 🧪 Testing
+## API Endpoints
 
-### Backend Tests
-```bash
-cd Backend
-npm test
-```
+### Public APIs
 
-### Frontend Tests
-```bash
-cd Frontend
-npm test
-```
+**POST /api/itinerary/generate**
+- Tạo lịch trình tự động
+- Body: arriveDateTime, leaveDateTime, numPeople, budgetTotal, preferences
+- Response: Lịch trình chi tiết theo ngày
 
-### Test Coverage
-```bash
-npm run test:coverage
-```
+**POST /api/chat**
+- Gửi tin nhắn đến chatbot
+- Body: message, context
+- Response: reply, quickReplies, suggestions
+
+### Admin APIs (Cần xác thực)
+
+**POST /api/admin/login**
+- Đăng nhập admin
+- Body: username, password
+- Response: user, token (JWT)
+
+**GET /api/admin/locations**
+- Lấy danh sách địa điểm
+
+**POST /api/admin/locations**
+- Thêm địa điểm mới
+
+**PUT /api/admin/locations/:id**
+- Cập nhật địa điểm
+
+**DELETE /api/admin/locations/:id**
+- Xóa địa điểm
 
 ---
 
-## 🚢 Deployment
+## Bảo Mật
 
-### Production Build
+### Các biện pháp bảo mật
 
-**Backend:**
-```bash
-cd Backend
-npm run build
-pm2 start ecosystem.config.js
-```
+1. **Xác thực**: JWT với HttpOnly cookies
+2. **Mã hóa mật khẩu**: bcrypt với 10 salt rounds
+3. **CORS**: Whitelist origins
+4. **Rate Limiting**: Giới hạn 100 requests/15 phút
+5. **Input Validation**: Zod schemas
+6. **SQL Injection Prevention**: Prisma ORM
+7. **XSS Prevention**: Input sanitization
+8. **Security Headers**: Helmet.js
 
-**Frontend:**
+---
+
+## Triển Khai Production
+
+### Chuẩn Bị
+
+1. **Database**: Chuyển từ SQLite sang PostgreSQL
+2. **Environment Variables**: Cấu hình production
+3. **Build Frontend**: `npm run build`
+4. **Process Manager**: PM2 cho backend
+
+### Các Bước Triển Khai
+
+1. Build frontend:
 ```bash
 cd Frontend
 npm run build
-# Serve dist/ với Nginx hoặc Vercel
 ```
 
-### Environment Variables (Production)
+2. Upload code lên server
 
-```env
-DATABASE_URL="postgresql://user:password@localhost:5432/dana_travel"
-GEMINI_API_KEY="prod_key"
-JWT_SECRET="super_secret_key"
-NODE_ENV=production
-ALLOWED_ORIGINS="https://yourdomain.com"
+3. Cài đặt dependencies:
+```bash
+npm install --production
 ```
 
-### Nginx Configuration
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com;
-
-    # Frontend
-    location / {
-        root /var/www/dana-travel/dist;
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Backend API
-    location /api {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
+4. Migrate database:
+```bash
+npx prisma migrate deploy
+npx prisma db seed
 ```
 
----
+5. Chạy với PM2:
+```bash
+pm2 start server.js --name dana-travel-api
+pm2 save
+```
 
-## 📚 Tài Liệu
-
-Dự án có bộ tài liệu đầy đủ trong thư mục [`/docs`](docs/).
-
-### Tài liệu có sẵn
-
-- 📐 **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - Kiến trúc hệ thống chi tiết
-  - High-level architecture diagrams
-  - Data flow & component interaction
-  - Security & deployment architecture
-  - Scalability considerations
-
-- 📡 **[API.md](docs/API.md)** - Tài liệu API đầy đủ
-  - 14 endpoints với examples
-  - Request/Response schemas
-  - Authentication guide
-  - Error codes & rate limiting
-
-- 🤝 **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Hướng dẫn đóng góp
-  - Development setup
-  - Coding standards
-  - Git workflow & commit guidelines
-  - Pull request process
-
-- 📝 **[CHANGELOG.md](docs/CHANGELOG.md)** - Lịch sử phiên bản
-  - Version history
-  - Features & bug fixes
-  - Breaking changes & upgrade guides
+6. Cấu hình Nginx reverse proxy
 
 ---
 
-## 🤝 Đóng Góp
+## Tài Liệu Tham Khảo
 
-Chúng tôi hoan nghênh mọi đóng góp! Vui lòng làm theo các bước sau:
+Để hiểu chi tiết hơn về hệ thống, xem các tài liệu sau:
 
-1. Fork repository
-2. Tạo branch mới (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Mở Pull Request
-
-### Coding Standards
-- **ESLint**: Tuân thủ cấu hình ESLint
-- **Prettier**: Format code trước khi commit
-- **Comments**: Viết comment bằng tiếng Việt cho business logic
+- **docs/ARCHITECTURE.md**: Kiến trúc chi tiết với sơ đồ
+- **docs/API.md**: Tài liệu API đầy đủ
 
 ---
 
-## 📄 License
+## Thông Tin Thêm
 
-Dự án này được cấp phép theo giấy phép MIT - xem file [LICENSE](LICENSE) để biết thêm chi tiết.
-
----
-
-## 👨‍💻 Tác Giả
-
-**Dana Travel Team**
-
-- 📧 Email: contact@danatravel.vn
-- 🌐 Website: [danatravel.vn](https://danatravel.vn)
-- 💼 LinkedIn: [Dana Travel](https://linkedin.com/company/dana-travel)
+**Phiên bản**: 1.0.0  
+**Ngày cập nhật**: 2025-12-03  
+**Nhóm phát triển**: Dana Travel Team
 
 ---
 
-## 🙏 Acknowledgments
+## Liên Hệ
 
-- [Google Gemini](https://ai.google.dev/) - AI/ML Platform
-- [OpenStreetMap](https://www.openstreetmap.org/) - Map data
-- [Tailwind CSS](https://tailwindcss.com/) - Styling framework
-- [Prisma](https://www.prisma.io/) - Database ORM
-
----
-
-## 📊 Project Stats
-
-![GitHub stars](https://img.shields.io/github/stars/yourusername/dana-travel?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/dana-travel?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/dana-travel)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/dana-travel)
-
----
-
-<div align="center">
-
-**⭐ Nếu bạn thấy dự án hữu ích, hãy cho chúng tôi một ngôi sao!**
-
-Made with ❤️ in Da Nang, Vietnam 🇻🇳
-
-</div>
+Nếu có câu hỏi hoặc góp ý, vui lòng liên hệ qua:
+- Email: contact@danatravel.vn
+- GitHub Issues: [Project Issues](https://github.com/yourusername/dana-travel/issues)
