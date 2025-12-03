@@ -1,8 +1,9 @@
 # KIẾN TRÚC HỆ THỐNG - Dana Travel
 
 > **Tài liệu Kỹ thuật Chi tiết**  
-> **Phiên bản**: 3.0  
+> **Phiên bản**: 3.1 (Detailed Edition)  
 > **Cập nhật**: 2025-12-03
+> **Mô tả**: Tài liệu này mô tả chi tiết kiến trúc phần mềm, luồng dữ liệu, và các quyết định kỹ thuật của dự án Dana Travel.
 
 ---
 
@@ -10,7 +11,7 @@
 
 1. [Tổng Quan Hệ Thống](#1-tổng-quan-hệ-thống)
 2. [Sơ Đồ Kiến Trúc](#2-sơ-đồ-kiến-trúc)
-3. [Luồng Dữ Liệu](#3-luồng-dữ-liệu)
+3. [Luồng Dữ Liệu Chi Tiết](#3-luồng-dữ-liệu-chi-tiết)
 4. [Kiến Trúc Database](#4-kiến-trúc-database)
 5. [Kiến Trúc Backend](#5-kiến-trúc-backend)
 6. [Kiến Trúc Frontend](#6-kiến-trúc-frontend)
@@ -21,9 +22,24 @@
 
 ## 1. Tổng Quan Hệ Thống
 
-### 1.1 Kiến Trúc Tổng Quan
+### 1.1 Giới Thiệu
+Dana Travel là một ứng dụng web trọn gói (Full-Stack Web Application) giúp khách du lịch lập kế hoạch chuyến đi đến Đà Nẵng một cách tự động và thông minh. Hệ thống tích hợp Chatbot AI để tư vấn theo thời gian thực.
 
-Dana Travel là hệ thống lập kế hoạch du lịch Full-Stack với chatbot AI, được xây dựng theo mô hình Client-Server.
+### 1.2 Công Nghệ Sử Dụng (Tech Stack)
+Chúng tôi lựa chọn các công nghệ hiện đại và phổ biến nhất hiện nay:
+
+*   **Frontend**: **React** (Thư viện UI), **Vite** (Build tool siêu tốc), **Tailwind CSS** (Styling).
+    *   *Lý do*: React giúp chia nhỏ giao diện thành các component tái sử dụng. Vite giúp môi trường dev khởi động ngay lập tức.
+*   **Backend**: **Node.js** & **Express.js**.
+    *   *Lý do*: Sử dụng chung ngôn ngữ JavaScript với Frontend, tận dụng hệ sinh thái npm khổng lồ.
+*   **Database**: **SQLite** (Dev) / **PostgreSQL** (Prod) + **Prisma ORM**.
+    *   *Lý do*: Prisma giúp thao tác database an toàn (type-safe) và dễ dàng migration.
+*   **AI**: **Google Gemini API**.
+    *   *Lý do*: Mô hình ngôn ngữ lớn mạnh mẽ, chi phí hợp lý và phản hồi nhanh.
+
+### 1.3 Kiến Trúc Tổng Quan (High-Level Architecture)
+
+Hệ thống tuân theo mô hình **Client-Server** truyền thống nhưng được hiện đại hóa bằng kiến trúc **RESTful API**.
 
 ```mermaid
 graph TB
@@ -86,20 +102,22 @@ graph TB
     A4 --> F2
 ```
 
-### 1.2 Các Nguyên Tắc Thiết Kế
-
-1. **Phân Tách Trách Nhiệm**: Logic nghiệp vụ được tách riêng trong các services
-2. **Trách Nhiệm Đơn Lẻ**: Mỗi module có một mục đích rõ ràng
-3. **Nguyên Tắc DRY**: Các tiện ích dùng chung được trích xuất
-4. **Thiết Kế API-First**: Backend cung cấp RESTful API
-5. **Backend Không Trạng Thái**: Xác thực dựa trên JWT
-6. **Nâng Cao Tiến Bộ**: Chức năng cốt lõi hoạt động mà không cần JavaScript
+**Giải thích chi tiết:**
+1.  **Client**: Người dùng tương tác qua trình duyệt. React Router điều hướng mà không cần tải lại trang (SPA).
+2.  **API Layer**: Cổng vào của Backend. Middleware xử lý các vấn đề chung như bảo mật (CORS), xác thực (Auth), và ghi nhật ký (Logger).
+3.  **Business Logic**: Nơi chứa "chất xám" của dự án. Code được chia thành 3 lớp:
+    *   *Routes*: Định nghĩa đường dẫn (URL).
+    *   *Controllers*: Nhận dữ liệu đầu vào, kiểm tra hợp lệ.
+    *   *Services*: Thực hiện tính toán, gọi thuật toán, xử lý nghiệp vụ.
+4.  **Data Access**: Prisma ORM đóng vai trò trung gian, giúp code JS nói chuyện với Database SQL mà không cần viết câu lệnh SQL trần.
 
 ---
 
 ## 2. Sơ Đồ Kiến Trúc
 
 ### 2.1 Luồng Tương Tác Giữa Các Thành Phần
+
+Sơ đồ này minh họa cách các module Frontend gọi xuống các module Backend tương ứng.
 
 ```mermaid
 graph LR
@@ -151,6 +169,8 @@ graph LR
 
 ### 2.2 Sơ Đồ Phụ Thuộc Giữa Các Module
 
+Mô tả sự phụ thuộc của code. Mũi tên chỉ hướng "phụ thuộc vào". Ví dụ: Controller phụ thuộc vào Service.
+
 ```mermaid
 graph TD
     subgraph "Các Module Backend"
@@ -181,9 +201,20 @@ graph TD
 
 ---
 
-## 3. Luồng Dữ Liệu
+## 3. Luồng Dữ Liệu Chi Tiết
 
-### 3.1 Quy Trình Tạo Lịch Trình
+### 3.1 Quy Trình Tạo Lịch Trình (Itinerary Algorithm)
+
+Đây là tính năng phức tạp nhất. Hệ thống sử dụng kết hợp thuật toán **Greedy (Tham lam)** để chọn địa điểm và **Nearest Neighbor (Hàng xóm gần nhất)** để sắp xếp lộ trình.
+
+**Các bước xử lý:**
+1.  **Nhận Input**: Ngày đi, Ngày về, Ngân sách, Sở thích (Biển, Núi, Ăn uống...).
+2.  **Tính Ngân Sách**: Chia nhỏ ngân sách tổng thành: Vé tham quan (40%), Ăn uống (40%), Di chuyển (20%).
+3.  **Lọc Địa Điểm**: Tìm trong DB các địa điểm phù hợp với sở thích và nằm trong ngân sách cho phép.
+4.  **Chấm Điểm (Scoring)**: Mỗi địa điểm được chấm điểm dựa trên độ phù hợp với sở thích user.
+5.  **Chọn Địa Điểm (Greedy)**: Lấy các địa điểm điểm cao nhất cho đến khi hết ngân sách hoặc hết thời gian.
+6.  **Sắp Xếp (TSP)**: Từ khách sạn, tìm điểm gần nhất -> đi đến đó -> tìm điểm gần nhất tiếp theo.
+7.  **Phân Bổ**: Chia các điểm đã sắp xếp vào Sáng - Trưa - Chiều - Tối của từng ngày.
 
 ```mermaid
 sequenceDiagram
@@ -234,7 +265,14 @@ sequenceDiagram
     Frontend->>User: Hiển thị bản đồ + lịch trình
 ```
 
-### 3.2 Quy Trình Chatbot (RAG)
+### 3.2 Quy Trình Chatbot (RAG - Retrieval Augmented Generation)
+
+Chatbot không chỉ "chém gió" mà còn trả lời chính xác nhờ kỹ thuật **RAG**.
+
+**Cơ chế hoạt động:**
+1.  **Tra cứu (Retrieval)**: Khi user hỏi, hệ thống tìm kiếm từ khóa trong bảng `Knowledge` (CSDL câu hỏi mẫu) và `Location` (Thông tin địa điểm).
+2.  **Tăng cường (Augmented)**: Nếu tìm thấy thông tin, hệ thống ghép thông tin đó vào câu hỏi.
+3.  **Sinh câu trả lời (Generation)**: Gửi toàn bộ ngữ cảnh (Context) + Câu hỏi cho Google Gemini để nó viết ra câu trả lời tự nhiên.
 
 ```mermaid
 sequenceDiagram
@@ -265,21 +303,21 @@ sequenceDiagram
         Chatbot->>Chatbot: detectIntent()
         
         alt Intent: Ăn uống
-            Chatbot->>Location: Tìm nhà hàng
-            Location->>DB: Query DB
-            DB-->>Location: Danh sách nhà hàng
-            Chatbot-->>API: Gợi ý nhà hàng
+        Chatbot->>Location: Tìm nhà hàng
+        Location->>DB: Query DB
+        DB-->>Location: Danh sách nhà hàng
+        Chatbot-->>API: Gợi ý nhà hàng
         else Intent: Thời tiết
-            Chatbot->>Location: Tìm chỗ trong nhà
-            Location->>DB: Query DB
-            DB-->>Location: Danh sách chỗ trong nhà
-            Chatbot-->>API: Gợi ý chỗ trong nhà
+        Chatbot->>Location: Tìm chỗ trong nhà
+        Location->>DB: Query DB
+        DB-->>Location: Danh sách chỗ trong nhà
+        Chatbot-->>API: Gợi ý chỗ trong nhà
         else Không rõ Intent - Dùng AI
-            Note over Chatbot: Bước 3: Xử lý bằng AI
-            Chatbot->>Chatbot: Tạo prompt cho AI
-            Chatbot->>Gemini: Gọi Google Gemini API
-            Gemini-->>Chatbot: Phản hồi từ AI
-            Chatbot-->>API: Trả về phản hồi AI
+        Note over Chatbot: Bước 3: Xử lý bằng AI
+        Chatbot->>Chatbot: Tạo prompt cho AI
+        Chatbot->>Gemini: Gọi Google Gemini API
+        Gemini-->>Chatbot: Phản hồi từ AI
+        Chatbot-->>API: Trả về phản hồi AI
         end
     end
     
@@ -288,6 +326,8 @@ sequenceDiagram
 ```
 
 ### 3.3 Quy Trình Đăng Nhập Admin
+
+Sử dụng cơ chế **HttpOnly Cookie** để bảo mật tối đa, tránh bị đánh cắp Token qua XSS.
 
 ```mermaid
 sequenceDiagram
@@ -389,18 +429,23 @@ erDiagram
     }
 ```
 
-### 4.2 Mô Tả Các Bảng
+### 4.2 Mô Tả Chi Tiết Các Bảng
 
-**Location (Địa điểm)**: Lưu trữ thông tin các điểm du lịch, nhà hàng, khách sạn.
-**Admin (Quản trị viên)**: Lưu trữ tài khoản quản trị hệ thống.
-**Knowledge (Kiến thức)**: Cơ sở dữ liệu câu hỏi - câu trả lời cho chatbot.
-**AccessLog (Nhật ký truy cập)**: Ghi lại lịch sử truy cập để thống kê.
-**SearchTrend (Xu hướng tìm kiếm)**: Thống kê các từ khóa được tìm kiếm nhiều.
-**ChatLog (Lịch sử chat)**: Lưu lại nội dung hội thoại để cải thiện AI.
+1.  **Location (Địa điểm)**: Bảng quan trọng nhất. Chứa dữ liệu du lịch.
+    *   `type`: Phân loại (Biển, Núi, Chùa, Nhà hàng...). Dùng để lọc theo sở thích.
+    *   `indoor`: Boolean. Dùng để gợi ý khi trời mưa.
+    *   `ticket`: Giá vé. Dùng để tính toán ngân sách.
+2.  **Admin**: Tài khoản quản trị viên. Mật khẩu được mã hóa bằng `bcrypt` trước khi lưu.
+3.  **Knowledge**: "Bộ não" tĩnh của Chatbot. Chứa các cặp câu hỏi-đáp cố định (Ví dụ: "Giá vé Bà Nà bao nhiêu?").
+4.  **AccessLog**: Ghi lại mỗi lần có người vào trang web. Dùng để vẽ biểu đồ "Lưu lượng truy cập".
+5.  **SearchTrend**: Ghi lại từ khóa người dùng tìm kiếm. Giúp Admin biết xu hướng du lịch.
+6.  **ChatLog**: Lưu lại hội thoại để Admin xem lại và cải thiện Chatbot.
 
 ---
 
 ## 5. Kiến Trúc Backend
+
+Backend được tổ chức theo mô hình **Layered Architecture** (Kiến trúc phân lớp) để dễ bảo trì.
 
 ### 5.1 Cấu Trúc Module
 
@@ -458,6 +503,8 @@ graph TD
 ---
 
 ## 6. Kiến Trúc Frontend
+
+Frontend được xây dựng bằng React, tập trung vào trải nghiệm người dùng (UX) mượt mà.
 
 ### 6.1 Cây Component
 
@@ -533,6 +580,8 @@ graph LR
 
 ## 7. Kiến Trúc Bảo Mật
 
+Bảo mật là ưu tiên hàng đầu, đặc biệt là với trang Admin.
+
 ### 7.1 Các Lớp Bảo Mật
 
 ```mermaid
@@ -566,39 +615,19 @@ graph TB
     L7 --> L10
 ```
 
-### 7.2 Quy Trình Xác Thực
-
-```mermaid
-stateDiagram-v2
-    [*] --> ChuaDangNhap
-    
-    ChuaDangNhap --> DangNhap : Nhập thông tin
-    DangNhap --> KiemTra : Kiểm tra DB
-    
-    KiemTra --> ThanhCong : Đúng mật khẩu
-    KiemTra --> ThatBai : Sai mật khẩu
-    
-    ThanhCong --> DaDangNhap : Cấp Token
-    ThatBai --> ChuaDangNhap : Báo lỗi
-    
-    DaDangNhap --> TruyCap : Gọi API
-    TruyCap --> KiemTraToken : Xác thực Token
-    
-    KiemTraToken --> HopLe : Token đúng
-    KiemTraToken --> KhongHopLe : Token sai/hết hạn
-    
-    HopLe --> DaDangNhap : Cho phép
-    KhongHopLe --> ChuaDangNhap : Yêu cầu đăng nhập lại
-    
-    DaDangNhap --> DangXuat : Đăng xuất
-    DangXuat --> ChuaDangNhap : Xóa Token
-```
+### 7.2 Giải Thích Cơ Chế Bảo Mật
+1.  **CORS (Cross-Origin Resource Sharing)**: Chỉ cho phép Frontend (localhost:5173) gọi API. Các trang web khác không thể gọi trộm API của chúng ta.
+2.  **JWT (JSON Web Token)**: Dùng để xác thực Admin. Token chứa thông tin user và thời hạn hiệu lực.
+3.  **HttpOnly Cookie**: Token không được lưu ở LocalStorage (dễ bị hack lấy trộm) mà lưu trong Cookie đặc biệt. JavaScript không thể đọc được Cookie này, giúp chống tấn công XSS.
+4.  **Bcrypt**: Mật khẩu Admin không bao giờ được lưu dưới dạng văn bản thường (plain text). Nó được băm (hash) ra chuỗi ký tự ngẫu nhiên không thể dịch ngược.
 
 ---
 
 ## 8. Kiến Trúc Triển Khai
 
 ### 8.1 Hạ Tầng Production
+
+Khi đưa lên mạng (Deploy), hệ thống sẽ chạy như sau:
 
 ```mermaid
 graph TB
@@ -637,3 +666,8 @@ graph LR
         PROD_FE --> PROD_BE --> PROD_DB
     end
 ```
+
+**Sự khác biệt chính:**
+*   **Database**: Dev dùng SQLite (file) cho gọn nhẹ. Prod dùng PostgreSQL để chịu tải cao và ổn định.
+*   **Process Manager**: Dev dùng `nodemon` để tự restart khi sửa code. Prod dùng `PM2` để quản lý tiến trình, tự khởi động lại khi crash.
+*   **Web Server**: Prod dùng Nginx làm cổng đón request, giúp xử lý SSL (HTTPS) và cân bằng tải.
