@@ -833,43 +833,6 @@ graph TB
     style JWT_AUTH fill:#c5e1a5,stroke:#689f38
     style PRISMA_ORM fill:#b3e5fc,stroke:#0277bd
 ```
-
-### 7.2 Authentication Flow Detail
-
-```mermaid
-stateDiagram-v2
-    [*] --> Unauthenticated
-    
-    Unauthenticated --> LoginAttempt : Admin enters credentials
-    LoginAttempt --> VerifyingPassword : Check username in DB
-    
-    VerifyingPassword --> PasswordValid : bcrypt.compare() = true
-    VerifyingPassword --> PasswordInvalid : bcrypt.compare() = false
-    
-    PasswordValid --> GeneratingJWT : Create JWT token
-    GeneratingJWT --> Authenticated : Set HttpOnly cookie
-    
-    PasswordInvalid --> Unauthenticated : Return 401 error
-    
-    Authenticated --> AccessingResource : Request protected endpoint
-    AccessingResource --> VerifyingJWT : Extract JWT from cookie
-    
-    VerifyingJWT --> JWTValid : jwt.verify() success
-    VerifyingJWT --> JWTInvalid : jwt.verify() fails
-    
-    JWTValid --> AccessGranted : Attach user to req.user
-    AccessGranted --> Authenticated : Continue request
-    
-    JWTInvalid --> Unauthenticated : Clear cookie, return 401
-    
-    Authenticated --> Logout : User clicks logout
-    Logout --> Unauthenticated : Clear cookie + state
-```
-
----
-
-## 8. Deployment Architecture
-
 ### 8.1 Production Infrastructure
 
 ```mermaid
