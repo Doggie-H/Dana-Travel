@@ -66,32 +66,27 @@ Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) v�
 *   **Xem báo cáo thống kê**: Xem lưu lượng truy cập, xu hướng tìm kiếm.
 *   **Quản lý tài khoản**: Thêm hoặc xóa các quản trị viên khác.
 
-### 3.3. Sơ đồ Use Case (UML)
+### 3.3. Sơ đồ Use Case (Minh họa)
 
-> [!WARNING]
-> **Lưu ý về hiển thị**:
-> - **Hình ảnh dưới đây** là minh họa chính xác cho giao diện "Người que" (Stick Figure) mà bạn muốn.
-> - **Đoạn code Mermaid** bên dưới dùng để hiển thị trên GitHub. **Nếu bạn thấy lỗi "No diagram type detected" trên máy cá nhân, hãy bỏ qua nó.** Đó là do trình soạn thảo của bạn chưa cập nhật, nhưng code này sẽ hoạt động tốt trên GitHub.
-
-#### Minh họa (Hiển thị tốt trên máy bạn)
-![Sơ đồ Use Case chuẩn UML](C:/Users/Doggie/.gemini/antigravity/brain/ebf205ae-d32f-4c19-9627-51c6bb44989e/usecase_diagram_1764917618317.png)
-
-#### Mã nguồn Mermaid (Hiển thị tốt trên GitHub)
 ```mermaid
-usecaseDiagram
-    actor "Khách du lịch" as User
-    actor "Quản trị viên" as Admin
-    actor "Hệ thống AI" as AI
+graph LR
+    %% Actors
+    User("Khách du lịch")
+    Admin("Quản trị viên")
+    AI("Hệ thống AI")
 
-    package "Hệ thống DanaTravel" {
-        usecase "Đăng nhập / Đăng ký" as UC1
-        usecase "Lập lịch trình du lịch" as UC2
-        usecase "Tra cứu thông tin địa điểm" as UC3
-        usecase "Trò chuyện với Chatbot" as UC4
-        usecase "Quản lý dữ liệu hệ thống" as UC5
-        usecase "Xem báo cáo thống kê" as UC6
-    }
+    %% System Boundary
+    subgraph System["Hệ thống DanaTravel"]
+        direction TB
+        UC1(["Đăng nhập / Đăng ký"])
+        UC2(["Lập lịch trình du lịch"])
+        UC3(["Tra cứu thông tin địa điểm"])
+        UC4(["Trò chuyện với Chatbot"])
+        UC5(["Quản lý dữ liệu hệ thống"])
+        UC6(["Xem báo cáo thống kê"])
+    end
 
+    %% Relationships
     User --> UC1
     User --> UC2
     User --> UC3
@@ -101,8 +96,8 @@ usecaseDiagram
     Admin --> UC5
     Admin --> UC6
 
-    UC4 ..> AI : <<use>>
-    UC2 ..> UC3 : <<include>>
+    UC4 -.->|<<use>>| AI
+    UC2 -.->|<<include>>| UC3
 ```
 
 ### 3.4. Đặc tả Use Case (Use Case Specification)
