@@ -291,14 +291,43 @@ Mối quan hệ chi tiết:
 | **Google Gemini** | Dịch vụ bên thứ ba | Xử lý NLP, tạo phản hồi thông minh            |
 | **Google Maps**   | Dịch vụ bên thứ ba | Tính khoảng cách, xác thực vị trí             |
 
+### 4.1.1. Ghi Chú Quan Trọng: Chế Độ Xác Thực Hiện Tại
+
+**Khách Du Lịch (User Thường):**
+
+- **Hiện tại**: Không cần đăng nhập, truy cập **Anonymous** (Ẩn danh)
+- **Cách hoạt động**:
+  - Khách vào web → Xem địa điểm ngay lập tức
+  - Tạo lịch trình không cần tài khoản
+  - Lịch trình được lưu **tạm thời trong localStorage** của trình duyệt
+  - Khi tắt trình duyệt → Dữ liệu mất (hoặc được ghi nhớ nếu bật LocalStorage)
+- **Schema**: Không có bảng `User` trong database
+- **Tracking**: AccessLog vẫn ghi nhận hành động nhưng `username = null` và `role = null`
+
+**Quản Trị Viên (Admin):**
+
+- **Cần đăng nhập**: Username + Password
+- **Cách hoạt động**:
+  - Truy cập `/api/admin/login`
+  - Xác thực trong bảng `Admin` (schema.prisma)
+  - Nhận session token (HttpOnly Cookie)
+  - Có thể CRUD dữ liệu, xem thống kê
+- **Middleware**: `adminAuth.middleware.js` bảo vệ routes `/api/admin/*`
+
+**Ý Nghĩa Thiết Kế:**
+
+- **Đơn giản hoá UX**: Khách không cần đăng ký, vào là sử dụng ngay
+- **Phase 2 (Tương Lai)**: Có thể thêm User Authentication để lưu lịch trình cá nhân
+- **Hiện tại tập trung vào**: Admin quản lý dữ liệu, khách dùng miễn phí
+
 ### 4.2. Danh Sách Ca Sử Dụng
 
-Hệ thống cung cấp 7 ca sử dụng chính dành cho hai loại tác nhân: khách du lịch và quản trị viên hệ thống.
+Hệ thống cung cấp 7 ca sử dụng chính dành cho hai loại tác nhân: khách du lịch (ẩn danh) và quản trị viên (yêu cầu đăng nhập).
 
 ```mermaid
 graph TB
-    User["Khách Du Lịch"]
-    Admin["Quản Trị Viên"]
+    User["Khách Du Lịch<br/>(Anonymous - Không cần Login)"]
+    Admin["Quản Trị Viên<br/>(Cần Đăng Nhập)"]
 
     UC1["UC-01: Khám Phá Địa Điểm"]
     UC2["UC-02: Tạo Lịch Trình Tự Động"]
