@@ -112,86 +112,87 @@ Sơ đồ mô tả cấu trúc dữ liệu và mối quan hệ giữa các thự
 ```mermaid
 erDiagram
     Admin {
-        String id PK
-        String username
-        String passwordHash
-        String email
-        String role
-        Boolean active
-        DateTime lastLogin
-        DateTime createdAt
-        DateTime updatedAt
+        string id PK
+        string username
+        string passwordHash
+        string email
+        string role
+        boolean active
+        datetime lastLogin
+        datetime createdAt
+        datetime updatedAt
     }
 
     Location {
-        String id PK
-        String name
-        String type
-        String area
-        String address
-        Float lat
-        Float lng
-        Float ticket
-        Boolean indoor
-        String priceLevel
-        String tags
-        String description
-        String menu
-        Int suggestedDuration
-        String openTime
-        String closeTime
-        String visitType
-        DateTime createdAt
-        DateTime updatedAt
+        string id PK
+        string name
+        string type
+        string area
+        string address
+        float lat
+        float lng
+        float ticket
+        boolean indoor
+        string priceLevel
+        string tags
+        string description
+        string menu
+        int suggestedDuration
+        string openTime
+        string closeTime
+        string visitType
+        datetime createdAt
+        datetime updatedAt
     }
 
     Knowledge {
-        String id PK
-        String question
-        String answer
-        String keywords
-        DateTime createdAt
-        DateTime updatedAt
+        string id PK
+        string question
+        string answer
+        string keywords
+        datetime createdAt
+        datetime updatedAt
     }
 
     ChatLog {
-        String id PK
-        String userMessage
-        String botResponse
-        DateTime timestamp
+        string id PK
+        string userMessage
+        string botResponse
+        datetime timestamp
     }
 
     AccessLog {
-        String id PK
-        String ip
-        String userAgent
-        String endpoint
-        String method
-        String username
-        String role
-        DateTime timestamp
+        string id PK
+        string ip
+        string userAgent
+        string endpoint
+        string method
+        string username
+        string role
+        datetime timestamp
     }
 
     SearchTrend {
-        String id PK
-        String tags
-        String duration
-        Float budget
-        Int people
-        DateTime createdAt
+        string id PK
+        string tags
+        string duration
+        float budget
+        int people
+        datetime createdAt
     }
 
     Transport {
-        String id PK
-        String name
-        String type
-        Float basePrice
-        Float pricePerKm
-        String description
-        DateTime createdAt
-        DateTime updatedAt
+        string id PK
+        string name
+        string type
+        float basePrice
+        float pricePerKm
+        string description
+        datetime createdAt
+        datetime updatedAt
     }
 ```
+*Hình 4.2: Sơ đồ ERD thiết kế cơ sở dữ liệu*
 
 ## 5. Luồng Hoạt động (Activity Flows)
 
@@ -212,20 +213,20 @@ erDiagram
 
 ```mermaid
 flowchart TD
-    Start([Bắt đầu]) --> Input[/Nhập: Ngân sách, Số ngày, Sở thích/]
-    Input --> Filter[Lọc Địa điểm theo Sở thích]
-    Filter --> Init[Khởi tạo Lịch trình rỗng]
+    Start([Bắt đầu]) --> Input[/"Nhập: Ngân sách, Số ngày, Sở thích"/]
+    Input --> Filter["Lọc Địa điểm theo Sở thích"]
+    Filter --> Init["Khởi tạo Lịch trình rỗng"]
     
-    Init --> LoopDay{Còn ngày trống?}
-    LoopDay -- Có --> SelectFood[Chọn quán ăn]
-    SelectFood --> SelectAttr[Chọn điểm tham quan gần nhất]
-    SelectAttr --> CheckConstraint{Kiểm tra Ràng buộc}
+    Init --> LoopDay{"Còn ngày trống?"}
+    LoopDay -- Có --> SelectFood["Chọn quán ăn"]
+    SelectFood --> SelectAttr["Chọn điểm tham quan gần nhất"]
+    SelectAttr --> CheckConstraint{"Kiểm tra Ràng buộc"}
     
-    CheckConstraint -- Thỏa mãn --> AddToPlan[Thêm vào Lịch trình]
-    CheckConstraint -- Vi phạm --> Backtrack[Quay lui / Chọn điểm khác]
+    CheckConstraint -- Thỏa mãn --> AddToPlan["Thêm vào Lịch trình"]
+    CheckConstraint -- Vi phạm --> Backtrack["Quay lui / Chọn điểm khác"]
     
     AddToPlan --> LoopDay
-    LoopDay -- Hết --> Result[/Trả về Lịch trình/]
+    LoopDay -- Hết --> Result[/"Trả về Lịch trình"/]
     Result --> End([Kết thúc])
 ```
 
