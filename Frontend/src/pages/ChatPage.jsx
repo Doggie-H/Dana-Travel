@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: ChatPage.jsx
- * MỤC ĐÍCH: Giao diện trò chuyện với Trợ lý ảo (Chatbot).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Phòng tiếp dân" nơi người dùng tâm sự với AI.
- * 1. Khung Chat: Nơi hiển thị đoạn hội thoại (như Zalo/Messenger).
- * 2. Bong bóng chat (ChatMessage): Tin nhắn của mình và của máy.
- * 3. Nhập liệu (Input): Chỗ để gõ câu hỏi.
- * 4. Trí nhớ (Context): AI sẽ nhớ bạn vừa tạo lịch trình đi đâu để tư vấn cho đúng.
- * =================================================================================================
+ * Trang Chatbot AI.
+ * Giao diện hội thoại với trợ lý ảo, hỗ trợ context lịch trình.
  */
 
 import { useState, useEffect, useRef } from "react";

@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: AdminDashboard.jsx
- * MỤC ĐÍCH: Trang chủ của Admin (Dashboard).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Phòng chỉ huy" của hệ thống.
- * 1. Biểu đồ Traffic (Line): Hôm nay có bao nhiêu người vào xem? (Đông khách hay vắng khách).
- * 2. Biểu đồ Hoạt động (Bar): Admin làm việc có chăm chỉ không? (Log lại hết).
- * 3. Xu hướng (Bar màu): Khách đang tìm kiếm gì nhiều? (Ăn uống, Chụp ảnh, hay Ngủ nướng...).
- * 4. Nhật ký (Logs): Ai vừa làm gì, lúc mấy giờ, đều được ghi chép lại trong cuốn sổ đen.
- * =================================================================================================
+ * Component Dashboard quản trị.
+ * Hiển thị các biểu đồ thống kê traffic, logs và xu hướng tìm kiếm.
  */
 
 import { useEffect, useRef } from "react";

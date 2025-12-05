@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: HomePage.jsx
- * MỤC ĐÍCH: Trang chủ - Điểm bắt đầu của ứng dụng.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Bộ mặt" của website.
- * 1. Ấn tượng đầu tiên (Hero): Thiết kế đẹp mắt để thu hút người dùng.
- * 2. Kêu gọi hành động (Call to Action): Nút "Lên lịch trình" to rõ để người dùng bấm vào.
- * 3. Form Popup: Khi bấm nút, một cái bảng (Form) hiện ra để điền thông tin thay vì chuyển trạng khác.
- * 4. Điều hướng: Tạo xong thì tự động chuyển sang trang Kết quả.
- * =================================================================================================
+ * Trang chủ ứng dụng.
+ * Hiển thị Hero section và Form tạo lịch trình.
  */
 
 import { useState } from "react";

@@ -1,15 +1,6 @@
 /**
- * =================================================================================================
- * FILE: error.handler.middleware.js
- * MỤC ĐÍCH: Xử lý lỗi tập trung (Centralized Error Handling).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Middleware này là "Bệnh viện" của hệ thống.
- * 1. Tiếp nhận: Mọi lỗi xảy ra ở bất kỳ đâu (Controller, Service) đều được chuyển về đây.
- * 2. Chẩn đoán: Ghi lại lỗi (Log) để bác sĩ (Developer) biết mà sửa.
- * 3. Phản hồi: Thông báo cho người dùng biết "Có lỗi xảy ra" một cách lịch sự, thay vì hiện màn hình chết chóc.
- * =================================================================================================
+ * Middleware xử lý lỗi tập trung.
+ * Bắt tất cả lỗi từ controller/service và trả về response chuẩn hóa.
  */
 
 import fs from "fs";

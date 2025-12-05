@@ -1,20 +1,6 @@
 /**
- * =================================================================================================
- * FILE: chat.controller.js
- * MỤC ĐÍCH: Cổng tiếp nhận tin nhắn cho Chatbot AI.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là nơi đầu tiên tin nhắn của bạn chạm tới Server:
- * 1. Nhận tin nhắn (Message) từ người dùng.
- * 2. Kiểm tra xem tin nhắn có rỗng không (Validation).
- * 3. Chuyển cho bộ não AI (Service) để suy nghĩ câu trả lời.
- * 4. Ghi lại nhật ký trò chuyện (Logging).
- * 5. Gửi câu trả lời của AI lại cho người dùng.
- * 
- * CÁC HÀM CHÍNH:
- * - chatHandler: Xử lý luồng chat chính.
- * =================================================================================================
+ * Controller xử lý tin nhắn chat.
+ * Tiếp nhận request từ client, gọi service xử lý và trả về phản hồi.
  */
 
 import { processChatMessage } from "../services/chatbot.service.js";

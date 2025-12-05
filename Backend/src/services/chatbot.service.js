@@ -1,19 +1,6 @@
 /**
- * =================================================================================================
- * FILE: chatbot.service.js
- * MỤC ĐÍCH: Dịch vụ trí tuệ nhân tạo (AI Service) - Bộ não của Chatbot.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * NGÀY CẬP NHẬT: 2025-12-05
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Service này xử lý mọi tin nhắn người dùng gửi đến. Nó hoạt động theo cơ chế Hybrid (Lai):
- * 1. Rule-Based (Luật): Kiểm tra các từ khóa đơn giản (mưa, ăn, đổi địa điểm) để xử lý nhanh.
- * 2. Knowledge Base (Kinh nghiệm): Kiểm tra xem câu hỏi có trong kho dữ liệu mẫu không.
- * 3. AI Generative (Sáng tạo): Nếu không tìm thấy trong luật hay kho dữ liệu, nó sẽ hỏi Gemini AI.
- * 
- * LUỒNG XỬ LÝ (RAG PIPELINE):
- * User Query -> Check Keyword -> Check Knowledge -> Retrieve Data -> Build Prompt -> Call AI -> Response
- * =================================================================================================
+ * Service xử lý logic Chatbot.
+ * Kết hợp Rule-based (từ khóa) và AI (Gemini) để trả lời người dùng.
  */
 
 import { getAllLocations } from "./location.service.js";
@@ -31,8 +18,7 @@ import { matchKnowledge } from "./knowledge.service.js";
 export async function processChatMessage(message, context = {}) {
   const lowerMsg = message.toLowerCase().trim();
 
-  // 0. Ưu tiên 1: Kiểm tra Knowledge Base (Câu hỏi thường gặp)
-  // Nếu câu hỏi khớp với dữ liệu đã huấn luyện, trả về ngay lập tức.
+  // Ưu tiên kiểm tra Knowledge Base
   const kb = await matchKnowledge(lowerMsg);
   if (kb) {
     return {
@@ -42,8 +28,7 @@ export async function processChatMessage(message, context = {}) {
     };
   }
 
-  // 1. Intent: Thời tiết / Mưa (Weather)
-  // Gợi ý các địa điểm trong nhà khi trời mưa.
+  // Intent: Thời tiết / Mưa
   if (
     lowerMsg.includes("mưa") ||
     lowerMsg.includes("weather") ||
@@ -54,8 +39,7 @@ export async function processChatMessage(message, context = {}) {
     return handleWeatherIntent(indoorLocations);
   }
 
-  // 2. Intent: Ăn uống (Food)
-  // Gợi ý nhà hàng, quán ăn dựa trên mức giá (rẻ, sang trọng...).
+  // Intent: Ăn uống
   if (
     lowerMsg.includes("ăn") ||
     lowerMsg.includes("food") ||
@@ -66,8 +50,7 @@ export async function processChatMessage(message, context = {}) {
     return handleFoodIntent(lowerMsg);
   }
 
-  // 3. Intent: Đổi địa điểm (Change Location)
-  // Xử lý yêu cầu thay thế một địa điểm trong lịch trình bằng địa điểm khác.
+  // Intent: Đổi địa điểm
   if (
     lowerMsg.includes("đổi") ||
     lowerMsg.includes("thay") ||
@@ -77,8 +60,7 @@ export async function processChatMessage(message, context = {}) {
     return handleChangeLocationIntent(lowerMsg);
   }
 
-  // 4. Intent: Ngân sách (Budget)
-  // (Hiện tại chưa implement logic chi tiết, có thể mở rộng sau)
+  // Intent: Ngân sách (TODO: Implement logic)
   if (
     lowerMsg.includes("ngân sách") ||
     lowerMsg.includes("budget") ||
@@ -88,8 +70,7 @@ export async function processChatMessage(message, context = {}) {
     // return handleBudgetIntent(context);
   }
 
-  // 5. Fallback: Sử dụng AI (Gemini)
-  // Nếu không khớp các kịch bản trên, gửi tin nhắn sang AI để xử lý tự nhiên.
+  // Fallback: Sử dụng AI (Gemini)
   try {
     const aiResponse = await processChatWithAI(message, context);
     if (aiResponse) {
@@ -117,7 +98,7 @@ export async function processChatMessage(message, context = {}) {
     console.error("Lỗi khi gọi AI adapter:", err);
   }
 
-  // 6. Fallback cuối cùng (Nếu AI lỗi)
+  // Fallback cuối cùng nếu AI lỗi
   return {
     reply:
       `Chào bạn, mình là trợ lý du lịch riêng của bạn.\n\n` +

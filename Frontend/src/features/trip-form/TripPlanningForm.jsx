@@ -1,18 +1,6 @@
 /**
- * =================================================================================================
- * FILE: TripPlanningForm.jsx
- * MỤC ĐÍCH: Form điền thông tin để tạo lịch trình.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Tờ khai thông tin du lịch".
- * Nó chia làm nhiều bước (Wizard Steps) để người dùng không bị ngợp:
- * 1. Bước 1 (Tiền & Người): Có bao nhiêu tiền? Đi mấy người?
- * 2. Bước 2 (Thời gian): Đi ngày nào, về giờ nào?
- * 3. Bước 3 (Hậu cần): Đi xe gì? Ngủ ở đâu?
- * 4. Bước 4 (Sở thích): Thích tắm biển hay đi chùa?
- * => Thu thập đủ thông tin thì gửi cho AI xử lý.
- * =================================================================================================
+ * Form tạo lịch trình du lịch.
+ * Thu thập thông tin: Ngân sách, Số người, Thời gian, Phương tiện, Sở thích.
  */
 
 import { useState, useEffect } from "react";

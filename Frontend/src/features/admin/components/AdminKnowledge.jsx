@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: AdminKnowledge.jsx
- * MỤC ĐÍCH: Dạy học cho Trí tuệ nhân tạo (AI Knowledge Base).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Trường học" của em Chatbot.
- * Admin đóng vai thầy giáo, soạn giáo án cho em nó học:
- * 1. Câu hỏi (Pattern): Nếu khách hỏi câu A...
- * 2. Trả lời (Reply): ...thì em phải trả lời câu B.
- * 3. Độ thông minh: Có cho phép em nó suy diễn (Fuzzy) hay bắt buộc phải đúng y chang từng chữ (Exact).
- * =================================================================================================
+ * Component quản lý Knowledge Base cho AI.
+ * Cho phép thêm/sửa/xóa các cặp câu hỏi-trả lời và cấu hình độ chính xác (Fuzzy/Exact).
  */
 
 import { useState, useEffect } from "react";

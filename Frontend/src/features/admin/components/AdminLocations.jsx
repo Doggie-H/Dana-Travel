@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: AdminLocations.jsx
- * MỤC ĐÍCH: Quản lý danh sách địa điểm ăn chơi.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Cuốn sổ tay địa điểm". Quy định đi đâu, ăn gì.
- * 1. Danh sách: Liệt kê tất cả quán xá, danh lam thắng cảnh.
- * 2. Bộ lọc: Tìm nhanh xem quán nào bán mỳ quảng, quán nào có máy lạnh (Indoor).
- * 3. Thêm/Sửa: Nhập thông tin chi tiết (Giá vé, Giờ mở cửa, Tọa độ bản đồ).
- * 4. Lịch sử: Ai lỡ tay xóa nhầm thì có thể xem lại bản cũ (Versioning).
- * =================================================================================================
+ * Component quản lý địa điểm.
+ * Hỗ trợ CRUD (Thêm, Xem, Sửa, Xóa), tìm kiếm, lọc và xem lịch sử thay đổi.
  */
 
 import { useRef, useState } from "react";

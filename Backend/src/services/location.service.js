@@ -1,17 +1,6 @@
 /**
- * =================================================================================================
- * FILE: location.service.js
- * MỤC ĐÍCH: Quản lý dữ liệu Địa điểm (CRUD).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Service này chịu trách nhiệm làm việc trực tiếp với Cơ sở dữ liệu (Database) để lấy thông tin địa điểm.
- * 
- * CÁC CHỨC NĂNG CHÍNH:
- * 1. Lấy danh sách (Get All): Tìm kiếm khách sạn, quán ăn theo bộ lọc (giá, loại hình, trong nhà/ngoài trời).
- * 2. Xử lý dữ liệu JSON: Vì database lưu menu/tags dưới dạng chuỗi văn bản (String), 
- *    service này sẽ tự động chuyển đổi chúng thành danh sách (Array/Object) để Code dễ dùng hơn.
- * =================================================================================================
+ * Service quản lý dữ liệu địa điểm (Locations).
+ * Xử lý CRUD, tìm kiếm, lọc và chuyển đổi dữ liệu JSON (tags, menu) từ database.
  */
 
 import prisma from "../utils/prisma.js";

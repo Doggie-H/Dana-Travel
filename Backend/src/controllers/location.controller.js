@@ -1,18 +1,6 @@
 /**
- * =================================================================================================
- * FILE: location.controller.js
- * MỤC ĐÍCH: Tiếp nhận các yêu cầu tìm kiếm địa điểm du lịch.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Controller này xử lý việc tìm kiếm (Search) của người dùng:
- * 1. Nhận từ khóa (ví dụ: "Mì Quảng", "Cầu Rồng") từ URL.
- * 2. Gọi Service để lục tìm trong kho dữ liệu.
- * 3. Trả về danh sách kết quả phù hợp nhất.
- * 
- * CÁC HÀM CHÍNH:
- * - searchLocationsHandler: Xử lý API tìm kiếm địa điểm.
- * =================================================================================================
+ * Controller tìm kiếm địa điểm.
+ * Xử lý các query params để lọc và tìm kiếm địa điểm.
  */
 
 import { getAllLocations } from "../services/location.service.js";

@@ -1,15 +1,6 @@
 /**
- * =================================================================================================
- * FILE: AdminChatLogs.jsx
- * MỤC ĐÍCH: Kiểm tra lịch sử trò chuyện (Chat History).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Camera giám sát" phòng Chat.
- * 1. Theo dõi: Xem khách và Bot đang nói chuyện gì với nhau.
- * 2. Đánh giá: Xem Bot trả lời có ngu ngơ không?
- * 3. Huấn luyện thực chiến: Nếu thấy Bot trả lời sai, bấm nút "Dạy AI" để sửa lưng nó ngay lập tức.
- * =================================================================================================
+ * Component quản lý lịch sử chat.
+ * Cho phép xem logs, xóa logs và gắn cờ để huấn luyện AI.
  */
 
 import { can, PERMISSIONS } from "../utils/permissions";

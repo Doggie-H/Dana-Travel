@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: app.constants.js
- * MỤC ĐÍCH: Chứa toàn bộ các hằng số cấu hình (Config).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Bảng điều khiển" trung tâm của ứng dụng.
- * Thay vì sửa code ở 100 chỗ khác nhau, bạn chỉ cần sửa số liệu ở đây.
- * 1. Ngân sách: Quy định bao nhiêu tiền là "Rẻ", bao nhiêu là "Đắt".
- * 2. Giá cả: Quy định giá xăng, giá taxi, giá khách sạn trung bình ở Đà Nẵng.
- * 3. Thời gian: Quy định mấy giờ là "Sáng", một bữa ăn kéo dài bao lâu.
- * =================================================================================================
+ * Các hằng số cấu hình cho ứng dụng.
+ * Bao gồm: Ngân sách, Chi phí ước tính, Thời gian, và các tham số mặc định khác.
  */
 
 // --- 1. CẤU HÌNH NGÂN SÁCH (BUDGET) ---

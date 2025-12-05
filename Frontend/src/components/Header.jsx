@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: Header.jsx
- * MỤC ĐÍCH: Thanh điều hướng chính (Navigation Bar).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Cái bảng chỉ đường" treo trên nóc nhà website.
- * 1. Logo: Bấm vào là về nhà (Trang chủ).
- * 2. Menu: Danh sách các phòng ban (Lịch trình, Chat, Admin).
- * 3. Trạng thái: Đang ở phòng nào thì tên phòng đó sáng đèn lên (Active State).
- * 4. Di động: Trên điện thoại nó sẽ thu gọn lại thành nút Menu 3 gạch để đỡ chật chỗ.
- * =================================================================================================
+ * Component Header (Navigation Bar).
+ * Hiển thị logo và menu điều hướng chính của ứng dụng.
  */
 
 import { useEffect, useState } from "react";

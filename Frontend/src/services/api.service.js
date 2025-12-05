@@ -1,15 +1,6 @@
 /**
- * =================================================================================================
- * FILE: api.service.js
- * MỤC ĐÍCH: Giao tiếp với Server (Backend).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Người đưa thư" của Frontend.
- * 1. Gửi thư (Request): Khi bạn bấm nút "Tạo lịch trình", file này sẽ đóng gói thông tin và gửi sang Backend.
- * 2. Nhận thư (Response): Khi Backend trả lời, nó sẽ mở thư ra và đưa dữ liệu cho các trang (Pages) hiển thị.
- * 3. Xử lý sự cố: Nếu gửi thư thất bại (mạng lag, server sập), nó sẽ báo lỗi cho người dùng biết.
- * =================================================================================================
+ * Service quản lý các cuộc gọi API tới Backend.
+ * Cấu hình Axios instance và các hàm helper cho từng endpoint.
  */
 
 import axios from "axios";

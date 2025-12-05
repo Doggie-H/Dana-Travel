@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: App.jsx
- * MỤC ĐÍCH: Khung sườn chính của toàn bộ ứng dụng (Root Layout).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Bộ khung nhà" của website.
- * 1. Header (Cố định): Thanh menu trên cùng, trang nào cũng có.
- * 2. Main (Thay đổi): Phần nội dung ở giữa, sẽ thay đổi tùy theo bạn đang ở trang Chủ, trang Chat hay trang Admin.
- * 3. Footer (Cố định): Chân trang, chứa thông tin liên hệ.
- * 4. Outlet: Cái lỗ để nhét các trang con (Main) vào.
- * =================================================================================================
+ * Root Component của ứng dụng.
+ * Định nghĩa layout chung bao gồm Header, Footer và Outlet cho các trang con.
  */
 
 import { useEffect } from "react";

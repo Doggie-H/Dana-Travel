@@ -1,17 +1,6 @@
 /**
- * =================================================================================================
- * FILE: AdminDashboardPage.jsx
- * MỤC ĐÍCH: Trang Tổng hành dinh (Admin Dashboard).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Bộ não" quản lý toàn bộ hệ thống. Nó như một cái tủ lớn có nhiều ngăn:
- * 1. Ngăn Dashboard: Xem báo cáo, thống kê (như xem bản tin thời sự).
- * 2. Ngăn Địa điểm: Thêm bớt quán xá, chỗ chơi.
- * 3. Ngăn Tài khoản: Quản lý nhân viên.
- * 4. Ngăn Chat Logs: Đọc trộm tin nhắn (đùa thôi, là kiểm tra chất lượng AI).
- * 5. Ngăn Knowledge: Dạy học cho con AI của mình khôn hơn.
- * =================================================================================================
+ * Trang Dashboard quản trị viên.
+ * Tích hợp các module quản lý: Dashboard, Địa điểm, Tài khoản, Chat Logs, Knowledge Base.
  */
 
 import { useEffect, useState } from "react";

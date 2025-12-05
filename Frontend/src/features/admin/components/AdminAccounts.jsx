@@ -1,18 +1,6 @@
 /**
- * =================================================================================================
- * FILE: AdminAccounts.jsx
- * MỤC ĐÍCH: Quản lý nhân sự (Tài khoản Admin).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Phòng nhân sự". Chỉ có Boss (Super Admin) mới được vào đây.
- * 1. Tuyển dụng: Tạo tài khoản mới cho nhân viên.
- * 2. Sa thải: Xóa tài khoản nhân viên.
- * 3. Phân quyền: AI làm sếp (Manager), ai làm lính (Staff).
- *    - Staff: Chỉ được nhập liệu địa điểm.
- *    - Manager: Được dạy dỗ AI (Chatbot).
- *    - Admin: Toàn quyền sinh sát.
- * =================================================================================================
+ * Component quản lý tài khoản Admin.
+ * Hỗ trợ tạo mới, xóa và phân quyền (Staff, Manager, Admin).
  */
 
 import { useState } from "react";

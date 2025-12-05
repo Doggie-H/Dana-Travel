@@ -1,14 +1,6 @@
 ﻿/**
- * =================================================================================================
- * FILE: ItineraryCard.jsx
- * MỤC ĐÍCH: Thẻ hiển thị lịch trình của một ngày.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Mỗi ngày đi chơi sẽ được gói gọn trong một cái thẻ (Card) này.
- * 1. Đầu thẻ (Header): Ghi rõ Ngày 1, Ngày 2... và ngày tháng năm.
- * 2. Thân thẻ (Body): Chứa danh sách các hoạt động (Ăn sáng, Đi tắm biển, Về ngủ...).
- * =================================================================================================
+ * Component hiển thị thẻ lịch trình cho một ngày.
+ * Bao gồm danh sách các hoạt động và thông tin ngày tháng.
  */
 
 import { formatDate } from "../../utils/format.utils";

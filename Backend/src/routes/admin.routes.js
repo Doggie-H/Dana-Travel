@@ -1,17 +1,6 @@
 /**
- * =================================================================================================
- * FILE: admin.routes.js
- * MỤC ĐÍCH: Điều phối giao thông cho khu vực Admin.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Bốt bảo vệ" và "Bàn hướng dẫn" cho Admin Panel.
- * 1. Cửa khẩu (Login): Kiểm tra thẻ ra vào (Username/Password).
- * 2. Khu vực Hồ sơ (Accounts): Ai được làm sếp, ai làm lính.
- * 3. Kho Địa điểm (Locations): Nhập xuất hàng hóa (địa điểm du lịch).
- * 4. Thư viện (Knowledge): Nơi chứa sách vở kiến thức cho AI học.
- * 5. Phòng An ninh (Stats/Logs): Xem camera và số liệu mổ xẻ vấn đề.
- * =================================================================================================
+ * Định nghĩa API cho Admin Panel.
+ * Bao gồm: Xác thực, Quản lý tài khoản, Địa điểm, Knowledge Base, Thống kê.
  */
 
 import express from "express";

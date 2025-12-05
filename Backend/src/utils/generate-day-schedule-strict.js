@@ -1,28 +1,6 @@
 /**
- * =================================================================================================
- * FILE: generate-day-schedule-strict.js
- * MỤC ĐÍCH: Thuật toán cốt lõi để tạo lịch trình chi tiết cho MỘT NGÀY.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * NGÀY CẬP NHẬT: 2025-12-05
- * 
- * MÔ TẢ CHI TIẾT DÀNH CHO NGƯỜI MỚI (BEGINNER GUIDE):
- * File này hoạt động như một "bộ não" sắp xếp lịch trình. Nó nhận vào các địa điểm và constraints (ràng buộc),
- * sau đó cố gắng nhét các địa điểm vào các khung giờ (Sáng, Trưa, Chiều, Tối) sao cho hợp lý nhất.
- * 
- * QUY TRÌNH XỬ LÝ (LOGIC FLOW):
- * 1. Nhận input: Danh sách địa điểm, giờ bắt đầu/kết thúc ngày, sở thích, ngân sách.
- * 2. Khởi tạo: Tạo một danh sách rỗng để chứa lịch trình (items).
- * 3. PHASE 1 (SÁNG): Xử lý buổi sáng và Check-in (nếu là ngày đầu).
- * 4. PHASE 2 (TRƯA): Tìm quán ăn trưa (ưu tiên quán gần địa điểm vừa đi).
- * 5. PHASE 3 (CHIỀU): Tìm địa điểm tham quan chiều hoặc hoạt động nhẹ nhàng.
- * 6. PHASE 4 (TỐI): Tìm quán ăn tối và địa điểm vui chơi đêm.
- * 7. PHASE 5 (VỀ KHÁCH SẠN): Tính toán đường về và tổng kết ngày.
- * 
- * CÁC HÀM QUAN TRỌNG:
- * - generateDayScheduleStrict: Hàm chính điều phối toàn bộ quy trình.
- * - findBestLocation: Hàm tìm kiếm địa điểm tốt nhất cho một slot (dựa trên điểm số).
- * - addActivityToSchedule: Hàm thêm một hoạt động vào danh sách và cập nhật thời gian/chi phí.
- * =================================================================================================
+ * Thuật toán tạo lịch trình chi tiết cho một ngày.
+ * Xử lý logic sắp xếp địa điểm, thời gian, và chi phí dựa trên constraints.
  */
 import {
   calculateTotalActivityTime,

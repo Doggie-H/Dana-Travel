@@ -1,15 +1,6 @@
 /**
- * =================================================================================================
- * FILE: ErrorBoundary.jsx
- * MỤC ĐÍCH: Bắt lỗi và ngăn chặn sập trang (Crash).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Cầu chì" của hệ thống điện.
- * 1. Sự cố: Nếu một bóng đèn (Component con) bị cháy (Lỗi Code), cầu chì sẽ ngắt điện khu vực đó.
- * 2. Bảo vệ: Thay vì cả căn nhà tối om (Trắng trang), nó chỉ hiện thông báo "Có lỗi xảy ra" ở khu vực đó thôi.
- * 3. Báo cáo: Ghi lại lỗi để thợ điện (Developer) biết đường mà sửa.
- * =================================================================================================
+ * Component ErrorBoundary.
+ * Bắt lỗi JavaScript trong component con và hiển thị giao diện thay thế (Fallback UI).
  */
 
 import React from 'react';

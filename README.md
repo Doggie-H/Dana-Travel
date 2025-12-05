@@ -29,11 +29,11 @@ Hệ thống tuân theo kiến trúc **Client-Server** hiện đại:
 
 ```mermaid
 graph TD
-    User[Người dùng] -->|HTTPS| Client[Frontend (React/Vite)]
-    Client -->|REST API| Server[Backend (Node.js/Express)]
-    Server -->|ORM| DB[(SQLite/Prisma)]
-    Server -->|API| Gemini[Google Gemini AI]
-    Admin[Quản trị viên] -->|CMS| Client
+    User["Người dùng"] -->|HTTPS| Client["Frontend (React/Vite)"]
+    Client -->|REST API| Server["Backend (Node.js/Express)"]
+    Server -->|ORM| DB[("SQLite/Prisma")]
+    Server -->|API| Gemini["Google Gemini AI"]
+    Admin["Quản trị viên"] -->|CMS| Client
 ```
 
 ### 2.2 Thành phần công nghệ

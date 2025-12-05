@@ -1,17 +1,6 @@
 /**
- * =================================================================================================
- * FILE: knowledge.service.js
- * MỤC ĐÍCH: Quản lý "Kho kiến thức" (Knowledge Base) cho Chatbot.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "trí nhớ" của Chatbot. Thay vì lúc nào cũng phải hỏi AI (tốn tiền), bot sẽ tra cứu ở đây trước.
- * Ví dụ: Nếu khách hỏi "Đà Nẵng mùa nào đẹp?", bot sẽ tìm trong bảng này xem có câu trả lời sẵn không.
- * 
- * CÁC CHỨC NĂNG CHÍNH:
- * 1. matchKnowledge: Tìm câu trả lời phù hợp nhất cho câu hỏi của người dùng.
- * 2. CRUD: Thêm, sửa, xóa các mục kiến thức.
- * =================================================================================================
+ * Service quản lý Knowledge Base cho Chatbot.
+ * Cung cấp các chức năng CRUD và tìm kiếm kiến thức (matchKnowledge) để trả lời câu hỏi người dùng.
  */
 
 import prisma from "../utils/prisma.js";

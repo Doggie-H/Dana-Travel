@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: ItineraryResultsPage.jsx
- * MỤC ĐÍCH: Hiển thị kết quả lịch trình du lịch.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Trang này là "Bảng kế hoạch chi tiết" sau khi AI đã tính toán xong:
- * 1. Tổng quan (Summary): Đi hết bao nhiêu tiền? Đi mấy ngày?
- * 2. Chi tiết từng ngày (Timeline): Sáng ăn gì? Chiều đi đâu? Tối ngủ đâu?
- * 3. Bản đồ (Map): Bấm nút là mở Google Maps chỉ đường đi luôn.
- * 4. Chatbot (AI Assistant): Nếu không ưng ý, bấm nút Chat để nhờ sửa lại.
- * =================================================================================================
+ * Trang hiển thị kết quả lịch trình.
+ * Bao gồm: Tổng quan, Timeline chi tiết, Bản đồ và các hành động (In, Tải về).
  */
 
 import { useEffect, useState } from "react";

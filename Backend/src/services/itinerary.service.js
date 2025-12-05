@@ -1,19 +1,6 @@
 /**
- * =================================================================================================
- * FILE: itinerary.service.js
- * MỤC ĐÍCH: Dịch vụ lõi (Core Service) điều phối việc tạo lịch trình du lịch.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * NGÀY CẬP NHẬT: 2025-12-05
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Service này giống như một "Tổng quản lý". Khi Frontend gửi yêu cầu "Hãy tạo lịch trình cho tôi",
- * service này sẽ thực hiện các bước sau:
- * 1. Kiểm tra ngân sách có đủ không.
- * 2. Lấy danh sách địa điểm (Khách sạn, Quán ăn, Chỗ chơi) từ kho dữ liệu (Database).
- * 3. Tìm khách sạn phù hợp nhất cho khách.
- * 4. Gọi "Trợ lý lập lịch" (generateDayScheduleStrict) để sắp xếp lịch cho từng ngày.
- * 5. Tính toán tổng chi phí và trả kết quả về cho người dùng.
- * =================================================================================================
+ * Service điều phối việc tạo lịch trình du lịch.
+ * Xử lý logic kiểm tra ngân sách, chọn nơi ở, và lập lịch trình chi tiết từng ngày.
  */
 
 import { getAllLocations } from "./location.service.js";
@@ -61,9 +48,7 @@ import { generateDayScheduleStrict } from "../utils/generate-day-schedule-strict
  * @returns {Promise<Object>} Lịch trình chi tiết
  */
 export const generateItinerary = async (userRequest) => {
-  console.log("Starting generateItinerary (Overhaul)...");
-
-  // 1. Validate & Prepare Data
+  // Validate & Prepare Data
   const {
     budgetTotal,
     numPeople,
@@ -116,8 +101,8 @@ export const generateItinerary = async (userRequest) => {
     ),
   };
 
-  // 2. Chọn Khách sạn (Base Location)
-  // Ưu tiên khách sạn phù hợp với loại hình (homestay/hotel) và giá cả
+  // Chọn Khách sạn (Base Location)
+  // Ưu tiên khách sạn phù hợp với loại hình và ngân sách
   const selectedHotel = selectAccommodation(
     locationsByType.hotel,
     accommodation,
@@ -133,7 +118,7 @@ export const generateItinerary = async (userRequest) => {
     throw error;
   }
 
-  // 3. Xây dựng khung lịch trình (Skeleton)
+  // Xây dựng khung lịch trình
   const itinerary = {
     id: `trip-${Date.now()}`,
     name: `Lịch trình Đà Nẵng ${numDays}N${numDays - 1}Đ`,
@@ -154,7 +139,7 @@ export const generateItinerary = async (userRequest) => {
   let remainingBudget = budgetTotal - accommodationCost;
   const dailyBudget = remainingBudget / numDays;
 
-  // 4. Lập lịch từng ngày
+  // Lập lịch từng ngày
   let usedLocationIds = new Set([selectedHotel.id]); // Tránh trùng lặp
   let currentArea = selectedHotel.area || "Hải Châu"; // Bắt đầu từ khu vực khách sạn
 
@@ -221,7 +206,7 @@ export const generateItinerary = async (userRequest) => {
     });
   }
 
-  // 5. Finalize & Format
+  // Finalize & Format
   const finalItinerary = {
     ...itinerary,
     totalCost: roundToStep(itinerary.totalCost, 1000),

@@ -1,20 +1,6 @@
 /**
- * =================================================================================================
- * FILE: itinerary.controller.js
- * MỤC ĐÍCH: Tiếp nhận yêu cầu tạo lịch trình từ người dùng và phản hồi kết quả.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Controller đóng vai trò như "người lễ tân" của khách sạn:
- * 1. Nhận yêu cầu (Request): Khách muốn đi đâu? Bao nhiêu tiền? Mấy người?
- * 2. Kiểm tra (Validation): Xem thông tin khách đưa có đủ không? Có hợp lệ không?
- * 3. Chuyển giao (Delegate): Gọi "Tổng quản lý" (Service) để tính toán lịch trình.
- * 4. Phản hồi (Response): Trả kết quả cuối cùng cho khách.
- * 
- * CÁC HÀM CHÍNH:
- * - generateItineraryHandler: Xử lý API tạo lịch trình.
- * - validateUserRequest: Kiểm tra tính hợp lệ của dữ liệu đầu vào.
- * =================================================================================================
+ * Controller xử lý tạo lịch trình.
+ * Validate yêu cầu người dùng và điều phối service tạo lịch trình.
  */
 
 import { generateItinerary } from "../services/itinerary.service.js";

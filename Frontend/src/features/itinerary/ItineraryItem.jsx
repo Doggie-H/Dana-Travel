@@ -1,19 +1,6 @@
 /**
- * =================================================================================================
- * FILE: ItineraryItem.jsx
- * MỤC ĐÍCH: Component hiển thị chi tiết MỘT hoạt động trong lịch trình.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * NGÀY CẬP NHẬT: 2025-12-05
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "viên gạch" nhỏ nhất xây dựng nên timeline. Nó nhận vào dữ liệu của một hoạt động
- * (ví dụ: "Ăn sáng tại Mì Quảng 1A") và hiển thị ra giao diện thẻ (Card).
- * 
- * LOGIC HIỂN THỊ:
- * 1. Icon & Màu sắc: Dựa vào loại hình (Ăn uống/Di chuyển/Tham quan) để chọn icon và màu phù hợp.
- * 2. Chi phí: Hiển thị giá vé (nếu có) và chi phí ăn uống riêng biệt.
- * 3. Địa chỉ: Hiển thị địa chỉ cụ thể nếu có.
- * =================================================================================================
+ * Component hiển thị chi tiết một hoạt động trong lịch trình.
+ * Bao gồm thông tin thời gian, địa điểm, chi phí và các visual elements (timeline).
  */
 
 import { formatTime, formatCurrency } from "../../utils/format.utils";

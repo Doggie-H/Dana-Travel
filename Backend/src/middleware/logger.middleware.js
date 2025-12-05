@@ -1,15 +1,6 @@
 /**
- * =================================================================================================
- * FILE: logger.middleware.js
- * MỤC ĐÍCH: Ghi lại nhật ký truy cập (Access Log).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Middleware này là "Camera giám sát".
- * 1. Quan sát: Ai vừa vào? Vào trang nào? Làm gì (Xem hay Sửa)?
- * 2. Ghi chép: Lưu lại IP, trình duyệt, thời gian vào Database.
- * 3. Thông minh: Tự động bỏ qua các hành động lặp đi lặp lại (Polling) để đỡ tốn dung lượng bộ nhớ.
- * =================================================================================================
+ * Middleware ghi log truy cập (Access Log).
+ * Ghi lại thông tin request, response và người dùng vào database.
  */
 
 import prisma from "../utils/prisma.js";

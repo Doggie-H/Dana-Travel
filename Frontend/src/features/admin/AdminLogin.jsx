@@ -1,15 +1,6 @@
 /**
- * =================================================================================================
- * FILE: AdminLogin.jsx
- * MỤC ĐÍCH: Trang đăng nhập dành cho Admin.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Cổng bảo vệ" của khu vực quản trị.
- * 1. Nhập thông tin: Yêu cầu Admin nhập Tên và Mật khẩu.
- * 2. Kiểm tra: Gửi thông tin lên Server để xem có đúng không.
- * 3. Kết quả: Nếu đúng thì mở cửa (vào Dashboard), nếu sai thì báo lỗi đuổi về.
- * =================================================================================================
+ * Form đăng nhập Admin.
+ * Xử lý xác thực người dùng trước khi truy cập Dashboard.
  */
 
 import { useState } from "react";

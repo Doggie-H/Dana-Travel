@@ -1,15 +1,6 @@
 /**
- * =================================================================================================
- * FILE: server.js
- * MỤC ĐÍCH: Điểm khởi chạy chính của Backend (Entry Point).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Cánh cổng chính" của tòa nhà Backend.
- * 1. Khởi động: Bật máy chủ (Server) lên để bắt đầu lắng nghe.
- * 2. Cấu hình: Cài đặt các quy tắc an ninh (CORS), nhật ký (Logger).
- * 3. Phân luồng: Khi có khách (Request) đến, file này sẽ chỉ dẫn khách đi vào đúng phòng (Route).
- * =================================================================================================
+ * Entry point của Backend Server.
+ * Khởi tạo Express app, cấu hình middleware, routes và error handling.
  */
 
 import "dotenv/config"; // Nạp biến môi trường từ file .env

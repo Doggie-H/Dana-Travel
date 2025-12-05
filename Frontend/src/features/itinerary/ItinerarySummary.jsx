@@ -1,16 +1,6 @@
 /**
- * =================================================================================================
- * FILE: ItinerarySummary.jsx
- * MỤC ĐÍCH: Tổng kết chi phí chuyến đi.
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Bảng kê khai tài chính" sau khi tính toán.
- * 1. Tổng tiền: Hết bao nhiêu?
- * 2. Chia đầu người: Mỗi người góp bao nhiêu?
- * 3. So sánh: Có lố ngân sách dự kiến không? (Màu đỏ là lố, Màu xanh là dư).
- * 4. Lời khuyên: AI sẽ mách nước cách tiết kiệm nếu thấy bạn tiêu hoang quá.
- * =================================================================================================
+ * Component hiển thị tóm tắt chi phí chuyến đi.
+ * Bao gồm tổng chi phí, chi phí bình quân và so sánh với ngân sách.
  */
 
 import { formatCurrency } from "../../utils/format.utils";

@@ -1,14 +1,6 @@
 /**
- * =================================================================================================
- * FILE: format.utils.js
- * MỤC ĐÍCH: Bộ công cụ định dạng dữ liệu hiển thị (Tiền, Ngày, Giờ).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * File này chứa các hàm "Makeup" cho dữ liệu.
- * Dữ liệu thô (ví dụ: 100000) nhìn rất xấu và khó đọc.
- * Hàm ở đây sẽ biến nó thành đẹp đẽ (ví dụ: "100.000 vnđ") trước khi đưa lên màn hình.
- * =================================================================================================
+ * Các hàm tiện ích định dạng dữ liệu (Utility Functions).
+ * Bao gồm: formatCurrency, formatDate, formatTime.
  */
 
 /**

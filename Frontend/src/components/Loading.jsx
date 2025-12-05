@@ -1,14 +1,6 @@
 /**
- * =================================================================================================
- * FILE: Loading.jsx
- * MỤC ĐÍCH: Hiển thị trạng thái đang tải (Loading Spinner).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là "Màn hình chờ" khi hệ thống đang bận suy nghĩ.
- * 1. Spinner: Cái vòng tròn xoay xoay để báo hiệu "Tôi đang làm việc đây, đừng tắt máy".
- * 2. Thông báo: Dòng chữ nhỏ (VD: Đang tải...) để người dùng đỡ sốt ruột.
- * =================================================================================================
+ * Component hiển thị trạng thái đang tải (Loading Spinner).
+ * Sử dụng khi đang fetch dữ liệu hoặc xử lý tác vụ tốn thời gian.
  */
 
 export default function Loading({ message = "Đang tải..." }) {

@@ -1,17 +1,6 @@
 /**
- * =================================================================================================
- * FILE: main.jsx
- * MỤC ĐÍCH: Điểm khởi nguồn của Frontend (Entry Point).
- * NGƯỜI TẠO: Team DanaTravel (AI Support)
- * 
- * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
- * Đây là nơi React "bắt đầu sự sống".
- * 1. Tìm thẻ <div id="root"> trong file index.html.
- * 2. Bơm toàn bộ ứng dụng (App) vào trong thẻ đó.
- * 3. Cài đặt các công cụ hỗ trợ:
- *    - BrowserRouter: Để quản lý việc chuyển trang không cần reload.
- *    - StriotMode: Giúp phát hiện lỗi ngầm trong code.
- * =================================================================================================
+ * Entry point của ứng dụng React.
+ * Khởi tạo ReactDOM root, cấu hình Router và render App component.
  */
 
 import React from "react";
