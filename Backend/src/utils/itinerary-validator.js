@@ -1,18 +1,12 @@
 /**
- * =====================================================
  * ITINERARY VALIDATOR & OPTIMIZER
- * =====================================================
- * 
- * File: itinerary-validator.js
- * Mục đích: Kiểm tra tính hợp lệ của địa điểm khi lập lịch
- * 
- * Các chức năng chính:
- * 1. validateLocationSelection - Kiểm tra có thể chọn địa điểm lúc này không
- * 2. filterValidLocations - Lọc danh sách địa điểm hợp lệ
- * 3. validateBudgetFeasibility - Kiểm tra ngân sách có đủ không
- * 4. optimizeLocationSequence - Sắp xếp tối ưu để giảm di chuyển
- * 
- * Được sử dụng bởi: generate-day-schedule-strict.js, itinerary.service.js
+ *
+ * Kiểm soát logic lập lịch:
+ * 1. Không lặp cùng category liên tiếp
+ * 2. Kiểm tra giờ hoạt động
+ * 3. Kiểm tra thời gian tối thiểu
+ * 4. Validate ngân sách vs. chi phí thực tế
+ * 5. Tối ưu clustering (minimize area changes)
  */
 
 import {
@@ -23,7 +17,6 @@ import {
   hasEnoughTimeToVisit,
   getLocationCategory,
 } from "../config/scheduling.constants.js";
-import { TRANSPORT_COSTS } from "../config/app.constants.js";
 
 /**
  * Validate xem có thể chọn địa điểm này vào thời điểm này không
@@ -81,7 +74,7 @@ export function validateLocationSelection(
   const isBestTime = isBestTimeToVisit(location, currentTime);
   if (!isBestTime) {
     console.warn(
-      `Không phải thời gian tối ưu để đi ${
+      `⚠️ Không phải thời gian tối ưu để đi ${
         location.name
       }. Thời gian tốt: ${rule.bestTimes?.join(", ")}`
     );
@@ -165,13 +158,9 @@ export function validateBudgetFeasibility(
   // - Ăn: 3 bữa/ngày × 40k = 120k/person
   // - Vé: 50k/person/ngày trung bình
   // - Xăng: 30k/ngày (chung cho nhóm, chia đều)
-  // Minimum để ăn + vé + xăng
-  // - Ăn: 3 bữa/ngày × 35k = 105k/person (Mức sinh viên/Tiết kiệm)
-  // - Vé: 0k (Chỉ đi điểm free) - 50k
-  // - Xăng: 15k/ngày (chung cho nhóm, chia đều)
   const minRequiredPerPersonDaily = hasOwnTransport
-    ? 100000 // Ăn 90k + Xăng 10k (Chấp nhận mức cực thấp nếu tự túc)
-    : 150000; // Ăn 100k + Vé/Di chuyển 50k
+    ? 120000 + 50000 // Ăn + vé (xăng tính riêng)
+    : 120000 + 50000 + 50000; // Ăn + vé + transport
 
   if (perPersonDaily < minRequiredPerPersonDaily) {
     return {
@@ -185,7 +174,7 @@ export function validateBudgetFeasibility(
 
   // Warning nếu quá ít
   if (perPersonDaily < 300000) {
-    console.warn(`Ngân sách hạn chế ${perPersonDaily}đ/person/day`);
+    console.warn(`⚠️ Ngân sách hạn chế ${perPersonDaily}đ/person/day`);
   }
 
   return {
@@ -219,16 +208,12 @@ export function calculateTotalActivityTime(
   let totalTime = location.suggestedDuration || rule.minVisitDuration;
 
   // Thời gian di chuyển
-  // Thời gian di chuyển
-  const config = TRANSPORT_COSTS[transportMode] || TRANSPORT_COSTS["grab-car"];
-  const speed = config.speed || 30;
-  const travelTime = (distanceFromPrevious / speed) * 60 + 5; // +5 phút chờ, đỗ xe
+  // Giả định: 35 km/h trên đường bộ Đà Nẵng
+  const travelTime = (distanceFromPrevious / 35) * 60 + 5; // +5 phút chờ, đỗ xe
   totalTime += travelTime;
 
   // Thời gian ăn uống (nếu bao gồm)
-  // CHÚ Ý: Nếu địa điểm là nhà hàng (restaurant), thời gian tham quan đã bao gồm ăn uống
-  // Chỉ cộng thêm nếu địa điểm KHÔNG PHẢI nhà hàng (ví dụ: ăn tại khu vui chơi)
-  if (includeFood && location.type !== "restaurant" && location.type !== "cafe") {
+  if (includeFood && location.type === "restaurant") {
     totalTime += 60; // 1 tiếng ăn
   }
 
