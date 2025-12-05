@@ -214,6 +214,8 @@ erDiagram
     Admin ||--o{ Knowledge : "quản lý"
     Admin ||--o{ Transport : "quản lý"
     Admin ||--o{ AccessLog : "ghi nhật ký"
+    Admin ||--o{ ChatLog : "xem lịch sử"
+    Admin ||--o{ SearchTrend : "theo dõi xu hướng"
 ```
 *Hình 4.2: Sơ đồ ERD thiết kế cơ sở dữ liệu*
 
@@ -224,7 +226,9 @@ Mặc dù hệ thống sử dụng SQLite và Prisma không thiết lập khóa 
 1.  **Admin - Location (1-n)**: Một Quản trị viên có thể tạo và quản lý nhiều Địa điểm.
 2.  **Admin - Knowledge (1-n)**: Một Quản trị viên có thể cập nhật nhiều mục Tri thức cho AI.
 3.  **Admin - AccessLog (1-n)**: Mọi hành động của Admin đều được ghi lại trong nhiều dòng Nhật ký truy cập.
-4.  **Location - SearchTrend (n-n)**: (Gián tiếp) Các thẻ (Tags) của địa điểm được liên kết với xu hướng tìm kiếm của người dùng thông qua phân tích từ khóa.
+4.  **Admin - ChatLog (1-n)**: Quản trị viên xem và phân tích lịch sử trò chuyện để cải thiện chất lượng Chatbot.
+5.  **Admin - SearchTrend (1-n)**: Quản trị viên theo dõi các xu hướng tìm kiếm để nắm bắt nhu cầu người dùng.
+6.  **Location - SearchTrend (n-n)**: (Gián tiếp) Các thẻ (Tags) của địa điểm được liên kết với xu hướng tìm kiếm của người dùng thông qua phân tích từ khóa.
 
 ## 5. Luồng Hoạt động (Activity Flows)
 
