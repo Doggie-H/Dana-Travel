@@ -65,53 +65,6 @@ Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) v�
 *   **Quản lý tri thức AI**: Cập nhật cơ sở dữ liệu câu hỏi/câu trả lời cho Chatbot.
 *   **Xem báo cáo thống kê**: Xem lưu lượng truy cập, xu hướng tìm kiếm.
 *   **Quản lý tài khoản**: Thêm hoặc xóa các quản trị viên khác.
-
-### 3.3. Sơ đồ Minh họa
-
-### 3.3. Sơ đồ Use Case (UML)
-
-> [!NOTE]
-> Trình xem của bạn chưa hỗ trợ hiển thị `usecaseDiagram`. Dưới đây là 2 phiên bản:
-> 1. **Mã nguồn chuẩn UML**: Dùng để copy vào báo cáo hoặc các tool vẽ UML chuyên dụng.
-> 2. **Sơ đồ hiển thị**: Dùng để xem trực tiếp tại đây (dạng tương thích).
-
-#### Mã nguồn chuẩn UML (Copy cho báo cáo)
-```text
-usecaseDiagram
-    actor "Khách du lịch" as User
-    actor "Quản trị viên" as Admin
-    actor "Hệ thống AI" as AI
-
-    package "Hệ thống DanaTravel" {
-        usecase "Đăng nhập / Đăng ký" as UC1
-        usecase "Lập lịch trình du lịch" as UC2
-        usecase "Tra cứu thông tin địa điểm" as UC3
-        usecase "Trò chuyện với Chatbot" as UC4
-        usecase "Quản lý dữ liệu hệ thống" as UC5
-        usecase "Xem báo cáo thống kê" as UC6
-    }
-
-    User --> UC1
-    User --> UC2
-    User --> UC3
-    User --> UC4
-
-    Admin --> UC1
-    Admin --> UC5
-    Admin --> UC6
-| **UC1** | Đăng nhập | User, Admin | Xác thực người dùng vào hệ thống. |
-| **UC2** | Lập lịch trình | User | Tạo lịch trình dựa trên ngân sách, thời gian, sở thích. |
-| **UC3** | Tra cứu địa điểm | User | Xem thông tin chi tiết, giá vé, menu của địa điểm. |
-| **UC4** | Chat với Bot | User | Hỏi đáp thông tin du lịch qua giao diện chat. |
-| **UC5** | Quản lý dữ liệu | Admin | Thêm/Sửa/Xóa địa điểm, bài viết tri thức. |
-| **UC6** | Xem báo cáo | Admin | Theo dõi thống kê truy cập và xu hướng. |
-
-## 4. Thiết kế Cơ sở dữ liệu (ERD)
-
-Sơ đồ mô tả cấu trúc dữ liệu và mối quan hệ giữa các thực thể trong hệ thống.
-
-### 4.1. Các Thực thể (Entities)
-
 1.  **Location (Địa điểm)**: Lưu trữ thông tin các điểm tham quan, nhà hàng, khách sạn.
 2.  **Admin (Quản trị viên)**: Tài khoản quản trị hệ thống.
 3.  **Knowledge (Tri thức)**: Dữ liệu hỏi đáp mẫu dùng cho RAG (Retrieval-Augmented Generation).
