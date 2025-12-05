@@ -8,6 +8,7 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 import { fileURLToPath } from "url";
+import { randomUUID } from "crypto"; // Fix: Import randomUUID
 import { adminAuth } from "../middleware/adminAuth.middleware.js";
 import {
   getAllLocations as repoGetAllLocations,
@@ -68,6 +69,7 @@ router.post("/login", async (req, res) => {
     // TRACKING: Ghi log đăng nhập Admin
     await prisma.accessLog.create({
       data: {
+        id: `TC_${randomUUID()}`, // Fix: Added required ID
         ip: req.ip || req.connection.remoteAddress,
         userAgent: req.get("User-Agent"),
         endpoint: "/api/admin/login",
@@ -183,7 +185,7 @@ router.post("/accounts", async (req, res) => {
 // Cập nhật thông tin Admin
 router.put("/accounts/:id", async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id;
     const updates = req.body;
 
     const updatedAdmin = await updateAdmin(id, updates);
@@ -196,7 +198,7 @@ router.put("/accounts/:id", async (req, res) => {
 // Xóa tài khoản Admin
 router.delete("/accounts/:id", async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id;
     await deleteAdmin(id);
     return res.json({ success: true });
   } catch (error) {
@@ -208,12 +210,13 @@ router.delete("/accounts/:id", async (req, res) => {
 router.post("/change-password", async (req, res) => {
   try {
     const { adminId, oldPassword, newPassword } = req.body;
+    const id = adminId;
 
     if (!adminId || !oldPassword || !newPassword) {
       return res.status(400).json({ error: "Thiếu thông tin mật khẩu" });
     }
 
-    await changePassword(adminId, oldPassword, newPassword);
+    await changePassword(id, oldPassword, newPassword);
     return res.json({
       success: true,
       message: "Đổi mật khẩu thành công",
@@ -289,27 +292,40 @@ router.get("/stats/traffic", async (req, res) => {
     });
 
     // Tổng hợp dữ liệu theo ngày
+    // 1. Tạo khung dữ liệu cho 7 ngày gần nhất (đảm bảo biểu đồ luôn đủ 7 ngày)
     const stats = {};
+    for (let i = 6; i >= 0; i--) {
+      // Logic ngày: Lấy thời gian hiện tại (UTC+7 ảo)
+      const now = new Date();
+      // Cộng 7 tiếng để giả lập UTC+7 nếu server là UTC
+      const vnTime = new Date(now.getTime() + 7 * 60 * 60 * 1000); 
+      vnTime.setDate(vnTime.getDate() - i);
+      const dateStr = vnTime.toISOString().split('T')[0];
+      stats[dateStr] = { date: dateStr, visitors: 0, internal: 0 };
+    }
+
+    // 2. Tổng hợp dữ liệu từ Logs
     logs.forEach(log => {
-      // Chuyển đổi sang giờ Việt Nam (UTC+7)
+      // Chuyển đổi sang giờ Việt Nam (UTC+7) để khớp ngày hiển thị
       const date = new Date(new Date(log.timestamp).getTime() + 7 * 60 * 60 * 1000)
         .toISOString()
         .split('T')[0];
         
-      if (!stats[date]) stats[date] = { date, visitors: 0, internal: 0 };
-      
-      const role = log.role || 'guest';
-      if (['admin', 'manager', 'staff', 'SUPER_ADMIN'].includes(role)) {
-        stats[date].internal++;
-      } else {
-        // Chỉ tính method VISIT là một lượt truy cập thực
-        if (log.method === 'VISIT') {
-          stats[date].visitors++;
+      if (stats[date]) {
+        const role = log.role || 'guest';
+        // Phân loại: Nội bộ (Admin/Manager/Staff) vs Khách (Guest)
+        if (['admin', 'manager', 'staff'].includes(role)) {
+          stats[date].internal++;
+        } else {
+          // Chỉ tính method VISIT là một lượt truy cập thực của khách
+          if (log.method === 'VISIT') {
+            stats[date].visitors++;
+          }
         }
       }
     });
 
-    // Sắp xếp theo ngày
+    // 3. Chuyển đổi sang mảng và sắp xếp
     const result = Object.values(stats).sort((a, b) => a.date.localeCompare(b.date));
 
     res.json({ success: true, data: result });

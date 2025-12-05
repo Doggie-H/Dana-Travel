@@ -26,7 +26,7 @@ export async function generateItineraryHandler(req, res, next) {
     // Nếu dữ liệu sai, trả về lỗi 400 ngay lập tức để tiết kiệm tài nguyên server.
     const errors = validateUserRequest(userRequest);
     if (errors.length > 0) {
-      console.log("❌ Validation failed:", errors);
+      console.log("Validation failed:", errors);
       console.log("Request body:", userRequest);
       return res.status(400).json({
         error: "Dữ liệu không hợp lệ (Validation failed)",

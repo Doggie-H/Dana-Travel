@@ -3,7 +3,9 @@
  * Xử lý logic kiểm tra ngân sách, chọn nơi ở, và lập lịch trình chi tiết từng ngày.
  */
 
-import { getAllLocations } from "./location.service.js";
+import { getAllLocations } from "./location.service.js"; 
+import { fileURLToPath } from "url";
+import { randomUUID } from "crypto";
 import {
   BUDGET_ALLOCATION,
   TRANSPORT_COSTS,
@@ -61,7 +63,7 @@ export const generateItinerary = async (userRequest) => {
 
   const startDate = new Date(arriveDateTime);
   const endDate = new Date(leaveDateTime);
-  const numDays = getDaysBetween(startDate, endDate) + 1;
+  const numDays = getDaysBetween(startDate, endDate) + 1; // 0 diff + 1 = 1 day
 
   // Validate Budget với strict logic
   const hasOwnTransport = transport === "own" || transport === "rent";
@@ -102,20 +104,35 @@ export const generateItinerary = async (userRequest) => {
   };
 
   // Chọn Khách sạn (Base Location)
-  // Ưu tiên khách sạn phù hợp với loại hình và ngân sách
-  const selectedHotel = selectAccommodation(
-    locationsByType.hotel,
-    accommodation,
-    budgetTotal / numDays,
-    numPeople
-  );
-  if (!selectedHotel) {
-    throw {
-      statusCode: 400,
-      message: `Không tìm thấy chỗ ở phù hợp cho loại hình ${accommodation}`,
-    };
-    console.log("❌ No accommodation found for:", accommodation);
-    throw error;
+  let selectedHotel;
+  
+  // Custom logic cho Nhà riêng / Nhà người quen
+  if (accommodation === 'home' || accommodation === 'friend' || accommodation === 'relative' || accommodation === 'free') {
+      selectedHotel = {
+          id: 'user-home',
+          name: 'Nhà riêng / Nhà người quen',
+          type: 'home',
+          address: 'Địa chỉ của bạn tại Đà Nẵng',
+          area: 'Trung tâm',
+          lat: 16.0544, // Tọa độ trung tâm Đà Nẵng (Cầu Rồng)
+          lng: 108.2022,
+          ticket: 0,
+          priceLevel: 'free'
+      };
+  } else {
+      // Ưu tiên khách sạn phù hợp với loại hình và ngân sách
+      selectedHotel = selectAccommodation(
+        locationsByType.hotel,
+        accommodation,
+        budgetTotal / numDays,
+        numPeople
+      );
+
+      if (!selectedHotel) {
+        // Fallback an toàn thay vì throw lỗi
+        console.warn("No accommodation found, defaulting to generic hotel");
+        selectedHotel = locationsByType.hotel[0]; 
+      }
   }
 
   // Xây dựng khung lịch trình
@@ -218,6 +235,7 @@ export const generateItinerary = async (userRequest) => {
     // Chỉ lưu khi tạo lịch trình thành công
     await import("../utils/prisma.js").then(m => m.default.searchTrend.create({
       data: {
+        id: `XH_${randomUUID()}`,
         tags: JSON.stringify(preferences),
         duration: `${numDays} ngày`,
         budget: parseFloat(budgetTotal),
@@ -290,7 +308,7 @@ function selectAccommodation(hotels, type, dailyBudget, numPeople) {
 }
 
 function calculateAccommodationCost(hotel, type, numDays, numPeople) {
-  if (type === "free") return 0;
+  if (type === "free" || type === "home" || type === "friend" || type === "relative") return 0;
 
   // Giá phòng ước tính (nếu DB không có giá)
   const basePrice =

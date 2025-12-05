@@ -4,6 +4,7 @@
  */
 
 import prisma from "../utils/prisma.js";
+import { randomUUID } from "crypto";
 
 /**
  * Lấy danh sách địa điểm với các bộ lọc tùy chọn.
@@ -85,6 +86,7 @@ export const getLocationById = async (id) => {
 export const createLocation = async (data) => {
   return await prisma.location.create({
     data: {
+      id: data.id || `KV_${randomUUID()}`,
       ...data,
       // Chuyển Array thành JSON string trước khi lưu vào DB
       tags: JSON.stringify(data.tags || []),

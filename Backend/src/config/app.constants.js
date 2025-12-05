@@ -40,30 +40,64 @@ export const BUDGET_THRESHOLDS = {
 export const MIN_BUDGET_PER_PERSON_PER_DAY = 300000;
 
 // Chi phí di chuyển (VND)
+// Chi phí di chuyển (VND)
 export const TRANSPORT_COSTS = {
-  // Xe máy cá nhân (Phượt thủ)
-  own: {
-    perKm: 2000, // Xăng
-    parking: 5000, // Phí gửi xe
-    capacity: 2, // Số người tối đa
-    speed: 35,
+  // --- BIKE (1 khách) ---
+  "grab-bike": {
+    base: 12500, // 2km đầu
+    perKm: 4300,
+    capacity: 1,
+    speed: 30,
+    label: "GrabBike"
+  },
+  "xanh-bike": {
+    base: 13500, // 2km đầu
+    perKm: 4500, // Xanh SM thường cao hơn xíu nhưng dịch vụ tốt
+    capacity: 1,
+    speed: 30,
+    label: "XanhSM Bike"
   },
 
-  // GrabBike / XanhSM Bike (Xe ôm công nghệ)
-  "grab-bike": {
-    base: 15000, // Cước phí mở cửa (2km đầu)
-    perKm: 5000, // Giá cước/km tiếp theo
-    capacity: 1,
-    speed: 30, // Tốc độ trung bình (km/h)
-  },
-  // GrabCar / XanhSM Car / Taxi (Taxi công nghệ)
-  "grab-car": {
-    base: 25000, // Cước phí mở cửa
-    perKm: 14000, // Giá cước/km
+  // --- CAR 4 SEATS (1-4 khách) ---
+  "grab-car-4": {
+    base: 29000, // 2km đầu
+    perKm: 10000,
     capacity: 4,
-    speed: 40, // Tốc độ trung bình (km/h)
+    speed: 40,
+    label: "GrabCar 4 chỗ"
   },
-  // Đã xóa Taxi truyền thống và Xe buýt theo yêu cầu
+  "xanh-car-4": {
+    base: 20000, // 1km đầu (Rẻ mở cửa hơn)
+    perKm: 12500, // KM sau cao hơn
+    capacity: 4,
+    speed: 40,
+    label: "XanhSM Taxi 4 chỗ"
+  },
+
+  // --- CAR 7 SEATS (5-7 khách) ---
+  "grab-car-7": {
+    base: 34000, // 2km đầu
+    perKm: 13000,
+    capacity: 7,
+    speed: 35,
+    label: "GrabCar 7 chỗ"
+  },
+  "xanh-car-7": {
+    base: 50000, // 1km đầu (Luxury branding)
+    perKm: 20000, // Xanh Luxury đắt hơn
+    capacity: 7,
+    speed: 35,
+    label: "XanhSM Luxury 7 chỗ"
+  },
+
+  // --- OWN VEHICLE ---
+  own: {
+    perKm: 2000, // Xăng
+    parking: 5000, 
+    capacity: 2,
+    speed: 35,
+    label: "Xe máy cá nhân"
+  },
 };
 
 // Giá phòng trung bình/đêm (VND) - Tính cho phòng 2 người

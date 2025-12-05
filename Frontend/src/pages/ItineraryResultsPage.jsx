@@ -4,12 +4,13 @@
  */
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ItineraryCard, ItinerarySummary } from "../features/itinerary";
 import { loadItinerary, loadUserRequest } from "../services/storage.service.js";
 
 export default function ItineraryResultsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   
   // State lưu trữ dữ liệu lịch trình và yêu cầu gốc của user
   const [itinerary, setItinerary] = useState(null);
@@ -28,7 +29,23 @@ export default function ItineraryResultsPage() {
 
     setItinerary(savedItinerary);
     setUserRequest(savedRequest);
+    setItinerary(savedItinerary);
+    setUserRequest(savedRequest);
   }, [navigate]);
+
+  // Auto-print check (từ Chatbot)
+  useEffect(() => {
+    if (location.state?.autoPrint) {
+      // Delay nhỏ để đảm bảo render xong
+      const timer = setTimeout(() => {
+        window.print();
+        
+        // Clear state để không in lại khi refresh (Optional implementation depending on needs, 
+        // usually clearing history state is complex, so just leaving it is fine for now)
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   // Hiển thị màn hình Loading nếu chưa có dữ liệu
   if (!itinerary) {

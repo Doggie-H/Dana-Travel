@@ -116,6 +116,16 @@ export default function ItineraryItem({ item, index, isLast, numPeople = 1, next
                    </span>
                  </div>
               )}
+            {/* Thông tin Di chuyển (Chi tiết) - CHỈ hiện khi là item Tranport */}
+            {item.type === 'transport' && item.transport?.suggestion && (
+               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-100 bg-blue-50/50 shadow-sm mt-2 w-fit">
+                 <svg className="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                 <span className="text-blue-700 font-medium text-xs">
+                   {item.transport.suggestion}
+                 </span>
+               </div>
+            )}
+            
             </div>
 
             {/* Thông tin Di chuyển (Đến đây) - Đã ẩn theo yêu cầu user */}

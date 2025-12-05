@@ -4,6 +4,7 @@
  */
 
 import prisma from "../utils/prisma.js";
+import { randomUUID } from "crypto";
 
 /**
  * Lấy toàn bộ danh sách kiến thức.
@@ -19,7 +20,12 @@ export const getAllKnowledge = async () => {
  * @returns {Promise<Object>}
  */
 export const addKnowledge = async (data) => {
-  return await prisma.knowledge.create({ data });
+  return await prisma.knowledge.create({
+    data: {
+      id: data.id || `KB_${randomUUID()}`,
+      ...data
+    }
+  });
 };
 
 /**

@@ -76,7 +76,8 @@ export default function Admin() {
 
 function AdminContent() {
   // Cấu hình API Base URL
-  const API_BASE = "/api";
+  // Cấu hình API Base URL (Direct Backend to avoid Proxy issues)
+  const API_BASE = "http://localhost:3001/api";
 
   // --- STATE QUẢN LÝ ---
   const [authed, setAuthed] = useState(false); // Trạng thái đăng nhập

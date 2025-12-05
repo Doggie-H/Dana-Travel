@@ -119,13 +119,12 @@ export default function AdminAccounts({
                 >
                   <option value={ROLES.STAFF}>Nhân viên (Staff)</option>
                   <option value={ROLES.MANAGER}>Quản lý (Manager)</option>
-                  <option value="admin">Quản Trị Viên (Admin)</option>
-                  <option value={ROLES.SUPER_ADMIN}>Quản trị cấp cao (Super Admin)</option>
+                  <option value={ROLES.ADMIN}>Quản Trị Viên (Admin)</option>
                 </select>
                 <p className="text-xs text-gray-400 mt-2">
                   * Staff: Chỉ xem/sửa địa điểm.<br/>
                   * Manager: Quản lý địa điểm & AI.<br/>
-                  * Super Admin: Toàn quyền hệ thống.
+                  * Admin: Toàn quyền hệ thống.
                 </p>
               </div>
             </div>
@@ -161,7 +160,7 @@ export default function AdminAccounts({
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider 
-                      ${acc.role === ROLES.SUPER_ADMIN ? "bg-purple-100 text-purple-800" : 
+                      ${acc.role === ROLES.ADMIN ? "bg-purple-100 text-purple-800" : 
                         acc.role === ROLES.MANAGER ? "bg-blue-100 text-blue-800" : 
                         "bg-gray-100 text-gray-800"}`}>
                       {acc.role}

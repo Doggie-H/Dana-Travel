@@ -70,9 +70,18 @@ export function getDaysBetween(start, end) {
     return 0;
   }
 
-  const diffMs = endDate - startDate;
+  // Reset về 00:00:00 để tính chênh lệch theo ngày lịch (Calendar Days)
+  const startMidnight = new Date(startDate);
+  startMidnight.setHours(0, 0, 0, 0);
+  
+  const endMidnight = new Date(endDate);
+  endMidnight.setHours(0, 0, 0, 0);
+
+  const diffMs = endMidnight - startMidnight;
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  return Math.max(diffDays, 1); // Tối thiểu 1 ngày
+  
+  // Trả về chênh lệch ngày (VD: Cùng ngày = 0, Qua hôm sau = 1)
+  return Math.abs(diffDays); 
 }
 
 /**

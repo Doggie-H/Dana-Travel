@@ -7,7 +7,7 @@
 
 // --- ĐỊNH NGHĨA VAI TRÒ (ROLES) ---
 export const ROLES = {
-  SUPER_ADMIN: "super_admin", // Quản trị viên cấp cao (Toàn quyền)
+  ADMIN: "admin",             // Quản trị viên (Toàn quyền)
   MANAGER: "manager",         // Quản lý (Giới hạn một số quyền hệ thống)
   STAFF: "staff",             // Nhân viên (Chỉ xem và chỉnh sửa nội dung cơ bản)
 };
@@ -32,15 +32,13 @@ export const PERMISSIONS = {
   MANAGE_KNOWLEDGE: "manage_knowledge", // Dạy AI, sửa câu trả lời mẫu
 
   // Các tính năng mở rộng (Future Proofing)
-  MANAGE_CATEGORIES: "manage_categories",
-  MANAGE_PRODUCTS: "manage_products",
-  MANAGE_MENUS: "manage_menus",
+  // MANAGE_SYSTEM: "manage_system",
 };
 
 // --- BẢNG PHÂN QUYỀN (ROLE-PERMISSION MAPPING) ---
 const ROLE_PERMISSIONS = {
-  // Super Admin: Có tất cả các quyền
-  [ROLES.SUPER_ADMIN]: [
+  // Admin: Có tất cả các quyền
+  [ROLES.ADMIN]: [
     PERMISSIONS.MANAGE_ACCOUNTS,
     PERMISSIONS.VIEW_LOGS,
     PERMISSIONS.DELETE_LOGS,
@@ -50,9 +48,7 @@ const ROLE_PERMISSIONS = {
     PERMISSIONS.EDIT_LOCATION,
     PERMISSIONS.DELETE_LOCATION,
     PERMISSIONS.MANAGE_KNOWLEDGE,
-    PERMISSIONS.MANAGE_CATEGORIES,
-    PERMISSIONS.MANAGE_PRODUCTS,
-    PERMISSIONS.MANAGE_MENUS,
+    // PERMISSIONS.MANAGE_SYSTEM,
   ],
   
   // Manager: Quản lý nội dung và AI, không can thiệp hệ thống sâu (Accounts, Logs)
@@ -86,8 +82,8 @@ export function can(user, permission) {
   // Chuẩn hóa role string để tránh lỗi case-sensitive
   const role = user.role.toLowerCase();
   
-  // Fallback: Nếu role là "admin" hoặc "superadmin" (từ hệ thống cũ), cấp full quyền
-  if (role === "admin" || role === "superadmin") return true;
+  // Admin luôn có full quyền
+  if (role === ROLES.ADMIN) return true;
 
   // Lấy danh sách quyền của role tương ứng
   const permissions = ROLE_PERMISSIONS[role] || [];
@@ -102,8 +98,8 @@ export function can(user, permission) {
  */
 export function getRoleLabel(role) {
   switch (role) {
-    case ROLES.SUPER_ADMIN: return "Quản Trị Viên Cấp Cao";
-    case "admin": return "Quản Trị Viên"; // Support legacy 'admin' role
+    case ROLES.ADMIN: return "Quản Trị Viên";
+    case "admin": return "Quản Trị Viên"; // Fallback cho string raw
     case ROLES.MANAGER: return "Quản Lý";
     case ROLES.STAFF: return "Nhân Viên";
     default: return "Khách";
@@ -116,7 +112,7 @@ export function getRoleLabel(role) {
  */
 export function getRoleBadgeColor(role) {
   switch (role) {
-    case ROLES.SUPER_ADMIN: 
+    case ROLES.ADMIN: 
     case "admin":
       return "bg-purple-100 text-purple-800 border-purple-200";
     case ROLES.MANAGER: return "bg-blue-100 text-blue-800 border-blue-200";

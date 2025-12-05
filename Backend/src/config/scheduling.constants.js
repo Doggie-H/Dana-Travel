@@ -224,19 +224,33 @@ export function canVisitAtTime(location, currentTime) {
   const rule =
     LOCATION_RULES[location.visitType] || LOCATION_RULES["attraction"];
 
+  // Ưu tiên sử dụng giờ hoạt động riêng của địa điểm nếu có
+  let startHour = rule.operatingHours.start;
+  let endHour = rule.operatingHours.end;
+
+  if (location.openTime && location.closeTime) {
+    try {
+      const parseHour = (timeStr) => parseInt(timeStr.split(':')[0]);
+      startHour = parseHour(location.openTime);
+      endHour = parseHour(location.closeTime);
+    } catch (e) {
+      // Fallback to rule if parsing fails
+    }
+  }
+
   // Kiểm tra nằm trong giờ hoạt động không
   // Xử lý trường hợp giờ hoạt động qua nửa đêm (ví dụ: 18h-4h)
   let inOperatingHours;
-  if (rule.operatingHours.start < rule.operatingHours.end) {
+  if (startHour < endHour) {
     // Giờ hoạt động bình thường (ví dụ: 6h-20h)
     inOperatingHours =
-      currentTime >= rule.operatingHours.start &&
-      currentTime < rule.operatingHours.end;
+      currentTime >= startHour &&
+      currentTime < endHour;
   } else {
     // Giờ hoạt động qua nửa đêm (ví dụ: 18h-4h, start=18, end=4)
     inOperatingHours =
-      currentTime >= rule.operatingHours.start ||
-      currentTime < rule.operatingHours.end;
+      currentTime >= startHour ||
+      currentTime < endHour;
   }
 
   if (!inOperatingHours) return false;

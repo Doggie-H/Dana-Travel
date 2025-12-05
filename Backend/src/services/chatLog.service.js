@@ -4,6 +4,7 @@
  */
 
 import prisma from "../utils/prisma.js";
+import { randomUUID } from "crypto";
 
 /**
  * Ghi lại một lượt tương tác Chat.
@@ -15,6 +16,7 @@ import prisma from "../utils/prisma.js";
 export const logChat = async (userMessage, botResponse) => {
   return await prisma.chatLog.create({
     data: {
+      id: `TN_${randomUUID()}`,
       userMessage,
       botResponse
     }
@@ -57,4 +59,15 @@ export const getRecentChatLogs = getChatHistory;
 // Dùng cho Chatbot Service
 export const logChatInteraction = async ({ userMessage, botResponse }) => {
   return logChat(userMessage, botResponse);
+};
+
+/**
+ * Lấy tin nhắn phản hồi gần nhất của Bot.
+ * Dùng để duy trì context cho các lệnh tiếp theo (VD: "Thêm quán này").
+ */
+export const getLastBotMessage = async () => {
+  const lastLog = await prisma.chatLog.findFirst({
+    orderBy: { timestamp: "desc" }
+  });
+  return lastLog?.botResponse || "";
 };

@@ -32,12 +32,12 @@ export default function ChatMessage({ message, onQuickReply }) {
         {/* --- 3. QUICK REPLIES (GỢI Ý TRẢ LỜI) --- */}
         {/* Chỉ hiển thị cho Bot và khi có danh sách gợi ý */}
         {!isUser && message.quickReplies && message.quickReplies.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-col gap-2 w-full">
             {message.quickReplies.map((reply, index) => (
               <button
                 key={index}
                 onClick={() => onQuickReply && onQuickReply(reply)}
-                className="px-3 py-1.5 rounded-lg border border-accent-200 text-accent-700 bg-accent-50/50 hover:bg-accent-100 hover:border-accent-300 text-xs font-medium transition-all duration-200"
+                className="w-full text-left px-5 py-3 rounded-xl border border-gray-200 bg-white text-sm font-bold text-gray-800 hover:bg-gray-50 hover:border-gray-900 transition-all duration-300 shadow-sm"
               >
                 {reply}
               </button>

@@ -41,18 +41,5 @@ export const transport = [
     pricePerKm: 20000,
     description: "Xe VinFast VF8 sang trọng, rộng rãi, đẳng cấp."
   },
-  {
-    name: "Taxi Mai Linh",
-    type: "car4",
-    basePrice: 20000, // 1.2km đầu
-    pricePerKm: 14500,
-    description: "Taxi truyền thống uy tín lâu đời. Màu xanh lá cây đặc trưng."
-  },
-  {
-    name: "Taxi Vinasun",
-    type: "car4",
-    basePrice: 20000, // 1km đầu
-    pricePerKm: 15000,
-    description: "Taxi truyền thống phổ biến tại Đà Nẵng. Màu trắng."
-  }
+  // Removed Traditional Taxis per request
 ];

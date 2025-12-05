@@ -4,7 +4,7 @@
  */
 
 import { processChatMessage } from "../services/chatbot.service.js";
-import { logChatInteraction } from "../services/chatLog.service.js";
+import { logChatInteraction, getLastBotMessage } from "../services/chatLog.service.js";
 
 /**
  * Xử lý tin nhắn chat từ người dùng.
@@ -32,8 +32,12 @@ export async function chatHandler(req, res, next) {
     }
 
     // 3. Gọi Service để xử lý logic nghiệp vụ (AI, tìm kiếm...)
+    // Lấy context lịch sử (tin nhắn cuối của bot) để AI hiểu "quán này", "quán đầu tiên"...
+    const lastBotMessage = await getLastBotMessage();
+    const enrichedContext = { ...(context || {}), lastBotMessage };
+    
     // Controller không nên chứa logic phức tạp, chỉ điều phối.
-    const response = await processChatMessage(message, context || {});
+    const response = await processChatMessage(message, enrichedContext);
 
     // 4. Ghi log tương tác (để debug hoặc phân tích sau này)
     // Chạy async để không block response, nhưng vẫn đảm bảo log được ghi

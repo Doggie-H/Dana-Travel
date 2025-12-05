@@ -7,26 +7,9 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
-  // State lưu danh sách menu (nếu fetch từ server)
-  const [menuItems, setMenuItems] = useState([]);
-  
   // Hook lấy thông tin URL hiện tại để highlight menu active
   const location = useLocation();
 
-  // Fetch menu từ API khi component mount (Optional feature)
-  useEffect(() => {
-    fetch("http://localhost:3001/api/menus")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setMenuItems(data.filter((item) => item.isActive));
-        }
-      })
-      .catch((err) => {
-        // Silent fail: Nếu API lỗi, sẽ dùng menu mặc định (hardcoded)
-        console.warn("Không thể tải menu động, sử dụng menu mặc định.");
-      });
-  }, []);
 
   return (
     // Sticky Header: Luôn dính ở trên cùng khi cuộn trang
@@ -44,77 +27,53 @@ export default function Header() {
 
           {/* DESKTOP NAVIGATION */}
           <div className="hidden md:flex items-center gap-8 lg:gap-10">
-            {menuItems.length > 0 ? (
-              // Render menu động từ API
-              menuItems.map((item) => (
-                <Link
-                  key={item.id}
-                  to={item.link}
-                  className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
-                    location.pathname === item.link
-                      ? 'text-gray-900' // Active style
-                      : 'text-gray-400 hover:text-gray-900' // Inactive style
-                  }`}
-                >
-                  {item.name}
-                  {/* Đường gạch chân cho Active Item */}
-                  {location.pathname === item.link && (
-                    <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
-                  )}
-                </Link>
-              ))
-            ) : (
-              // Menu mặc định (Hardcoded) - Fallback khi không có API
-              <>
-                <Link
-                  to="/"
-                  className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
-                    location.pathname === "/" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
-                  }`}
-                >
-                  Trang Chủ
-                  {location.pathname === "/" && (
-                    <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
-                  )}
-                </Link>
-                
-                <Link
-                  to="/results"
-                  className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
-                    location.pathname === "/results" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
-                  }`}
-                >
-                  Lịch Trình
-                  {location.pathname === "/results" && (
-                    <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
-                  )}
-                </Link>
-                
-                <Link
-                  to="/chat"
-                  className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
-                    location.pathname === "/chat" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
-                  }`}
-                >
-                  Trợ Lý AI
-                  {location.pathname === "/chat" && (
-                    <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
-                  )}
-                </Link>
-                
-                <Link
-                  to="/admin"
-                  className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
-                    location.pathname === "/admin" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
-                  }`}
-                >
-                  Quản Trị
-                  {location.pathname === "/admin" && (
-                    <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
-                  )}
-                </Link>
-              </>
-            )}
+            <Link
+              to="/"
+              className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
+                location.pathname === "/" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
+              }`}
+            >
+              Trang Chủ
+              {location.pathname === "/" && (
+                <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
+              )}
+            </Link>
+            
+            <Link
+              to="/results"
+              className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
+                location.pathname === "/results" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
+              }`}
+            >
+              Lịch Trình
+              {location.pathname === "/results" && (
+                <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
+              )}
+            </Link>
+            
+            <Link
+              to="/chat"
+              className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
+                location.pathname === "/chat" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
+              }`}
+            >
+              Trợ Lý AI
+              {location.pathname === "/chat" && (
+                <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
+              )}
+            </Link>
+            
+            <Link
+              to="/admin"
+              className={`relative text-[10px] font-bold tracking-[0.15em] uppercase transition-colors duration-300 ${
+                location.pathname === "/admin" ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'
+              }`}
+            >
+              Quản Trị
+              {location.pathname === "/admin" && (
+                <span className="absolute -bottom-[22px] left-0 right-0 h-[1px] bg-gray-900"></span>
+              )}
+            </Link>
           </div>
 
           {/* MOBILE MENU TOGGLE (Chưa implement logic mở drawer) */}

@@ -15,14 +15,12 @@ export default function App() {
     const hasVisited = sessionStorage.getItem("visited");
     
     if (!hasVisited) {
-      // Gọi API log-visit để server ghi nhận thống kê
+      // Gọi API init-session để server ghi nhận thống kê
+      // Đánh dấu ngay lập tức để tránh gọi 2 lần (do React StrictMode)
+      sessionStorage.setItem("visited", "true");
+
       // Thêm timestamp để tránh browser cache request
-      fetch(`/api/log-visit?t=${Date.now()}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            // Đánh dấu đã visit trong session này
-            sessionStorage.setItem("visited", "true");
-        })
+      fetch(`http://localhost:3001/api/init-session?t=${Date.now()}`, { method: "POST" })
         .catch(err => console.error("Lỗi khi ghi nhận lượt truy cập:", err));
     }
   }, []);

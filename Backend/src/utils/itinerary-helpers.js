@@ -58,42 +58,83 @@ function deg2rad(deg) {
  *   - suggestion: Gợi ý phương tiện phù hợp
  */
 export function calculateTransport(distanceKm, mode, numPeople) {
-  const config = TRANSPORT_COSTS[mode] || TRANSPORT_COSTS["grab-car"];
   let cost = 0;
   let suggestion = "";
+  let selectedConfig = null;
+  let duration = 0;
 
-  // Nếu quá gần (< 0.5km) thì gợi ý đi bộ, nhưng vẫn tính phí nếu chọn Grab
+  // 1. Nếu quá gần (< 0.5km) -> Đi bộ
   if (distanceKm < 0.5) {
-    suggestion = "Đi bộ cho khỏe (Gần)";
-    if (mode === "own") cost = 0; // Xe riêng đi gần coi như không tốn xăng đáng kể
-    else if (mode.includes("grab") || mode.includes("taxi")) cost = config.base; // Grab vẫn tốn phí mở cửa
-  } 
-  // Xe máy (GrabBike/XanhSM)
-  else if (mode === "grab-bike") {
-    suggestion = distanceKm < 5 
-        ? "GrabBike/XanhSM Bike (Tiết kiệm & Nhanh gọn)" 
-        : "GrabBike/XanhSM Bike (Nên so sánh giá Grab & XanhSM)";
-    cost = (config.base + (distanceKm - 2) * config.perKm) * numPeople;
-    if (cost < config.base) cost = config.base; // Tối thiểu bằng giá mở cửa
-  } 
-  // Ô tô hoặc xe máy cá nhân
-  else {
-    suggestion = mode === "own"
-        ? "Xe máy cá nhân (Chủ động)"
-        : "Taxi/GrabCar (Thoải mái)";
+    return { 
+      cost: mode === "own" ? 0 : 20000, // Vẫn tốn phí mở cửa nếu gọi xe
+      duration: (distanceKm / 5) * 60, // Tốc độ đi bộ 5km/h
+      suggestion: "Tản bộ • Khoảng cách gần" 
+    };
+  }
 
-    if (mode === "own") {
-      cost = distanceKm * config.perKm; // Chỉ tính tiền xăng
+  // 2. Logic so sánh giá
+  if (mode === "own") {
+    // Xe cá nhân
+    const config = TRANSPORT_COSTS["own"];
+    cost = distanceKm * config.perKm;
+    suggestion = "Xe máy cá nhân • Tự túc";
+    duration = (distanceKm / config.speed) * 60 + 5;
+  } 
+  else if (mode.includes("bike")) {
+    // --- BIKE: So sánh Grab vs XanhSM ---
+    const grab = calculateRideCost(distanceKm, TRANSPORT_COSTS["grab-bike"]);
+    const xanh = calculateRideCost(distanceKm, TRANSPORT_COSTS["xanh-bike"]);
+
+    // Chọn cái rẻ hơn
+    if (grab.cost < xanh.cost) {
+       cost = grab.cost;
+       suggestion = `${TRANSPORT_COSTS["grab-bike"].label} • Lựa chọn tốt nhất`;
+       duration = grab.duration;
     } else {
-      cost = config.base + distanceKm * config.perKm; // Tổng cước
+       cost = xanh.cost;
+       suggestion = `${TRANSPORT_COSTS["xanh-bike"].label} • Lựa chọn tốt nhất`;
+       duration = xanh.duration;
+    }
+    // Nhân số lượng xe nếu đi đông (dù bike thường đi 1, nhưng logic support nhóm phượt)
+    cost = cost * numPeople; 
+  } 
+  else {
+    // --- CAR: So sánh dựa trên số người ---
+    const isLargeGroup = numPeople > 4;
+    const typeSuffix = isLargeGroup ? "-7" : "-4";
+    
+    const grabKey = `grab-car${typeSuffix}`;
+    const xanhKey = `xanh-car${typeSuffix}`;
+
+    const grab = calculateRideCost(distanceKm, TRANSPORT_COSTS[grabKey]);
+    const xanh = calculateRideCost(distanceKm, TRANSPORT_COSTS[xanhKey]);
+
+    if (grab.cost < xanh.cost) {
+        cost = grab.cost;
+        suggestion = `${TRANSPORT_COSTS[grabKey].label} • Lựa chọn tốt nhất`;
+        duration = grab.duration;
+    } else {
+        cost = xanh.cost;
+        suggestion = `${TRANSPORT_COSTS[xanhKey].label} • Lựa chọn tốt nhất`;
+        duration = xanh.duration;
     }
   }
 
-  // Thời gian = Quãng đường / Tốc độ + 5 phút chờ
-  const speed = config.speed || 30;
-  const duration = (distanceKm / speed) * 60 + 5;
+  return { cost: Math.round(cost), duration, suggestion };
+}
 
-  return { cost: Math.max(0, Math.round(cost)), duration, suggestion };
+// Helper tính giá chuyến đi cụ thể
+function calculateRideCost(distanceKm, config) {
+  let cost = 0;
+  // Giả định 'base' là giá mở cửa cho 2km đầu (trừ Xanh Car 4 là 1km)
+  // Logic đơn giản hóa: 
+  const firstKmPrice = config.base;
+  const remainingKm = Math.max(0, distanceKm - 2); 
+  
+  cost = firstKmPrice + remainingKm * config.perKm;
+  
+  const duration = (distanceKm / config.speed) * 60 + 5; // +5p chờ
+  return { cost, duration };
 }
 
 /**

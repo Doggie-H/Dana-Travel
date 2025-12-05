@@ -81,7 +81,7 @@ export function validateLocationSelection(
   const isBestTime = isBestTimeToVisit(location, currentTime);
   if (!isBestTime) {
     console.warn(
-      `⚠️ Không phải thời gian tối ưu để đi ${
+      `Không phải thời gian tối ưu để đi ${
         location.name
       }. Thời gian tốt: ${rule.bestTimes?.join(", ")}`
     );
@@ -165,9 +165,13 @@ export function validateBudgetFeasibility(
   // - Ăn: 3 bữa/ngày × 40k = 120k/person
   // - Vé: 50k/person/ngày trung bình
   // - Xăng: 30k/ngày (chung cho nhóm, chia đều)
+  // Minimum để ăn + vé + xăng
+  // - Ăn: 3 bữa/ngày × 35k = 105k/person (Mức sinh viên/Tiết kiệm)
+  // - Vé: 0k (Chỉ đi điểm free) - 50k
+  // - Xăng: 15k/ngày (chung cho nhóm, chia đều)
   const minRequiredPerPersonDaily = hasOwnTransport
-    ? 120000 + 50000 // Ăn + vé (xăng tính riêng)
-    : 120000 + 50000 + 50000; // Ăn + vé + transport
+    ? 100000 // Ăn 90k + Xăng 10k (Chấp nhận mức cực thấp nếu tự túc)
+    : 150000; // Ăn 100k + Vé/Di chuyển 50k
 
   if (perPersonDaily < minRequiredPerPersonDaily) {
     return {
@@ -181,7 +185,7 @@ export function validateBudgetFeasibility(
 
   // Warning nếu quá ít
   if (perPersonDaily < 300000) {
-    console.warn(`⚠️ Ngân sách hạn chế ${perPersonDaily}đ/person/day`);
+    console.warn(`Ngân sách hạn chế ${perPersonDaily}đ/person/day`);
   }
 
   return {

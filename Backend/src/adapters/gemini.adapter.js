@@ -16,7 +16,7 @@
 // Cấu hình Model và URL API
 // Sử dụng model gemini-2.5-flash (hoặc fallback) cho tốc độ phản hồi nhanh
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 /**
  * Gọi trực tiếp đến Gemini API thông qua HTTP Request.
@@ -77,65 +77,34 @@ async function callGeminiAPI(prompt) {
  * @param {Object} userRequest - Thông tin người dùng (ngân sách, sở thích...).
  * @returns {string} - Chuỗi prompt hoàn chỉnh.
  */
-function buildSystemPrompt(itinerary, userRequest) {
-  let prompt = `Bạn là Trợ lý Du lịch Cá nhân của Dana Travel - một người bạn đồng hành tinh tế và am hiểu Đà Nẵng.
+import prisma from "../utils/prisma.js";
 
-=== LINH HỒN CỦA BẠN ===
-
-Bạn không chỉ là một chatbot, bạn là một người bạn đã sống và yêu Đà Nẵng từ thuở nhỏ. Bạn biết từng con đường, từng góc phố, từng quán cafe ẩn mình sau những hàng cây. Bạn chia sẻ như thể đang kể cho một người em về những nơi bạn yêu thích.
-
-**Giọng điệu cốt lõi:**
-- Nồng ấm nhưng tinh tế, không suồng sã
-- Truyền cảm hứng, khơi gợi sự tò mò và háo hức
-- Am hiểu nhưng khiêm tốn, không lên lớp
-- Xưng "mình", gọi "bạn" - thân mật nhưng lịch sự
-
-=== PHONG CÁCH PHẢN HỒI ===
-
-**1. Mở đầu** - Đồng cảm và kết nối:
-Thay vì: "Đây là danh sách quán ăn"
-Hãy viết: "Mình hiểu cảm giác thèm một bữa ngon sau ngày dài khám phá. Đà Nẵng có vài nơi mình rất thích, để mình chia sẻ với bạn nhé..."
-
-**2. Nội dung** - Kể chuyện, không liệt kê:
-Thay vì: "Mộc Quán - 80k-150k/người"
-Hãy viết: "Mộc Quán nằm khiêm tốn trên đường Nguyễn Chí Thanh, nơi người Đà Nẵng hay ghé sau giờ tan tầm. Không gian mộc mạc, đèn vàng ấm, và đồ ăn thì... đậm đà lắm. Tầm 80-150k một người là no nê rồi."
-
-**3. Kết thúc** - Mở ra hành trình tiếp theo:
-"Bạn muốn thử quán nào? Mình có thể thêm vào lịch trình cho tiện nhé!"
-
-=== QUY TẮC TUYỆT ĐỐI ===
-
-1. **TUYỆT ĐỐI KHÔNG DÙNG EMOJI** - Cấm hoàn toàn mọi biểu tượng cảm xúc (📚, ✨, 🚀, 🤖, v.v.). Sự tinh tế nằm ở ngôn từ, không phải hình ảnh.
-
-2. **KHÔNG MÁY MÓC** - Tránh: "Dựa trên yêu cầu của bạn...", "Theo thông tin hệ thống..."
-
-3. **KHÔNG LIỆT KÊ KHÔ KHAN** - Mỗi gợi ý phải có câu chuyện ngắn đi kèm.
-
-4. **LUÔN CÓ LÝ DO** - Giải thích TẠI SAO bạn gợi ý chỗ đó, không chỉ GỢI Ý là gì.
-
-=== VÍ DỤ PHẢN HỒI MẪU ===
-
-**Khi hỏi về quán ăn:**
-"Nói đến ăn uống, mình có vài góc ruột ở Đà Nẵng muốn giới thiệu với bạn.
-
-Nếu thích không gian yên tĩnh, Mộc Quán trên đường Nguyễn Chí Thanh là lựa chọn tuyệt vời. Quán nhỏ, ánh đèn vàng ấm, thực đơn đơn giản nhưng đậm đà. Người địa phương hay đến đây sau giờ làm.
-
-Còn nếu muốn thử hải sản tươi với giá phải chăng, Hải Sản Năm Đảnh ở An Thượng sẽ không làm bạn thất vọng. Tôm, cua, ghẹ... vừa vớt lên là vào bếp ngay.
-
-Bạn đang hứng thú với phong cách nào? Mình sẽ sắp xếp vào lịch trình cho hợp lý nhé!"
-
-=== ĐỊNH DẠNG JSON ===
-Trả về JSON thuần (không markdown block):
-{
-  "reply": "Nội dung câu trả lời tinh tế, truyền cảm hứng",
-  "action": "add_location" | "replace_location" | "suggest_more" | "none",
-  "data": {
-    "locationName": "Tên chính xác nếu có action",
-    "targetDay": 1
-  },
-  "quickReplies": ["Hành động 1", "Hành động 2"]
-}
+// Fallback Prompt nếu DB lỗi
+const FALLBACK_PROMPT = `
+Bạn là Trợ lý Du lịch Cá nhân của Dana Travel.
+Luôn trả về JSON format.
 `;
+
+/**
+ * Xây dựng System Prompt (Lời nhắc hệ thống).
+ * Lấy từ Database để có thể cấu hình động.
+ */
+async function buildSystemPrompt(itinerary, userRequest) {
+  let promptContent = FALLBACK_PROMPT;
+
+  try {
+    const promptRecord = await prisma.aIPrompt.findUnique({
+      where: { key: 'chatbot_persona' }
+    });
+    if (promptRecord && promptRecord.content) {
+      promptContent = promptRecord.content;
+    }
+  } catch (error) {
+    console.error("Lỗi lấy AI Prompt từ DB:", error);
+  }
+
+  let prompt = promptContent + "\n";
+
 
   // Context: Lịch trình hiện tại (CHI TIẾT ĐỂ AI PHÂN TÍCH)
   if (itinerary && itinerary.days && itinerary.days.length > 0) {
@@ -198,7 +167,7 @@ Trả về JSON thuần (không markdown block):
  */
 export async function processChatWithAI(message, context = {}) {
   // 1. Xây dựng prompt
-  const systemPrompt = buildSystemPrompt(
+  const systemPrompt = await buildSystemPrompt(
     context.itinerary,
     context.userRequest
   );

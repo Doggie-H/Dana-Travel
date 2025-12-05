@@ -194,9 +194,9 @@ export function generateDayScheduleStrict({
     return scoredLocations[0];
   };
 
-  console.log(`\n📅 Lập lịch ${new Date(date).toLocaleDateString("vi-VN")}`);
+  console.log(`\nLập lịch ${new Date(date).toLocaleDateString("vi-VN")}`);
   console.log(
-    `⏰ Thời gian: ${startTime}h - ${endTime}h | 💰 Ngân sách: ${dailyBudget.toLocaleString()}đ`
+    `Thời gian: ${startTime}h - ${endTime}h | Ngân sách: ${dailyBudget.toLocaleString()}đ`
   );
 
   // === LAST DAY: Tính thời gian cut-off thực tế ===
@@ -206,7 +206,7 @@ export function generateDayScheduleStrict({
     ? Math.max(startTime + 2, endTime - 1.5) // Checkout trước 1.5h, tối thiểu 2h hoạt động
     : endTime;
   
-  console.log(`⏱️ Thời gian kết thúc hoạt động: ${effectiveEndTime}h ${isLastDay ? '(Ngày cuối)' : ''}`);
+  console.log(`Thời gian kết thúc hoạt động: ${effectiveEndTime}h ${isLastDay ? '(Ngày cuối)' : ''}`);
 
   // Helper function to add activity
   const addActivity = (location, activityType, customDuration = null) => {
@@ -237,29 +237,34 @@ export function generateDayScheduleStrict({
   console.log(`[PHASE 1] Morning Start: ${currentTime}`);
 
   // 1.1 Check-in (Ngày đầu, nếu đến sớm trước 14h thì gửi đồ, sau 14h thì check-in)
+  // 1.1 Check-in / Cất đồ
+  // Nếu là Nhà riêng -> Chỉ hiển thị "Về nhà cất đồ" nếu đến sớm, không có thủ tục Check-in
   if (isFirstDay && currentTime <= 14) {
+    const isHome = hotel.type === 'home';
     const isEarly = currentTime < 13;
+    
     items.push({
       type: "check-in",
       timeStart: formatTime(currentTime),
       timeEnd: formatTime(currentTime + 0.5),
-      title: isEarly
-        ? `Gửi hành lý tại ${hotel.name}`
-        : `Check-in khách sạn ${hotel.name}`,
-      description: isEarly
-        ? "Đến sớm, gửi hành lý tại lễ tân để đi chơi."
-        : "Nhận phòng và cất hành lý.",
+      title: isHome 
+        ? "Về nhà cất hành lý / Nghỉ ngơi" 
+        : (isEarly ? `Gửi hành lý tại ${hotel.name}` : `Check-in khách sạn ${hotel.name}`),
+      description: isHome
+        ? "Sắp xếp đồ đạc và chuẩn bị đi chơi."
+        : (isEarly ? "Đến sớm, gửi hành lý tại lễ tân để đi chơi." : "Nhận phòng và cất hành lý."),
       location: hotel,
-      cost: { ticket: accommodationCost, food: 0, other: 0 }, // Hiển thị tổng tiền phòng
+      address: hotel.address || hotel.area || "Đà Nẵng",
+      cost: { ticket: accommodationCost, food: 0, other: 0 }, 
       duration: 30,
       transport: {
         mode: transport.mode,
-        distance: 5, // Giả định từ sân bay
+        distance: 5, 
         durationMin: 30,
-        cost: transport.mode === "taxi" ? 150000 : 50000,
+        cost: (transport.mode === "own" || hotel.type === "home") ? 0 : (transport.mode === "taxi" ? 150000 : 50000),
         from: "Sân bay/Nhà ga",
-        to: hotel.name,
-        suggestion: "Di chuyển về khách sạn",
+        to: isHome ? "Nhà riêng" : hotel.name,
+        suggestion: isHome ? "Di chuyển về nhà" : "Di chuyển về khách sạn",
       },
     });
     currentTime += 0.5;
@@ -524,6 +529,7 @@ export function generateDayScheduleStrict({
     }
     
     // Về khách sạn checkout (nếu chưa ở khách sạn)
+    const isHome = hotel.type === 'home';
     if (currentLoc.id !== hotel.id) {
       const distanceToHotel = calculateDistance(currentLoc.lat, currentLoc.lng, hotel.lat, hotel.lng);
       const transportToHotel = calculateTransport(distanceToHotel, transport, numPeople);
@@ -533,56 +539,61 @@ export function generateDayScheduleStrict({
         type: "transport",
         timeStart: formatTime(currentTime),
         timeEnd: formatTime(currentTime + travelTime / 60),
-        title: `Về khách sạn lấy hành lý`,
-        description: "Về khách sạn checkout và chuẩn bị kết thúc chuyến đi.",
+        title: isHome ? "Về nhà" : "Về khách sạn lấy hành lý",
+        description: isHome ? "Di chuyển về nhà để kết thúc chuyến đi." : "Về khách sạn checkout và chuẩn bị kết thúc chuyến đi.",
         location: hotel,
         address: hotel.address || hotel.area || "Đà Nẵng",
-        cost: { ticket: 0, food: 0, other: transportToHotel.cost },
+        cost: { ticket: 0, food: 0, other: (isHome || transport.mode === "own") ? 0 : transportToHotel.cost },
         duration: travelTime,
-        transport: transportToHotel
+        transport: {
+            ...transportToHotel,
+            cost: (isHome || transport.mode === "own") ? 0 : transportToHotel.cost
+        }
       });
       currentTime += travelTime / 60;
     }
     
-    // Check-out đơn giản - không tính tiền, chỉ đánh dấu kết thúc
+    // Check-out / Kết thúc hành trình
     items.push({
       type: "check-out",
       timeStart: formatTime(currentTime),
       timeEnd: formatTime(endTime),
-      title: `Check-out & Kết thúc chuyến đi`,
-      description: `Trả phòng ${hotel.name}, chào tạm biệt Đà Nẵng!`,
+      title: isHome ? "Kết thúc chuyến đi" : "Check-out & Kết thúc chuyến đi",
+      description: isHome ? "Kết thúc hành trình vui vẻ. Về nhà nghỉ ngơi." : `Trả phòng ${hotel.name}, chào tạm biệt Đà Nẵng!`,
       location: hotel,
       address: hotel.address || hotel.area || "Đà Nẵng",
-      cost: { ticket: 0, food: 0, other: 0 }, // Không tính tiền checkout
+      cost: { ticket: 0, food: 0, other: 0 }, 
       duration: 0,
-      transport: null // Không cần transport
+      transport: null 
     });
   } else {
-    // NGÀY THƯỜNG: Về khách sạn ngủ
+    // Về khách sạn ngủ
     let returnTime = currentTime < 22.5 ? 22.5 : currentTime;
     
     // Tính chi phí phòng
+    const isHome = hotel.type === 'home';
     const basePrice = hotel.ticket || (hotel.priceLevel === "expensive" ? 1500000 : 500000);
     const numRooms = Math.ceil(numPeople / 2);
-    const nightlyCost = basePrice * numRooms;
+    const nightlyCost = isHome ? 0 : (basePrice * numRooms);
 
     items.push({
       type: "accommodation",
       timeStart: formatTime(returnTime),
       timeEnd: "06:00",
-      title: `Về khách sạn: ${hotel.name}`,
+      title: isHome ? "Về nhà nghỉ ngơi" : `Về khách sạn: ${hotel.name}`,
       description: "Nghỉ ngơi sau một ngày dài.",
       location: hotel,
-      cost: { ticket: 0, food: 0, other: 0 }, // Đã tính tiền phòng lúc check-in
+      address: hotel.address || hotel.area || "Đà Nẵng", 
+      cost: { ticket: 0, food: 0, other: 0 }, 
       duration: 0,
       transport: {
           mode: "Di chuyển",
           distance: 5,
           durationMin: 20,
-          cost: 50000, // Taxi về đêm
+          cost: (isHome || transport.mode === "own") ? 0 : 50000,
           from: currentLoc.name,
-          to: hotel.name,
-          suggestion: "Về khách sạn nghỉ ngơi"
+          to: isHome ? "Nhà riêng" : hotel.name,
+          suggestion: isHome ? "Về nhà" : "Về khách sạn nghỉ ngơi"
       }
     });
   }

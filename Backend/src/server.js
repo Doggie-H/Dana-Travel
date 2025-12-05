@@ -9,12 +9,14 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import morgan from "morgan";
+import { randomUUID } from "crypto"; // Fix: Import randomUUID
 
 // Import các Routes (Bộ định tuyến)
 import itineraryRoutes from "./routes/itinerary.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
 import locationRoutes from "./routes/location.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import loggingRoutes from "./routes/logging.routes.js";
 
 // Import Middleware xử lý lỗi
 import { notFoundHandler, errorHandler } from "./middleware/error.handler.middleware.js";
@@ -77,7 +79,7 @@ app.get("/api/ping", (req, res) => {
 });
 
 // Log Visit: API để ghi nhận lượt truy cập (dùng cho thống kê)
-app.post("/api/log-visit", async (req, res) => {
+app.post("/api/init-session", async (req, res) => {
   try {
     const ip = req.ip || req.connection.remoteAddress;
     let username = null;
@@ -118,6 +120,7 @@ app.post("/api/log-visit", async (req, res) => {
     // Ghi vào bảng AccessLog
     await prisma.accessLog.create({
       data: {
+        id: `TC_${randomUUID()}`, // Fix: Add required ID
         ip: ip,
         userAgent: req.get("User-Agent"),
         endpoint: "/",
@@ -138,6 +141,7 @@ app.use("/api/itinerary", itineraryRoutes); // Xử lý tạo lịch trình
 app.use("/api/chat", chatRoutes);           // Xử lý Chatbot AI
 app.use("/api/location", locationRoutes);   // Xử lý địa điểm du lịch
 app.use("/api/admin", adminRoutes);         // Xử lý quản trị (cần đăng nhập)
+app.use("/api/logs", loggingRoutes);        // Endpoint ghi log lỗi
 
 // --- 3. XỬ LÝ LỖI (ERROR HANDLING) ---
 
@@ -154,4 +158,45 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 });
 
 // Xử lý lỗi khởi động (VD: trùng cổng)
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`❌ Cổng ${PORT} đang được sử dụng. Vui lòng tắt server cũ hoặc đổi cổng.`);
+  } else {
+    console.error("❌ Lỗi khởi động server:", err);
+  }
+  process.exit(1);
+});
+
+// Thêm lưới an toàn cho cả server (Crash Handlers)
+// Bắt các lỗi không được xử lý để tránh crash đột ngột mà không log
+process.on("uncaughtException", async (err) => {
+  console.error("CRITICAL: UNCAUGHT EXCEPTION", err);
+  try {
+    await prisma.errorLog.create({
+      data: {
+        message: err.message,
+        stack: err.stack,
+        source: "BACKEND_CRASH",
+      },
+    });
+  } catch (logErr) {
+    console.error("FATAL: Could not log crash to DB", logErr);
+  }
+  process.exit(1);
+});
+
+process.on("unhandledRejection", async (reason) => {
+  console.error("CRITICAL: UNHANDLED REJECTION", reason);
+  try {
+    await prisma.errorLog.create({
+      data: {
+        message: reason instanceof Error ? reason.message : JSON.stringify(reason),
+        stack: reason instanceof Error ? reason.stack : null,
+        source: "BACKEND_REJECTION",
+      },
+    });
+  } catch (logErr) {
+    console.error("FATAL: Could not log rejection to DB", logErr);
+  }
+});
 server.on("error", (err) => console.error("Lỗi khởi động Server:", err));

@@ -3,6 +3,7 @@
  * Ghi lại thông tin request, response và người dùng vào database.
  */
 
+import { randomUUID } from "crypto"; // Fix: Import randomUUID
 import prisma from "../utils/prisma.js";
 
 export const requestLogger = async (req, res, next) => {
@@ -68,7 +69,7 @@ export const requestLogger = async (req, res, next) => {
               }
             }
           } else if (token === process.env.ADMIN_TOKEN) {
-             role = "SUPER_ADMIN";
+             role = "admin";
              username = "system_admin";
           }
         } catch (e) {}
@@ -77,6 +78,7 @@ export const requestLogger = async (req, res, next) => {
       // 4. Ghi log vào Database
       await prisma.accessLog.create({
         data: {
+          id: `TC_${randomUUID()}`, // Fix: Add required ID
           ip: req.ip || req.connection.remoteAddress,
           userAgent: req.get("User-Agent"),
           endpoint: req.originalUrl,

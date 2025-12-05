@@ -112,6 +112,18 @@ export default function Chat() {
 
       setMessages((prev) => [...prev, botMessage]);
 
+      // Cập nhật context từ phản hồi của Bot (để duy trì trạng thái như pendingReplacement)
+      if (response.context) {
+        setContext(prev => ({ ...prev, ...response.context }));
+      }
+
+      // Xử lý hành động điều hướng (Ví dụ: In lịch trình)
+      if (response.action === "navigate_results_print") {
+        setTimeout(() => {
+          navigate("/results", { state: { autoPrint: true } });
+        }, 1500);
+      }
+
       // Xử lý itineraryPatch nếu có (thêm/đổi địa điểm)
       if (response.itineraryPatch) {
         const currentItinerary = loadItinerary();
@@ -139,6 +151,37 @@ export default function Chat() {
               quickReplies: ["Xem lịch trình", "Thêm địa điểm khác"],
             };
             setMessages((prev) => [...prev, confirmMessage]);
+          } else if (patch.action === "replace" && patch.oldLocationId && patch.newItem) {
+              // Xử lý thay thế địa điểm
+              let replaced = false;
+              currentItinerary.days.forEach(day => {
+                  const itemIndex = day.items.findIndex(item => item.id === patch.oldLocationId);
+                  if (itemIndex !== -1) {
+                      const oldItem = day.items[itemIndex];
+                      // Thay thế item cũ bằng item mới nhưng giữ nguyên thời gian
+                      day.items[itemIndex] = {
+                          ...oldItem,
+                          id: patch.newItem.id,
+                          title: patch.newItem.name,
+                          type: patch.newItem.type || oldItem.type,
+                          description: `Thay thế từ Chatbot`, // Optional
+                      };
+                      replaced = true;
+                  }
+              });
+
+              if (replaced) {
+                  saveItinerary(currentItinerary);
+                  setContext({ ...context, itinerary: currentItinerary });
+                  
+                  const confirmMessage = {
+                      sender: "bot",
+                      text: `Đã cập nhật lịch trình! (Thay thế thành công)`,
+                      timestamp: new Date().toISOString(),
+                      quickReplies: ["Xem lịch trình", "Tiếp tục chỉnh sửa"],
+                  };
+                  setMessages((prev) => [...prev, confirmMessage]);
+              }
           }
         }
       }
