@@ -68,6 +68,15 @@ Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) v�
 
 ### 3.3. Sơ đồ Use Case (UML)
 
+> [!WARNING]
+> **Lưu ý về hiển thị**:
+> - **Hình ảnh dưới đây** là minh họa chính xác cho giao diện "Người que" (Stick Figure) mà bạn muốn.
+> - **Đoạn code Mermaid** bên dưới dùng để hiển thị trên GitHub. **Nếu bạn thấy lỗi "No diagram type detected" trên máy cá nhân, hãy bỏ qua nó.** Đó là do trình soạn thảo của bạn chưa cập nhật, nhưng code này sẽ hoạt động tốt trên GitHub.
+
+#### Minh họa (Hiển thị tốt trên máy bạn)
+![Sơ đồ Use Case chuẩn UML](C:/Users/Doggie/.gemini/antigravity/brain/ebf205ae-d32f-4c19-9627-51c6bb44989e/usecase_diagram_1764917618317.png)
+
+#### Mã nguồn Mermaid (Hiển thị tốt trên GitHub)
 ```mermaid
 usecaseDiagram
     actor "Khách du lịch" as User
