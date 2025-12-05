@@ -70,21 +70,23 @@ Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) v�
 
 ### 3.3. Sơ đồ Use Case (UML)
 
-```mermaid
-graph LR
-    User("👤 Khách du lịch")
-    Admin("👤 Quản trị viên")
-    AI("🤖 Hệ thống AI")
+> [!NOTE]
+> Nếu sơ đồ bên dưới không hiển thị (báo lỗi), vui lòng cập nhật trình xem Markdown hoặc xem trên GitHub để hỗ trợ cú pháp `usecaseDiagram` chuẩn UML.
 
-    subgraph System["Hệ thống DanaTravel"]
-        direction TB
-        UC1(["Đăng nhập / Đăng ký"])
-        UC2(["Lập lịch trình du lịch"])
-        UC3(["Tra cứu thông tin địa điểm"])
-        UC4(["Trò chuyện với Chatbot"])
-        UC5(["Quản lý dữ liệu hệ thống"])
-        UC6(["Xem báo cáo thống kê"])
-    end
+```mermaid
+usecaseDiagram
+    actor "Khách du lịch" as User
+    actor "Quản trị viên" as Admin
+    actor "Hệ thống AI" as AI
+
+    package "Hệ thống DanaTravel" {
+        usecase "Đăng nhập / Đăng ký" as UC1
+        usecase "Lập lịch trình du lịch" as UC2
+        usecase "Tra cứu thông tin địa điểm" as UC3
+        usecase "Trò chuyện với Chatbot" as UC4
+        usecase "Quản lý dữ liệu hệ thống" as UC5
+        usecase "Xem báo cáo thống kê" as UC6
+    }
 
     User --> UC1
     User --> UC2
@@ -95,8 +97,8 @@ graph LR
     Admin --> UC5
     Admin --> UC6
 
-    UC4 -.-> AI
-    UC2 -.-> UC3
+    UC4 ..> AI : "Sử dụng API"
+    UC2 ..> UC3 : "Include"
 ```
 
 ### 3.4. Đặc tả Use Case (Use Case Specification)
