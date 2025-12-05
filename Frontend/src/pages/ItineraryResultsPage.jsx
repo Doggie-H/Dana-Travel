@@ -189,13 +189,12 @@ export default function ItineraryResultsPage() {
                 
                 {/* Nút xem bản đồ ngày đó */}
                 <div className="mt-6 flex justify-end no-print">
-                  <button
-                    className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 flex items-center gap-2 transition-colors"
-                    onClick={() => handleOpenDayMap(day)}
-                  >
-                    <span>Xem Bản Đồ Ngày {day.dayNumber}</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                  </button>
+                    <button
+                      className="text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-gray-900 flex items-center gap-2 transition-colors"
+                      onClick={() => handleOpenDayMap(day)}
+                    >
+                      <span>Xem Bản Đồ Ngày {day.dayNumber}</span>
+                    </button>
                 </div>
               </div>
             </div>
