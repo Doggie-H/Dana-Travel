@@ -17,19 +17,6 @@ Hệ thống tự động xây dựng kế hoạch du lịch chi tiết theo t�
 -   **Tối ưu hóa đa mục tiêu**: Cân bằng giữa Sở thích (Preferences), Khoảng cách di chuyển (Distance Minimization) và Ngân sách (Budget Constraints).
 -   **Phân bổ khe thời gian (Time-slot Allocation)**: Chia ngày thành các giai đoạn (Sáng, Trưa, Chiều, Tối) và lấp đầy bằng các hoạt động phù hợp (Tham quan, Ăn uống, Nghỉ ngơi).
 
-### 🗺️ Context-Aware Location Services (Dịch vụ địa điểm theo ngữ cảnh)
--   **Dynamic Suggestions**: Gợi ý địa điểm thay thế dựa trên vị trí hiện tại của người dùng.
--   **Weather Adaptation**: Tự động đề xuất các địa điểm trong nhà (`indoor: true`) khi phát hiện từ khóa về thời tiết xấu.
-
-### 📊 Admin Dashboard (Quản trị hệ thống)
--   Quản lý cơ sở dữ liệu địa điểm, danh mục và phương tiện.
--   Theo dõi hành vi người dùng thông qua biểu đồ xu hướng tìm kiếm và nhật ký truy cập (Access Logs).
-
-## 3. Công nghệ sử dụng (Tech Stack)
--   **Frontend**: ReactJS (Vite), Tailwind CSS, Recharts (Data Visualization).
--   **Backend**: Node.js, Express.js (RESTful API).
--   **Database**: SQLite (Dev) / PostgreSQL (Prod), quản lý qua **Prisma ORM**.
--   **AI Core**: Google Gemini 1.5/2.5 Flash (via Google AI Studio).
 -   **Algorithms**: Distance Matrix Calculation, Constraint Satisfaction Problem (CSP).
 
 ## 4. Hướng dẫn cài đặt (Installation)

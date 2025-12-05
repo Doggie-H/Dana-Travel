@@ -1,379 +1,197 @@
-# Tài liệu Kiến trúc Hệ thống DanaTravel
+# TÀI LIỆU KIẾN TRÚC HỆ THỐNG (SYSTEM ARCHITECTURE DOCUMENT)
 
-Tài liệu này cung cấp cái nhìn tổng quan về kỹ thuật, kiến trúc, thiết kế dữ liệu và các luồng hoạt động chính của hệ thống DanaTravel.
+**Dự án:** DanangTravel-AI - Hệ thống Lập lịch trình Du lịch Thông minh  
+**Phiên bản:** 1.0  
 
-## 1. Tổng quan Hệ thống
+---
 
-DanaTravel là một nền tảng Trợ lý Du lịch Thông minh sử dụng AI và các thuật toán ràng buộc chặt chẽ để lập kế hoạch du lịch cá nhân hóa.
+## 1. Tổng quan Kiến trúc (Architectural Overview)
 
-### 1.1. Bối cảnh Hệ thống (C4 Level 1)
+Hệ thống được thiết kế dựa trên mô hình **Client-Server** theo kiến trúc **Three-Tier Monolithic** (Ba tầng nguyên khối), tích hợp các dịch vụ bên thứ ba (Third-party Services) để xử lý tác vụ trí tuệ nhân tạo.
 
-```mermaid
-graph TD
-    User[Khách du lịch] --> System[Hệ thống DanaTravel]
-    Admin[Quản trị viên] --> System
-    System --> Gemini[Google Gemini AI]
-```
+Kiến trúc này được lựa chọn để đảm bảo sự cân bằng giữa hiệu năng (Performance), khả năng bảo trì (Maintainability) và tốc độ phát triển (Development Velocity).
 
-### 1.2. Kiến trúc Container (C4 Level 2)
-
-Hệ thống được xây dựng theo kiến trúc Monolithic với Frontend và Backend tách biệt, giao tiếp qua RESTful APIs.
+### 1.1. Mô hình C4 - Level 1: System Context
+Sơ đồ ngữ cảnh hệ thống mô tả ranh giới và sự tương tác giữa hệ thống với các tác nhân bên ngoài.
 
 ```mermaid
 graph TD
-    User[Người dùng] --> FE[Frontend React]
-    FE --> API[Backend API]
-    API --> DB[(Database SQLite)]
-    API --> Gemini[Google Gemini AI]
-```
-
-## 2. Công nghệ Sử dụng (Tech Stack)
-
-| Thành phần | Công nghệ | Phiên bản | Mô tả |
-| :--- | :--- | :--- | :--- |
-| **Frontend** | React | ^18.2.0 | Thư viện UI chính |
-| | Vite | ^5.0.8 | Build tool siêu tốc |
-| | TailwindCSS | ^3.4.18 | Framework CSS utility-first |
-| | React Router | ^6.20.0 | Quản lý điều hướng |
-| **Backend** | Node.js | LTS | Môi trường chạy JavaScript |
-| | Express | ^4.18.2 | Web framework |
-| | Prisma | ^5.22.0 | ORM làm việc với Database |
-| | SQLite | - | Cơ sở dữ liệu nhẹ |
-| **AI** | Google Gemini | 1.5 Flash | Mô hình ngôn ngữ lớn (LLM) |
-
-## 3. Sơ đồ Use Case
-
-Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) và hệ thống.
-
-### 3.1. Các Tác nhân (Actors)
-
-1.  **Khách du lịch (User)**: Người dùng cuối truy cập hệ thống để tìm kiếm thông tin và lập kế hoạch du lịch.
-2.  **Quản trị viên (Admin)**: Người quản lý nội dung, dữ liệu địa điểm và theo dõi hoạt động của hệ thống.
-3.  **Hệ thống AI (Gemini)**: Tác nhân phụ hỗ trợ trả lời câu hỏi và gợi ý lịch trình thông minh.
-
-### 3.2. Danh sách Use Case
-
-**Nhóm Khách du lịch:**
-*   **Lập lịch trình tự động**: Nhập ngân sách, số ngày, sở thích để tạo lịch trình.
-*   **Tùy chỉnh lịch trình**: Thay đổi các tham số để tạo lại lịch trình.
-*   **Trò chuyện với AI**: Hỏi đáp thông tin du lịch Đà Nẵng.
-*   **Tra cứu địa điểm**: Xem thông tin chi tiết, giá vé, menu của các địa điểm.
-
-**Nhóm Quản trị viên:**
-*   **Đăng nhập hệ thống**: Truy cập vào trang quản trị.
-*   **Quản lý địa điểm**: Thêm, sửa, xóa thông tin địa điểm du lịch/ăn uống.
-*   **Quản lý tri thức AI**: Cập nhật cơ sở dữ liệu câu hỏi/câu trả lời cho Chatbot.
-*   **Xem báo cáo thống kê**: Xem lưu lượng truy cập, xu hướng tìm kiếm.
-*   **Quản lý tài khoản**: Thêm hoặc xóa các quản trị viên khác.
-
-### 3.3. Sơ đồ Use Case (Minh họa)
-
-```mermaid
-graph LR
-    %% Actors
-    User("Khách du lịch")
-    Admin("Quản trị viên")
-    AI("Hệ thống AI")
-
-    %% System Boundary
-    subgraph System["Hệ thống DanaTravel"]
-        direction TB
-        UC1(["Đăng nhập / Đăng ký"])
-        UC2(["Lập lịch trình du lịch"])
-        UC3(["Tra cứu thông tin địa điểm"])
-        UC4(["Trò chuyện với Chatbot"])
-        UC5(["Quản lý dữ liệu hệ thống"])
-        UC6(["Xem báo cáo thống kê"])
+    User((Khách Du Lịch))
+    Admin((Quản Trị Viên))
+    
+    subgraph "Internal System"
+        System[Hệ thống DanaTravel-AI]
     end
-
-    %% Relationships
-    User --> UC2
-    User --> UC3
-    User --> UC4
-
-    Admin --> UC1
-    Admin --> UC5
-    Admin --> UC6
-
-    UC4 -.->|<<use>>| AI
-    UC2 -.->|<<include>>| UC3
+    
+    ExternalAI[Google Gemini AI Service]
+    ExternalMaps[Google Maps Platform]
+    
+    User -->|Truy vấn thông tin & Lập lịch| System
+    Admin -->|Quản lý dữ liệu & Cấu hình| System
+    
+    System -->|API Request (GenAI)| ExternalAI
+    System -->|Geocoding & Labeling| ExternalMaps
 ```
 
-### 3.4. Đặc tả Use Case (Use Case Specification)
+### 1.2. Mô hình C4 - Level 2: Container Architecture
+Sơ đồ Container mô tả các đơn vị phần mềm (Software Units) và công nghệ được sử dụng.
 
-| ID | Tên Use Case | Tác nhân chính | Mô tả tóm tắt |
-| :--- | :--- | :--- | :--- |
-| **UC1** | Đăng nhập | Admin | Xác thực người dùng vào hệ thống. |
-| **UC2** | Lập lịch trình | User | Tạo lịch trình dựa trên ngân sách, thời gian, sở thích. |
-| **UC3** | Tra cứu địa điểm | User | Xem thông tin chi tiết, giá vé, menu của địa điểm. |
-| **UC4** | Chat với Bot | User | Hỏi đáp thông tin du lịch qua giao diện chat. |
-| **UC5** | Quản lý dữ liệu | Admin | Thêm/Sửa/Xóa địa điểm, bài viết tri thức. |
-| **UC6** | Xem báo cáo | Admin | Theo dõi thống kê truy cập và xu hướng. |
+```mermaid
+graph TD
+    User((User Interface))
+    
+    subgraph "Client Layer (Presentation)"
+        SPA[Single Page Application\n(ReactJS + Vite)]
+    end
+    
+    subgraph "Server Layer (Business Logic)"
+        API[RESTful API Server\n(Node.js + Express)]
+    end
+    
+    subgraph "Persistence Layer (Data)"
+        DB[(Relational Database\nSQLite/PostgreSQL)]
+    end
+    
+    ExternalAI[Generative AI Service\n(Google Gemini)]
 
-## 4. Thiết kế Cơ sở dữ liệu (ERD)
+    User -->|HTTPS/Interaction| SPA
+    SPA -->|JSON/REST| API
+    
+    API -->|ORM Query (Prisma)| DB
+    DB -->|Result Set| API
+    
+    API -->|Inference Request| ExternalAI
+    ExternalAI -->|Completion Response| API
+    
+    style SPA fill:#E1F5FE,stroke:#01579B
+    style API fill:#FFF3E0,stroke:#E65100
+    style DB fill:#E8F5E9,stroke:#1B5E20
+    style ExternalAI fill:#F3E5F5,stroke:#4A148C
+```
 
-Sơ đồ mô tả cấu trúc dữ liệu và mối quan hệ giữa các thực thể trong hệ thống.
+**Mô tả thành phần:**
+1.  **Presentation Layer (SPA):** Ứng dụng ReactJS chịu trách nhiệm hiển thị giao diện, quản lý trạng thái (State Management) và điều hướng người dùng. Không chứa logic nghiệp vụ phức tạp.
+2.  **Business Logic Layer (API Server):** Xử lý các yêu cầu nghiệp vụ trung tâm như: Lập lịch trình, Xác thực (Authentication), Tích hợp AI. Sử dụng kiến trúc MVC (Model-View-Controller).
+3.  **Persistence Layer (Database):** Lưu trữ dữ liệu có cấu trúc. Sử dụng Prisma ORM để trừu tượng hóa các câu lệnh SQL, tăng tính bảo mật và nhất quán dữ liệu.
 
-### 4.1. Các Thực thể (Entities)
+---
 
-1.  **Location (Địa điểm)**: Lưu trữ thông tin các điểm tham quan, nhà hàng, khách sạn.
-2.  **Admin (Quản trị viên)**: Tài khoản quản trị hệ thống.
-3.  **Knowledge (Tri thức)**: Dữ liệu hỏi đáp mẫu dùng cho RAG (Retrieval-Augmented Generation).
-4.  **ChatLog (Lịch sử Chat)**: Lưu lại các cuộc hội thoại giữa người dùng và Bot.
-5.  **AccessLog (Nhật ký truy cập)**: Ghi lại hoạt động truy cập API để thống kê.
-6.  **SearchTrend (Xu hướng tìm kiếm)**: Lưu lại các từ khóa và nhu cầu tìm kiếm của người dùng.
-7.  **Transport (Phương tiện)**: Bảng giá và loại hình phương tiện di chuyển.
+## 2. Thiết kế Dữ liệu (Data Design)
 
-### 4.2. Sơ đồ Minh họa
+Mô hình dữ liệu được thiết kế theo chuẩn **Relational Database Model**. Dưới đây là Sơ đồ Thực thể - Quan hệ (ERD - Entity Relationship Diagram).
 
 ```mermaid
 erDiagram
-    Admin {
-        string id PK
-        string username
-        string passwordHash
-        string email
+    ADMIN {
+        uuid id PK
+        string username UK
+        string password_hash
         string role
         boolean active
-        datetime lastLogin
-        datetime createdAt
-        datetime updatedAt
     }
-
-    Location {
-        string id PK
+    
+    LOCATION {
+        uuid id PK
         string name
         string type
-        string area
-        string address
-        float lat
-        float lng
-        float ticket
-        boolean indoor
-        string priceLevel
-        string tags
-        string description
-        string menu
-        int suggestedDuration
-        string openTime
-        string closeTime
-        string visitType
-        datetime createdAt
-        datetime updatedAt
+        float latitude
+        float longitude
+        boolean is_indoor "Hỗ trợ gợi ý thời tiết"
+        json tags "Metadata cho thuật toán gợi ý"
+        float price_level
     }
-
-    Knowledge {
-        string id PK
-        string question
-        string answer
+    
+    KNOWLEDGE_BASE {
+        uuid id PK
+        string question_pattern
+        string answer_template
         string keywords
-        datetime createdAt
-        datetime updatedAt
     }
-
-    ChatLog {
-        string id PK
-        string userMessage
-        string botResponse
-        datetime timestamp
+    
+    SESSION_LOG {
+        uuid id PK
+        text user_input
+        text system_response
+        timestamp created_at
     }
-
-    AccessLog {
-        string id PK
-        string ip
-        string userAgent
-        string endpoint
-        string method
-        string username
-        string role
-        datetime timestamp
-    }
-
-    SearchTrend {
-        string id PK
-        string tags
-        string duration
-        float budget
-        int people
-        datetime createdAt
-    }
-
-    Transport {
-        string id PK
+    
+    TRANSPORT_MODE {
+        uuid id PK
         string name
-        string type
-        float basePrice
-        float pricePerKm
-        string description
-        datetime createdAt
-        datetime updatedAt
+        float base_cost
+        float cost_per_km
     }
 
-    Admin ||--o{ Location : "quản lý"
-    Admin ||--o{ Knowledge : "quản lý"
-    Admin ||--o{ Transport : "quản lý"
-    Admin ||--o{ AccessLog : "ghi nhật ký"
-    Admin ||--o{ ChatLog : "xem lịch sử"
-    Admin ||--o{ SearchTrend : "theo dõi xu hướng"
-```
-*Hình 4.2: Sơ đồ ERD thiết kế cơ sở dữ liệu*
-
-### 4.3. Mô tả Quan hệ (Relationship Description)
-
-Mặc dù hệ thống sử dụng SQLite và Prisma không thiết lập khóa ngoại cứng (Foreign Key Constraints) để tối ưu hiệu năng đọc ghi, nhưng về mặt logic nghiệp vụ (Business Logic), các thực thể có mối quan hệ chặt chẽ như sau:
-
-1.  **Admin - Location (1-n)**: Một Quản trị viên có thể tạo và quản lý nhiều Địa điểm.
-2.  **Admin - Knowledge (1-n)**: Một Quản trị viên có thể cập nhật nhiều mục Tri thức cho AI.
-3.  **Admin - AccessLog (1-n)**: Mọi hành động của Admin đều được ghi lại trong nhiều dòng Nhật ký truy cập.
-4.  **Admin - ChatLog (1-n)**: Quản trị viên xem và phân tích lịch sử trò chuyện để cải thiện chất lượng Chatbot.
-5.  **Admin - SearchTrend (1-n)**: Quản trị viên theo dõi các xu hướng tìm kiếm để nắm bắt nhu cầu người dùng.
-6.  **Location - SearchTrend (n-n)**: (Gián tiếp) Các thẻ (Tags) của địa điểm được liên kết với xu hướng tìm kiếm của người dùng thông qua phân tích từ khóa.
-
-## 5. Luồng Hoạt động (Activity Flows)
-
-### 5.1. Quy trình Lập Lịch trình (Algorithm)
-
-Đây là quy trình phức tạp nhất, sử dụng thuật toán CSP (Constraint Satisfaction Problem) để đảm bảo lịch trình khả thi.
-
-**Mô tả luồng:**
-1.  Người dùng nhập: Ngân sách, Số ngày, Sở thích (Tags).
-2.  Hệ thống lọc danh sách `Location` phù hợp với Sở thích.
-3.  Hệ thống khởi tạo lịch trình rỗng cho từng ngày.
-4.  **Vòng lặp xếp lịch (Greedy + Backtracking)**:
-    *   Chọn địa điểm ăn trưa/tối phù hợp ngân sách.
-    *   Chọn địa điểm tham quan dựa trên khoảng cách địa lý (gần địa điểm trước đó) và giờ mở cửa.
-    *   Kiểm tra ràng buộc: Tổng chi phí < Ngân sách, Tổng thời gian < Thời gian trong ngày.
-5.  Nếu không tìm được phương án khả thi -> Thông báo hoặc gợi ý nới lỏng ngân sách.
-6.  Nếu thành công -> Trả về JSON lịch trình chi tiết.
-
-```mermaid
-flowchart TD
-    Start([Bắt đầu]) --> Input[/"Nhập: Ngân sách, Số ngày, Sở thích"/]
-    Input --> Filter["Lọc Địa điểm theo Sở thích"]
-    Filter --> Init["Khởi tạo Lịch trình rỗng"]
-    
-    Init --> LoopDay{"Còn ngày trống?"}
-    LoopDay -- Có --> SelectFood["Chọn quán ăn"]
-    SelectFood --> SelectAttr["Chọn điểm tham quan gần nhất"]
-    SelectAttr --> CheckConstraint{"Kiểm tra Ràng buộc"}
-    
-    CheckConstraint -- Thỏa mãn --> AddToPlan["Thêm vào Lịch trình"]
-    CheckConstraint -- Vi phạm --> Backtrack["Quay lui / Chọn điểm khác"]
-    
-    AddToPlan --> LoopDay
-    LoopDay -- Hết --> Result[/"Trả về Lịch trình"/]
-    Result --> End([Kết thúc])
+    %% Relationships
+    ADMIN ||--o{ LOCATION : manages
+    ADMIN ||--o{ KNOWLEDGE_BASE : manages
 ```
 
-### 5.2. Quy trình Chatbot (RAG)
+**Chuẩn hóa dữ liệu:**
+*   Các bảng được thiết kế đạt chuẩn 3NF (Third Normal Form) để giảm thiểu dư thừa dữ liệu.
+*   Bảng `Location` sử dụng cột JSON `tags` để hỗ trợ tính linh hoạt (schema-less) cho các thuộc tính tìm kiếm phong phú.
 
-Quy trình xử lý khi người dùng đặt câu hỏi cho Chatbot.
+---
 
-**Mô tả luồng:**
-1.  Người dùng gửi tin nhắn.
-2.  Hệ thống tìm kiếm từ khóa trong bảng `Knowledge` và `Location`.
-3.  Lấy các thông tin liên quan nhất (Context).
-4.  Gửi Prompt = "Context + Câu hỏi người dùng" đến Google Gemini AI.
-5.  Gemini trả về câu trả lời tự nhiên.
-6.  Hệ thống lưu hội thoại vào `ChatLog` và hiển thị cho người dùng.
+## 3. Đặc tả Thuật toán (Algorithmic Specification)
 
-```mermaid
-sequenceDiagram
-    participant User as Người dùng
-    participant System as Hệ thống
-    participant DB as Database
-    participant AI as Gemini
+### 3.1. Thuật toán Lập lịch trình Heuristic (Heuristic Scheduling Algorithm)
 
-    User->>System: Gửi câu hỏi
-    System->>DB: Tìm kiếm thông tin liên quan
-    DB-->>System: Trả về dữ liệu (Context)
-    System->>AI: Gửi Prompt (Context + Câu hỏi)
-    AI-->>System: Trả về câu trả lời
-    System->>DB: Lưu lịch sử chat
-    System-->>User: Hiển thị câu trả lời
-```
+Hệ thống giải quyết bài toán Lập lịch trình du lịch (một biến thể của bài toán **Traveling Salesperson Problem (TSP)** kết hợp **Knapsack Problem**) bằng phương pháp tham lam (Greedy approach) với các hàm heuristic.
 
-## 6. Cấu trúc Thư mục Dự án
+**Quy trình xử lý:**
 
-```
-Dana-Travel/
-├── Frontend/           # Ứng dụng React
-│   ├── src/
-│   │   ├── components/ # Các thành phần UI tái sử dụng
-│   │   ├── features/   # Các module tính năng (itinerary, admin...)
-│   │   ├── pages/      # Các trang điều hướng (Route pages)
-│   │   └── services/   # Các service gọi API
-│
-├── Backend/            # Ứng dụng Express
-│   ├── prisma/         # Schema cơ sở dữ liệu & seeds
-│   ├── src/
-│   │   ├── adapters/   # Kết nối dịch vụ ngoài (Gemini)
-│   │   ├── config/     # Cấu hình & Hằng số (Rules, prompts)
-│   │   ├── controllers/# Bộ xử lý yêu cầu (Request handlers)
-│   │   ├── middleware/ # Middleware (Auth, Logger, Error)
-│   │   ├── services/   # Logic nghiệp vụ (The "Brain")
-│   │   ├── routes/     # Các điểm cuối API (Endpoints)
-│   │   └── utils/      # Tiện ích hỗ trợ (Tính khoảng cách, định dạng)
-│
-└── docs/               # Tài liệu dự án
-```
+1.  **Khởi tạo (Initialization):**
+    *   Đầu vào: $T_{start}, T_{end}, Budget, Preferences[]$.
+    *   Tập dữ liệu ứng viên: $L = \{l_1, l_2, ..., l_n\}$ (Tất cả địa điểm khả thi).
 
-## 7. Hướng dẫn Cài đặt & Triển khai
+2.  **Phân rã (Decomposition):**
+    *   Chia thời gian thành các **Time Slots**: $S = [S_{morning}, S_{noon}, S_{afternoon}, S_{evening}]$.
 
-### Yêu cầu hệ thống
-- Node.js (v18 trở lên)
-- Git
+3.  **Lặp và Tối ưu cục bộ (Iteration & Local Optimization):**
+    *   Với mỗi Slot $S_i$ tại thời điểm hiện tại $t_{curr}$:
+        1.  **Lọc (Filter):** Loại bỏ các điểm $l_k$ nếu:
+            *   $l_k$ đã thăm.
+            *   $l_k$ đóng cửa tại $t_{curr}$.
+            *   $Cost(l_k) > Budget_{remaining}$.
+        2.  **Tính điểm trọng số (Scoring Function):**
+            $$ Score(l_k) = w_1 \cdot P(l_k) + w_2 \cdot \frac{1}{D(pos, l_k)} + w_3 \cdot V(l_k) $$
+            *   Trong đó:
+                *   $P(l_k)$: Điểm phù hợp sở thích (Preference Match).
+                *   $D(pos, l_k)$: Khoảng cách từ vị trí hiện tại.
+                *   $V(l_k)$: Chỉ số đa dạng loại hình (Variety Index).
+        3.  **Lựa chọn (Selection):** Chọn $l_{best} = \arg\max(Score(l))$.
 
-### Bước 1: Clone dự án
-```bash
-git clone <repository-url>
-cd Dana-Travel
-```
+4.  **Kết thúc:** Khi hết thời gian hoặc ngân sách.
 
-### Bước 2: Cài đặt Backend
-```bash
-cd Backend
-npm install
-# Tạo file .env (tham khảo .env.example)
-# Chạy migration và seed dữ liệu
-npx prisma migrate dev --name init
-npx prisma db seed
-# Khởi chạy server
-npm run dev
-```
+### 3.2. Quy trình Xử lý Ngôn ngữ Tự nhiên Lai (Hybrid NLP Pipeline)
 
-**Cấu hình .env (Backend):**
-```env
-PORT=3000
-DATABASE_URL="file:./dev.db"
-GEMINI_API_KEY="<YOUR_API_KEY>"
-GEMINI_MODEL="gemini-1.5-flash"
-```
+Để đảm bảo độ chính xác nghiệp vụ (Domain Accuracy), hệ thống không phụ thuộc hoàn toàn vào LLM mà sử dụng cơ chế lai:
 
-### Bước 3: Cài đặt Frontend
-```bash
-cd ../Frontend
-npm install
-# Khởi chạy dev server
-npm run dev
-```
-Truy cập: `http://localhost:5173`
+1.  **Pattern Matching Layer:**
+    *   Sử dụng Regular Expressions để bắt các Intent cứng (Ví dụ: "thời tiết", "xuất pdf").
+    *   Độ trễ: < 10ms. Độ chính xác: 100%.
 
-## 8. Tóm tắt API
+2.  **Semantic Search Layer:**
+    *   Truy vấn `Knowledge Base` để tìm các câu hỏi FAQ tương tự.
 
-### Authentication
-- `POST /api/admin/login`: Đăng nhập Admin
-- `POST /api/admin/logout`: Đăng xuất
+3.  **Generative AI Layer (Fallback):**
+    *   Chỉ khi không khớp 2 lớp trên, Input được chuyển tới **Google Gemini**.
+    *   **Prompt Engineering technique:** Dùng kỹ thuật *Few-Shot Prompting* để định hướng AI trả về định dạng JSON cấu trúc thay vì văn bản tự do.
+    *   **Post-processing:** Module `JSON Sanitizer` đảm bảo tính toàn vẹn của dữ liệu trả về trước khi render.
 
-### Itinerary
-- `POST /api/itinerary/generate`: Tạo lịch trình mới
-- `GET /api/locations`: Lấy danh sách địa điểm
+---
 
-### Chatbot
-- `POST /api/chat/message`: Gửi tin nhắn và nhận phản hồi từ AI
+## 4. Phân tích Ca sử dụng (Use Case Analysis)
 
-### Locations
-- `GET /api/locations/:id`: Chi tiết địa điểm
-- `POST /api/locations`: Thêm địa điểm (Admin)
-- `PUT /api/locations/:id`: Cập nhật địa điểm (Admin)
-- `DELETE /api/locations/:id`: Xóa địa điểm (Admin)
+| ID | Tên Use Case | Actor | Loại | Mô tả Tóm tắt |
+|:---|:---|:---|:---|:---|
+| UC-01 | **Generate Itinerary** | User | Chính | Hệ thống tự động tạo lịch trình dựa trên ràng buộc đầu vào (Budget, Time, Constraints). |
+| UC-02 | **Contextual Query** | User | Hỗ trợ | Người dùng hỏi thông tin ngữ cảnh (Ví dụ: "Trời mưa đi đâu?"). Hệ thống kích hoạt logic lọc `is_indoor=true`. |
+| UC-03 | **Modify Schedule** | User | Chính | Người dùng yêu cầu thay đổi một điểm đến. Hệ thống tìm điểm thay thế (Alternative) có cùng `Type` và vị trí lân cận. |
+| UC-04 | **Resource Management** | Admin | Quản trị | CRUD (Create, Read, Update, Delete) dữ liệu Địa điểm và Dữ liệu huấn luyện (Knowledge Base). |
+
+---
+
+## 5. Kết luận (Conclusion)
+Kiến trúc này đảm bảo tính **Scalability** (có thể mở rộng sang Microservices sau này) và **Reliability** (hoạt động đúng ngay cả khi dịch vụ AI bị gián đoạn nhờ lớp Fallback logic). Việc sử dụng thuật toán Heuristic cho phép hệ thống phản hồi thời gian thực (Real-time response) mà vẫn đảm bảo chất lượng lịch trình tối ưu.
