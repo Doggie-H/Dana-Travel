@@ -4,7 +4,7 @@ Tài liệu này cung cấp cái nhìn tổng quan về kỹ thuật, kiến tr�
 
 ## 1. Tổng quan Hệ thống
 
-DanaTravel là một nền tảng **Trợ lý Du lịch Thông minh** sử dụng AI và các thuật toán ràng buộc chặt chẽ để lập kế hoạch du lịch cá nhân hóa.
+DanaTravel là một nền tảng Trợ lý Du lịch Thông minh sử dụng AI và các thuật toán ràng buộc chặt chẽ để lập kế hoạch du lịch cá nhân hóa.
 
 ### 1.1. Bối cảnh Hệ thống (C4 Level 1)
 
@@ -87,7 +87,6 @@ graph LR
     end
 
     %% Relationships
-    User --> UC1
     User --> UC2
     User --> UC3
     User --> UC4
@@ -104,7 +103,7 @@ graph LR
 
 | ID | Tên Use Case | Tác nhân chính | Mô tả tóm tắt |
 | :--- | :--- | :--- | :--- |
-| **UC1** | Đăng nhập | User, Admin | Xác thực người dùng vào hệ thống. |
+| **UC1** | Đăng nhập | Admin | Xác thực người dùng vào hệ thống. |
 | **UC2** | Lập lịch trình | User | Tạo lịch trình dựa trên ngân sách, thời gian, sở thích. |
 | **UC3** | Tra cứu địa điểm | User | Xem thông tin chi tiết, giá vé, menu của địa điểm. |
 | **UC4** | Chat với Bot | User | Hỏi đáp thông tin du lịch qua giao diện chat. |
