@@ -68,30 +68,46 @@ Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) v�
 
 ### 3.3. Sơ đồ Minh họa
 
-```mermaid
-graph LR
-    User["👤 Khách du lịch"]
-    Admin["👤 Quản trị viên"]
-    AI["🤖 Hệ thống AI"]
+### 3.3. Sơ đồ Use Case (UML)
 
-    subgraph System["Hệ thống DanaTravel"]
-        UC1(["Lập lịch trình"])
-        UC2(["Chatbot tư vấn"])
-        UC3(["Tra cứu địa điểm"])
-        UC4(["Đăng nhập Admin"])
-        UC5(["Quản lý dữ liệu"])
-    end
+```mermaid
+usecaseDiagram
+    actor "Khách du lịch" as User
+    actor "Quản trị viên" as Admin
+    actor "Hệ thống AI" as AI
+
+    package "Hệ thống DanaTravel" {
+        usecase "Đăng nhập / Đăng ký" as UC1
+        usecase "Lập lịch trình du lịch" as UC2
+        usecase "Tra cứu thông tin địa điểm" as UC3
+        usecase "Trò chuyện với Chatbot" as UC4
+        usecase "Quản lý dữ liệu hệ thống" as UC5
+        usecase "Xem báo cáo thống kê" as UC6
+    }
 
     User --> UC1
     User --> UC2
     User --> UC3
+    User --> UC4
 
-    Admin --> UC4
-    UC4 -.-> UC5
+    Admin --> UC1
+    Admin --> UC5
+    Admin --> UC6
 
-    UC2 -.-> AI
-    UC1 -.-> AI
+    UC4 ..> AI : "Sử dụng API"
+    UC2 ..> UC3 : "Include"
 ```
+
+### 3.4. Đặc tả Use Case (Use Case Specification)
+
+| ID | Tên Use Case | Tác nhân chính | Mô tả tóm tắt |
+| :--- | :--- | :--- | :--- |
+| **UC1** | Đăng nhập | User, Admin | Xác thực người dùng vào hệ thống. |
+| **UC2** | Lập lịch trình | User | Tạo lịch trình dựa trên ngân sách, thời gian, sở thích. |
+| **UC3** | Tra cứu địa điểm | User | Xem thông tin chi tiết, giá vé, menu của địa điểm. |
+| **UC4** | Chat với Bot | User | Hỏi đáp thông tin du lịch qua giao diện chat. |
+| **UC5** | Quản lý dữ liệu | Admin | Thêm/Sửa/Xóa địa điểm, bài viết tri thức. |
+| **UC6** | Xem báo cáo | Admin | Theo dõi thống kê truy cập và xu hướng. |
 
 ## 4. Thiết kế Cơ sở dữ liệu (ERD)
 
@@ -198,6 +214,15 @@ erDiagram
     Admin ||--o{ AccessLog : "ghi nhật ký"
 ```
 *Hình 4.2: Sơ đồ ERD thiết kế cơ sở dữ liệu*
+
+### 4.3. Mô tả Quan hệ (Relationship Description)
+
+Mặc dù hệ thống sử dụng SQLite và Prisma không thiết lập khóa ngoại cứng (Foreign Key Constraints) để tối ưu hiệu năng đọc ghi, nhưng về mặt logic nghiệp vụ (Business Logic), các thực thể có mối quan hệ chặt chẽ như sau:
+
+1.  **Admin - Location (1-n)**: Một Quản trị viên có thể tạo và quản lý nhiều Địa điểm.
+2.  **Admin - Knowledge (1-n)**: Một Quản trị viên có thể cập nhật nhiều mục Tri thức cho AI.
+3.  **Admin - AccessLog (1-n)**: Mọi hành động của Admin đều được ghi lại trong nhiều dòng Nhật ký truy cập.
+4.  **Location - SearchTrend (n-n)**: (Gián tiếp) Các thẻ (Tags) của địa điểm được liên kết với xu hướng tìm kiếm của người dùng thông qua phân tích từ khóa.
 
 ## 5. Luồng Hoạt động (Activity Flows)
 
