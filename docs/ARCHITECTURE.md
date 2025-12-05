@@ -295,7 +295,7 @@ Mối quan hệ chi tiết:
 
 Hệ thống cung cấp 7 ca sử dụng chính dành cho hai loại tác nhân: khách du lịch và quản trị viên hệ thống.
 
-````mermaid
+```mermaid
 graph TB
     User["Khách Du Lịch"]
     Admin["Quản Trị Viên"]
@@ -316,7 +316,9 @@ graph TB
     Admin -->|Sử Dụng| UC5
     Admin -->|Sử Dụng| UC6
     Admin -->|Sử Dụng| UC7
-```Bảng mô tả chi tiết:
+```
+
+Bảng mô tả chi tiết:
 
 | ID    | Tên Ca Sử Dụng         | Tác Nhân      | Loại      | Mô Tả                                                                                    |
 | ----- | ---------------------- | ------------- | --------- | ---------------------------------------------------------------------------------------- |
@@ -369,7 +371,7 @@ graph TD
     J --> L
     L --> M
     M --> N
-````
+```
 
 ---
 
