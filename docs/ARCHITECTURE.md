@@ -295,18 +295,18 @@ Mối quan hệ chi tiết:
 
 Hệ thống cung cấp 7 ca sử dụng chính dành cho hai loại tác nhân: khách du lịch và quản trị viên hệ thống.
 
-```mermaid
+````mermaid
 graph TB
-    User["👤 Khách Du Lịch"]
-    Admin["👨‍💼 Quản Trị Viên"]
+    User["Khách Du Lịch"]
+    Admin["Quản Trị Viên"]
 
-    UC1["UC-01<br/>Khám Phá Địa Điểm"]
-    UC2["UC-02<br/>Tạo Lịch Trình Tự Động"]
-    UC3["UC-03<br/>Chỉnh Sửa Lịch"]
-    UC4["UC-04<br/>Chat Tư Vấn"]
-    UC5["UC-05<br/>Quản Lý Địa Điểm"]
-    UC6["UC-06<br/>Xem Thống Kê"]
-    UC7["UC-07<br/>Quản Lý Mẫu AI"]
+    UC1["UC-01: Khám Phá Địa Điểm"]
+    UC2["UC-02: Tạo Lịch Trình Tự Động"]
+    UC3["UC-03: Chỉnh Sửa Lịch"]
+    UC4["UC-04: Chat Tư Vấn"]
+    UC5["UC-05: Quản Lý Địa Điểm"]
+    UC6["UC-06: Xem Thống Kê"]
+    UC7["UC-07: Quản Lý Mẫu AI"]
 
     User -->|Sử Dụng| UC1
     User -->|Sử Dụng| UC2
@@ -316,9 +316,7 @@ graph TB
     Admin -->|Sử Dụng| UC5
     Admin -->|Sử Dụng| UC6
     Admin -->|Sử Dụng| UC7
-```
-
-Bảng mô tả chi tiết:
+```Bảng mô tả chi tiết:
 
 | ID    | Tên Ca Sử Dụng         | Tác Nhân      | Loại      | Mô Tả                                                                                    |
 | ----- | ---------------------- | ------------- | --------- | ---------------------------------------------------------------------------------------- |
@@ -371,7 +369,7 @@ graph TD
     J --> L
     L --> M
     M --> N
-```
+````
 
 ---
 
