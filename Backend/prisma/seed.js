@@ -116,7 +116,7 @@ const knowledgeData = [
   },
   {
     question: "Thuê sim 4G ở đâu?",
-    answer: "Có 3 cách mua SIM 4G:\n\n- **Tại sân bay**:\n- Quầy Viettel, Mobifone ngay khu nhận hành lý\n- Gói du lịch: 100-200k (3-7 ngày, 2-4GB/ngày)\n- Tiện nhưng hơi đắt 20%\n\n- **Cửa hàng chính hãng** (Khuyên dùng):\n- Viettel, Mobifone, Vinaphone khắp nơi\n- Gói rẻ hơn: 70-150k (3-7 ngày)\n- Cần CMND/Passport để đăng ký\n\n- **Mua online trước**:\n- Klook, Traveloka có bán\n- Nhận tại sân bay hoặc khách sạn\n- Giá tốt: 50-120k\n\n- **Nhà mạng nào tốt**:\n- **Viettel**: Phủ sóng tốt nhất (⭐⭐⭐⭐⭐)\n- **Mobifone**: Tốt ở thành phố (⭐⭐⭐⭐)\n- **Vinaphone**: Rẻ nhưng sóng yếu hơn (⭐⭐⭐)\n\nBạn ở Việt Nam bao nhiêu ngày? Mình gợi ý gói phù hợp nhé!",
+    answer: "Có 3 cách mua SIM 4G:\\n\\n- **Tại sân bay**:\\n- Quầy Viettel, Mobifone ngay khu nhận hành lý\\n- Gói du lịch: 100-200k (3-7 ngày, 2-4GB/ngày)\\n- Tiện nhưng hơi đắt 20%\\n\\n- **Cửa hàng chính hãng** (Khuyên dùng):\\n- Viettel, Mobifone, Vinaphone khắp nơi\\n- Gói rẻ hơn: 70-150k (3-7 ngày)\\n- Cần CMND/Passport để đăng ký\\n\\n- **Mua online trước**:\\n- Klook, Traveloka có bán\\n- Nhận tại sân bay hoặc khách sạn\\n- Giá tốt: 50-120k\\n\\n- **Nhà mạng nào tốt**:\\n- **Viettel**: Phủ sóng tốt nhất (Rất tốt)\\n- **Mobifone**: Tốt ở thành phố (Tốt)\\n- **Vinaphone**: Rẻ nhưng sóng yếu hơn (Khá)\\n\\nBạn ở Việt Nam bao nhiêu ngày? Mình gợi ý gói phù hợp nhé!",
     keywords: "practical"
   },
   {
@@ -303,7 +303,7 @@ const knowledgeData = [
   },
   {
     question: "Nên đi mùa nào",
-    answer: "Mùa tốt nhất đi Đà Nẵng:\n\n**Tháng 3-5** (Xuân) ⭐⭐⭐⭐⭐\n- Nắng đẹp, ít mưa\n- Biển êm, tắm thoải mái\n- Chưa quá đông\n\n**Tháng 6-8** (Hè) ⭐⭐⭐⭐\n- Nắng nóng, biển đẹp nhất\n- Đông du khách, giá cao hơn\n\n**Tháng 9-11** (Thu) ⭐⭐⭐\n- Hay mưa, có bão\n- Giá rẻ, vắng người\n\n**Tháng 12-2** (Đông) ⭐⭐⭐⭐\n- Mát mẻ, ít mưa\n- Lễ hội, không khí vui\n\nBạn thích nóng hay mát? Du lịch biển hay núi?",
+    answer: "Mùa tốt nhất đi Đà Nẵng:\\n\\n**Tháng 3-5** (Xuân) - Rất đẹp\\n- Nắng đẹp, ít mưa\\n- Biển êm, tắm thoải mái\\n- Chưa quá đông\\n\\n**Tháng 6-8** (Hè) - Đẹp\\n- Nắng nóng, biển đẹp nhất\\n- Đông du khách, giá cao hơn\\n\\n**Tháng 9-11** (Thu) - Trung bình\\n- Hay mưa, có bão\\n- Giá rẻ, vắng người\\n\\n**Tháng 12-2** (Đông) - Đẹp\\n- Mát mẻ, ít mưa\\n- Lễ hội, không khí vui\\n\\nBạn thích nóng hay mát? Du lịch biển hay núi?",
     keywords: "weather"
   },
   {
@@ -343,7 +343,7 @@ const knowledgeData = [
   },
   {
     question: "Khách sạn nào tốt",
-    answer: "Tùy ngân sách:\n\n**Budget (200-500k)**:\n- Funtastic Danang Hostel\n- Memory Hostel\n- 7S Hotel\n\n**Trung cấp (500k-1.2tr)**:\n- Grand Tourane Hotel ⭐⭐⭐⭐\n- Sala Danang Beach ⭐⭐⭐⭐\n- Alan Sea Hotel\n\n**Cao cấp (1.5-3tr)**:\n- Brilliant Hotel ⭐⭐⭐⭐⭐\n- Novotel ⭐⭐⭐⭐⭐\n- Premier Village\n\n**Luxury (3-10tr)**:\n- InterContinental Sơn Trà\n- Furama Resort\n- TIA Wellness\n\nNgân sách bạn bao nhiêu? Ở gần biển hay trung tâm?",
+    answer: "Tùy ngân sách:\\n\\n**Budget (200-500k)**:\\n- Funtastic Danang Hostel\\n- Memory Hostel\\n- 7S Hotel\\n\\n**Trung cấp (500k-1.2tr)**:\\n- Grand Tourane Hotel (4 sao)\\n- Sala Danang Beach (4 sao)\\n- Alan Sea Hotel\\n\\n**Cao cấp (1.5-3tr)**:\\n- Brilliant Hotel (5 sao)\\n- Novotel (5 sao)\\n- Premier Village\\n\\n**Luxury (3-10tr)**:\\n- InterContinental Sơn Trà\\n- Furama Resort\\n- TIA Wellness\\n\\nNgân sách bạn bao nhiêu? Ở gần biển hay trung tâm?",
     keywords: "practical"
   },
   {

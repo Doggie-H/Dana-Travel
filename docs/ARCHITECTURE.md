@@ -46,17 +46,33 @@ graph TD
     style Gemini fill:#f3e5f5,stroke:#7b1fa2
 ```
 
-## 2. Sơ đồ Use Case (Chi tiết)
+## 2. Công nghệ Sử dụng (Tech Stack)
+
+| Thành phần | Công nghệ | Phiên bản | Mô tả |
+| :--- | :--- | :--- | :--- |
+| **Frontend** | React | ^18.2.0 | Thư viện UI chính |
+| | Vite | ^5.0.8 | Build tool siêu tốc |
+| | TailwindCSS | ^3.4.18 | Framework CSS utility-first |
+| | React Router | ^6.20.0 | Quản lý điều hướng |
+| | Framer Motion | ^12.23.24 | Hiệu ứng animation mượt mà |
+| | Chart.js | ^4.4.1 | Biểu đồ thống kê |
+| **Backend** | Node.js | LTS | Môi trường chạy JavaScript |
+| | Express | ^4.18.2 | Web framework |
+| | Prisma | ^5.22.0 | ORM làm việc với Database |
+| | SQLite | - | Cơ sở dữ liệu nhẹ, không cần cài đặt |
+| **AI** | Google Gemini | 1.5 Flash | Mô hình ngôn ngữ lớn (LLM) |
+
+## 3. Sơ đồ Use Case (Chi tiết)
 
 Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) và hệ thống.
 
-### 2.1. Các Tác nhân (Actors)
+### 3.1. Các Tác nhân (Actors)
 
 1.  **Khách du lịch (Traveler/User)**: Người dùng cuối truy cập hệ thống để tìm kiếm thông tin và lập kế hoạch du lịch.
 2.  **Quản trị viên (Admin)**: Người quản lý nội dung, dữ liệu địa điểm và theo dõi hoạt động của hệ thống.
 3.  **Hệ thống AI (Gemini)**: Tác nhân phụ hỗ trợ trả lời câu hỏi và gợi ý lịch trình thông minh.
 
-### 2.2. Danh sách Use Case
+### 3.2. Danh sách Use Case
 
 **Nhóm Khách du lịch:**
 *   **Lập lịch trình tự động**: Nhập ngân sách, số ngày, sở thích để tạo lịch trình.
@@ -71,7 +87,7 @@ Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) v�
 *   **Xem báo cáo thống kê**: Xem lưu lượng truy cập, xu hướng tìm kiếm.
 *   **Quản lý tài khoản**: Thêm hoặc xóa các quản trị viên khác.
 
-### 2.3. Sơ đồ Minh họa (Mermaid)
+### 3.3. Sơ đồ Minh họa (Mermaid)
 
 ```mermaid
 usecaseDiagram
@@ -104,11 +120,11 @@ usecaseDiagram
     UC1 ..> AI : hỗ trợ (tùy chọn)
 ```
 
-## 3. Thiết kế Cơ sở dữ liệu (ERD)
+## 4. Thiết kế Cơ sở dữ liệu (ERD)
 
 Sơ đồ mô tả cấu trúc dữ liệu và mối quan hệ giữa các thực thể trong hệ thống.
 
-### 3.1. Các Thực thể (Entities)
+### 4.1. Các Thực thể (Entities)
 
 1.  **Location (Địa điểm)**: Lưu trữ thông tin các điểm tham quan, nhà hàng, khách sạn.
 2.  **Admin (Quản trị viên)**: Tài khoản quản trị hệ thống.
@@ -118,7 +134,7 @@ Sơ đồ mô tả cấu trúc dữ liệu và mối quan hệ giữa các thự
 6.  **SearchTrend (Xu hướng tìm kiếm)**: Lưu lại các từ khóa và nhu cầu tìm kiếm của người dùng.
 7.  **Transport (Phương tiện)**: Bảng giá và loại hình phương tiện di chuyển.
 
-### 3.2. Sơ đồ Minh họa (Mermaid)
+### 4.2. Sơ đồ Minh họa (Mermaid)
 
 ```mermaid
 erDiagram
@@ -170,16 +186,13 @@ erDiagram
     }
 
     %% Mối quan hệ logic (Logical Relationships)
-    %% Mặc dù Prisma không khóa ngoại cứng (Foreign Key) cho một số quan hệ để tối ưu hiệu năng,
-    %% nhưng về mặt logic hệ thống vận hành như sau:
-
     ChatLog }|..|| Knowledge : "Tham chiếu (có thể)"
     SearchTrend }|..|| Location : "Gợi ý dựa trên Tags"
 ```
 
-## 4. Luồng Hoạt động Chi tiết (Activity Flows)
+## 5. Luồng Hoạt động Chi tiết (Activity Flows)
 
-### 4.1. Quy trình Lập Lịch trình Du lịch (Itinerary Generation)
+### 5.1. Quy trình Lập Lịch trình Du lịch (Itinerary Generation)
 
 Đây là quy trình phức tạp nhất, sử dụng thuật toán CSP (Constraint Satisfaction Problem) để đảm bảo lịch trình khả thi.
 
@@ -217,7 +230,7 @@ flowchart TD
     Result --> End([Kết thúc])
 ```
 
-### 4.2. Quy trình Chatbot RAG (Retrieval-Augmented Generation)
+### 5.2. Quy trình Chatbot RAG (Retrieval-Augmented Generation)
 
 Quy trình xử lý khi người dùng đặt câu hỏi cho Chatbot.
 
@@ -254,7 +267,7 @@ sequenceDiagram
     deactivate System
 ```
 
-## 5. Cấu trúc Thư mục Dự án
+## 6. Cấu trúc Thư mục Dự án
 
 ```
 Dana-Travel/
@@ -268,11 +281,73 @@ Dana-Travel/
 ├── Backend/            # Ứng dụng Express
 │   ├── prisma/         # Schema cơ sở dữ liệu & seeds
 │   ├── src/
+│   │   ├── adapters/   # Kết nối dịch vụ ngoài (Gemini)
 │   │   ├── config/     # Cấu hình & Hằng số (Rules, prompts)
 │   │   ├── controllers/# Bộ xử lý yêu cầu (Request handlers)
+│   │   ├── middleware/ # Middleware (Auth, Logger, Error)
 │   │   ├── services/   # Logic nghiệp vụ (The "Brain")
 │   │   ├── routes/     # Các điểm cuối API (Endpoints)
 │   │   └── utils/      # Tiện ích hỗ trợ (Tính khoảng cách, định dạng)
 │
 └── docs/               # Tài liệu dự án
 ```
+
+## 7. Hướng dẫn Cài đặt & Triển khai
+
+### Yêu cầu hệ thống
+- Node.js (v18 trở lên)
+- Git
+
+### Bước 1: Clone dự án
+```bash
+git clone <repository-url>
+cd Dana-Travel
+```
+
+### Bước 2: Cài đặt Backend
+```bash
+cd Backend
+npm install
+# Tạo file .env (tham khảo .env.example)
+# Chạy migration và seed dữ liệu
+npx prisma migrate dev --name init
+npx prisma db seed
+# Khởi chạy server
+npm run dev
+```
+
+**Cấu hình .env (Backend):**
+```env
+PORT=3000
+DATABASE_URL="file:./dev.db"
+GEMINI_API_KEY="<YOUR_API_KEY>"
+GEMINI_MODEL="gemini-1.5-flash"
+```
+
+### Bước 3: Cài đặt Frontend
+```bash
+cd ../Frontend
+npm install
+# Khởi chạy dev server
+npm run dev
+```
+Truy cập: `http://localhost:5173`
+
+## 8. Tóm tắt API (API Summary)
+
+### Authentication (Admin)
+- `POST /api/admin/login`: Đăng nhập quản trị viên
+- `POST /api/admin/logout`: Đăng xuất
+
+### Itinerary (Lịch trình)
+- `POST /api/itinerary/generate`: Tạo lịch trình mới (AI + Algorithm)
+- `GET /api/locations`: Lấy danh sách địa điểm (có filter)
+
+### Chatbot
+- `POST /api/chat/message`: Gửi tin nhắn và nhận phản hồi từ AI
+
+### Locations (Địa điểm)
+- `GET /api/locations/:id`: Chi tiết địa điểm
+- `POST /api/locations`: Thêm địa điểm mới (Admin)
+- `PUT /api/locations/:id`: Cập nhật địa điểm (Admin)
+- `DELETE /api/locations/:id`: Xóa địa điểm (Admin)
