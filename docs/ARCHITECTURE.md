@@ -99,45 +99,6 @@ usecaseDiagram
     Admin --> UC1
     Admin --> UC5
     Admin --> UC6
-
-    UC4 ..> AI : "Sử dụng API"
-    UC2 ..> UC3 : "Include"
-```
-
-#### Sơ đồ hiển thị (Chế độ tương thích)
-```mermaid
-graph LR
-    User("👤 Khách du lịch")
-    Admin("👤 Quản trị viên")
-    AI("🤖 Hệ thống AI")
-
-    subgraph System["Hệ thống DanaTravel"]
-        direction TB
-        UC1(["Đăng nhập / Đăng ký"])
-        UC2(["Lập lịch trình du lịch"])
-        UC3(["Tra cứu thông tin địa điểm"])
-        UC4(["Trò chuyện với Chatbot"])
-        UC5(["Quản lý dữ liệu hệ thống"])
-        UC6(["Xem báo cáo thống kê"])
-    end
-
-    User --> UC1
-    User --> UC2
-    User --> UC3
-    User --> UC4
-
-    Admin --> UC1
-    Admin --> UC5
-    Admin --> UC6
-
-    UC4 -.-> AI
-    UC2 -.-> UC3
-```
-
-### 3.4. Đặc tả Use Case (Use Case Specification)
-
-| ID | Tên Use Case | Tác nhân chính | Mô tả tóm tắt |
-| :--- | :--- | :--- | :--- |
 | **UC1** | Đăng nhập | User, Admin | Xác thực người dùng vào hệ thống. |
 | **UC2** | Lập lịch trình | User | Tạo lịch trình dựa trên ngân sách, thời gian, sở thích. |
 | **UC3** | Tra cứu địa điểm | User | Xem thông tin chi tiết, giá vé, menu của địa điểm. |
