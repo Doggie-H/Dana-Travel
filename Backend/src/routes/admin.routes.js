@@ -1,14 +1,17 @@
 /**
- * ADMIN ROUTES
+ * =================================================================================================
+ * FILE: admin.routes.js
+ * MỤC ĐÍCH: Điều phối giao thông cho khu vực Admin.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Định tuyến xử lý các chức năng quản trị (Admin Panel).
- * Bao gồm:
- * 1. Xác thực (Login/Logout/Me).
- * 2. Quản lý tài khoản Admin (CRUD).
- * 3. Quản lý địa điểm (Locations).
- * 4. Quản lý kiến thức Chatbot (Knowledge Base).
- * 5. Thống kê & Logs (Stats, Access Logs, Chat Logs).
- * 6. Upload ảnh.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Bốt bảo vệ" và "Bàn hướng dẫn" cho Admin Panel.
+ * 1. Cửa khẩu (Login): Kiểm tra thẻ ra vào (Username/Password).
+ * 2. Khu vực Hồ sơ (Accounts): Ai được làm sếp, ai làm lính.
+ * 3. Kho Địa điểm (Locations): Nhập xuất hàng hóa (địa điểm du lịch).
+ * 4. Thư viện (Knowledge): Nơi chứa sách vở kiến thức cho AI học.
+ * 5. Phòng An ninh (Stats/Logs): Xem camera và số liệu mổ xẻ vấn đề.
+ * =================================================================================================
  */
 
 import express from "express";
@@ -66,6 +69,24 @@ router.post("/login", async (req, res) => {
     if (!admin) {
       return res.status(401).json({ error: "Sai tên đăng nhập hoặc mật khẩu" });
     }
+
+    // Cập nhật thời gian đăng nhập cuối
+    await prisma.admin.update({
+      where: { id: admin.id },
+      data: { lastLogin: new Date() }
+    });
+
+    // TRACKING: Ghi log đăng nhập Admin
+    await prisma.accessLog.create({
+      data: {
+        ip: req.ip || req.connection.remoteAddress,
+        userAgent: req.get("User-Agent"),
+        endpoint: "/api/admin/login",
+        method: "LOGIN", // Method đặc biệt cho Admin Login
+        username: admin.username,
+        role: admin.role,
+      },
+    });
 
     // Tạo session token đơn giản (Admin ID + Timestamp)
     // Trong thực tế nên dùng JWT hoặc Session Store chuyên dụng.
@@ -344,6 +365,9 @@ router.get("/stats/trends", async (req, res) => {
 router.get("/access-logs", async (req, res) => {
   try {
     const logs = await prisma.accessLog.findMany({
+      where: {
+        method: { in: ["VISIT", "LOGIN"] }
+      },
       orderBy: { timestamp: "desc" },
       take: 50
     });
@@ -379,7 +403,17 @@ router.delete("/chat-logs", async (req, res) => {
 router.get("/knowledge", async (req, res) => {
   try {
     const items = await getAllKnowledge();
-    res.json({ success: true, data: items, count: items.length });
+    // Map DB fields -> Frontend fields
+    const mappedItems = items.map(item => ({
+      id: item.id,
+      pattern: item.question,           // DB: question -> FE: pattern
+      reply: item.answer,                // DB: answer -> FE: reply
+      patternType: item.patternType || "contains",
+      tags: item.keywords ? JSON.parse(item.keywords) : [],
+      active: item.active !== false,     // Default true
+      createdAt: item.createdAt,
+    }));
+    res.json({ success: true, data: mappedItems, count: mappedItems.length });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

@@ -1,21 +1,19 @@
 /**
- * ADMIN KNOWLEDGE MANAGEMENT
+ * =================================================================================================
+ * FILE: AdminKnowledge.jsx
+ * MỤC ĐÍCH: Dạy học cho Trí tuệ nhân tạo (AI Knowledge Base).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component quản lý cơ sở tri thức (Knowledge Base) cho Chatbot AI.
- * Cho phép Admin thêm, sửa, xóa các cặp câu hỏi - câu trả lời mẫu.
- * 
- * Chức năng:
- * 1. Danh sách kiến thức: Hiển thị Pattern (Input) và Reply (Output).
- * 2. Thêm/Sửa kiến thức: Form nhập liệu với các tùy chọn nâng cao (Fuzzy matching, Tags).
- * 3. Kích hoạt/Vô hiệu hóa: Bật tắt nhanh một mục kiến thức.
- * 
- * Các loại khớp (Pattern Types):
- * - Contains: Chứa từ khóa.
- * - Exact: Khớp chính xác 100%.
- * - Fuzzy: Khớp mờ (dùng thuật toán so sánh chuỗi).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Trường học" của em Chatbot.
+ * Admin đóng vai thầy giáo, soạn giáo án cho em nó học:
+ * 1. Câu hỏi (Pattern): Nếu khách hỏi câu A...
+ * 2. Trả lời (Reply): ...thì em phải trả lời câu B.
+ * 3. Độ thông minh: Có cho phép em nó suy diễn (Fuzzy) hay bắt buộc phải đúng y chang từng chữ (Exact).
+ * =================================================================================================
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { can, PERMISSIONS } from "../utils/permissions";
 
 export default function AdminKnowledge({
@@ -24,6 +22,8 @@ export default function AdminKnowledge({
   onSave,
   onUpdate,
   onDelete,
+  prefillData,
+  onPrefillConsumed,
 }) {
   const [editingKnowledge, setEditingKnowledge] = useState(null);
   const [knowledgeForm, setKnowledgeForm] = useState({
@@ -34,6 +34,23 @@ export default function AdminKnowledge({
     active: true,
     meta_threshold: 0.78,
   });
+
+  // Tự động mở form và điền dữ liệu khi nhận prefillData từ Chat Logs
+  useEffect(() => {
+    if (prefillData) {
+      setEditingKnowledge("new");
+      setKnowledgeForm({
+        pattern: prefillData.pattern || "",
+        patternType: "contains",
+        reply: prefillData.reply || "",
+        tags: "",
+        active: true,
+        meta_threshold: 0.78,
+      });
+      // Clear prefillData sau khi đã sử dụng
+      if (onPrefillConsumed) onPrefillConsumed();
+    }
+  }, [prefillData, onPrefillConsumed]);
 
   // Kiểm tra quyền truy cập
   if (!can(user, PERMISSIONS.MANAGE_KNOWLEDGE)) {

@@ -1,14 +1,16 @@
 /**
- * HEADER COMPONENT
+ * =================================================================================================
+ * FILE: Header.jsx
+ * MỤC ĐÍCH: Thanh điều hướng chính (Navigation Bar).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Thanh điều hướng chính (Navigation Bar) của ứng dụng.
- * 
- * Chức năng:
- * 1. Hiển thị Logo thương hiệu.
- * 2. Menu điều hướng (Trang chủ, Lịch trình, Trợ lý AI, Quản trị).
- * 3. Active State: Đánh dấu mục menu hiện tại dựa trên URL.
- * 4. Dynamic Menu: Có khả năng fetch menu từ API (tính năng mở rộng).
- * 5. Responsive: Ẩn menu trên mobile và hiện nút toggle (chưa implement logic mở menu mobile).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Cái bảng chỉ đường" treo trên nóc nhà website.
+ * 1. Logo: Bấm vào là về nhà (Trang chủ).
+ * 2. Menu: Danh sách các phòng ban (Lịch trình, Chat, Admin).
+ * 3. Trạng thái: Đang ở phòng nào thì tên phòng đó sáng đèn lên (Active State).
+ * 4. Di động: Trên điện thoại nó sẽ thu gọn lại thành nút Menu 3 gạch để đỡ chật chỗ.
+ * =================================================================================================
  */
 
 import { useEffect, useState } from "react";

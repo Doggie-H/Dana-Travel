@@ -1,8 +1,16 @@
 /**
- * ITINERARY ROUTES
+ * =================================================================================================
+ * FILE: itinerary.routes.js
+ * MỤC ĐÍCH: Định nghĩa các đường dẫn API (Endpoints) liên quan đến Lịch trình.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Định tuyến cho các chức năng tạo lịch trình.
- * Endpoint: /api/itinerary
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * File này giống như một "bảng chỉ đường". Khi Frontend gửi yêu cầu đến Server,
+ * Router sẽ nhìn vào địa chỉ (URL) để quyết định chuyển yêu cầu đó cho "nhân viên" nào xử lý (Controller).
+ * 
+ * DANH SÁCH API:
+ * 1. POST /api/itinerary/generate -> Tạo lịch trình mới.
+ * =================================================================================================
  */
 
 import express from "express";

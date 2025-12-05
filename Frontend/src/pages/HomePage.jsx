@@ -1,13 +1,16 @@
 /**
- * HOME PAGE
+ * =================================================================================================
+ * FILE: HomePage.jsx
+ * MỤC ĐÍCH: Trang chủ - Điểm bắt đầu của ứng dụng.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Trang chủ của ứng dụng, nơi bắt đầu hành trình trải nghiệm của người dùng.
- * 
- * Chức năng chính:
- * 1. Giới thiệu (Hero Section): Gây ấn tượng với thiết kế tối giản, sang trọng.
- * 2. Kêu gọi hành động (CTA): Nút "Lên lịch trình" mở form nhập liệu.
- * 3. Form Modal: Hiển thị TripPlanningForm dưới dạng popup (modal).
- * 4. Xử lý logic tạo lịch trình: Gọi API và điều hướng sang trang kết quả.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Bộ mặt" của website.
+ * 1. Ấn tượng đầu tiên (Hero): Thiết kế đẹp mắt để thu hút người dùng.
+ * 2. Kêu gọi hành động (Call to Action): Nút "Lên lịch trình" to rõ để người dùng bấm vào.
+ * 3. Form Popup: Khi bấm nút, một cái bảng (Form) hiện ra để điền thông tin thay vì chuyển trạng khác.
+ * 4. Điều hướng: Tạo xong thì tự động chuyển sang trang Kết quả.
+ * =================================================================================================
  */
 
 import { useState } from "react";
@@ -114,6 +117,7 @@ export default function Home() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            onClick={(e) => e.stopPropagation()}
             className="bg-white w-full max-w-3xl relative z-10 px-6 md:px-10"
           >
             {/* Close Button */}

@@ -78,30 +78,9 @@ export function generateDateRange(startDate, endDate) {
   return dates;
 }
 
-/**
- * Kiểm tra xem một mốc giờ có nằm trong khung giờ quy định hay không.
- * 
- * @param {string} timeStr - Giờ cần kiểm tra (VD: "14:30").
- * @param {Object} slot - Khung giờ {start: "14:00", end: "18:00"}.
- * @returns {boolean} - True nếu nằm trong khung giờ.
- */
-export function isInTimeSlot(timeStr, slot) {
-  const [h, m] = timeStr.split(":").map(Number);
-  const [sh, sm] = slot.start.split(":").map(Number);
-  const [eh, em] = slot.end.split(":").map(Number);
-
-  // Chuyển đổi tất cả ra phút để so sánh dễ dàng
-  const minutes = h * 60 + m;
-  const startMin = sh * 60 + sm;
-  const endMin = eh * 60 + em;
-
-  return minutes >= startMin && minutes < endMin;
-}
-
 export default {
   parseTimeOnDate,
   addMinutes,
   toTimeString,
   generateDateRange,
-  isInTimeSlot,
 };

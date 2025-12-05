@@ -1,17 +1,16 @@
 /**
- * ADMIN DASHBOARD COMPONENT
+ * =================================================================================================
+ * FILE: AdminDashboard.jsx
+ * MỤC ĐÍCH: Trang chủ của Admin (Dashboard).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Trang tổng quan (Dashboard) của hệ thống quản trị.
- * Hiển thị các biểu đồ thống kê và nhật ký hoạt động gần đây.
- * 
- * Chức năng:
- * 1. Biểu đồ Line: Thống kê lưu lượng truy cập (Visitors) theo ngày.
- * 2. Biểu đồ Bar: Thống kê hoạt động nội bộ (Admin/Staff).
- * 3. Biểu đồ Bar (Full Width): Xu hướng tìm kiếm của người dùng theo thẻ (Tags).
- * 4. Bảng Logs: Nhật ký truy cập hệ thống gần đây.
- * 5. Xuất CSV: Cho phép tải về nhật ký truy cập.
- * 
- * Thư viện sử dụng: Chart.js
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Phòng chỉ huy" của hệ thống.
+ * 1. Biểu đồ Traffic (Line): Hôm nay có bao nhiêu người vào xem? (Đông khách hay vắng khách).
+ * 2. Biểu đồ Hoạt động (Bar): Admin làm việc có chăm chỉ không? (Log lại hết).
+ * 3. Xu hướng (Bar màu): Khách đang tìm kiếm gì nhiều? (Ăn uống, Chụp ảnh, hay Ngủ nướng...).
+ * 4. Nhật ký (Logs): Ai vừa làm gì, lúc mấy giờ, đều được ghi chép lại trong cuốn sổ đen.
+ * =================================================================================================
  */
 
 import { useEffect, useRef } from "react";
@@ -289,7 +288,13 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
                 accessLogs.slice(0, 10).map((log) => (
                   <tr key={log.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4 text-gray-500">
-                      {new Date(log.ts || log.timestamp).toLocaleString("vi-VN")}
+                      {new Date(log.ts || log.timestamp).toLocaleString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric"
+                      })}
                     </td>
                     <td className="px-6 py-4 font-medium text-gray-900">
                       {log.username || "Guest"}

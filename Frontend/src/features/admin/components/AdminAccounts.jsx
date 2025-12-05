@@ -1,14 +1,18 @@
 /**
- * ADMIN ACCOUNTS MANAGEMENT
+ * =================================================================================================
+ * FILE: AdminAccounts.jsx
+ * MỤC ĐÍCH: Quản lý nhân sự (Tài khoản Admin).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component quản lý danh sách tài khoản nhân viên (Staff/Manager).
- * Chỉ dành cho Super Admin.
- * 
- * Chức năng:
- * 1. Xem danh sách tài khoản.
- * 2. Tạo tài khoản mới (Staff, Manager, Super Admin).
- * 3. Xóa tài khoản.
- * 4. Phân quyền (RBAC) thông qua việc gán Role.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Phòng nhân sự". Chỉ có Boss (Super Admin) mới được vào đây.
+ * 1. Tuyển dụng: Tạo tài khoản mới cho nhân viên.
+ * 2. Sa thải: Xóa tài khoản nhân viên.
+ * 3. Phân quyền: AI làm sếp (Manager), ai làm lính (Staff).
+ *    - Staff: Chỉ được nhập liệu địa điểm.
+ *    - Manager: Được dạy dỗ AI (Chatbot).
+ *    - Admin: Toàn quyền sinh sát.
+ * =================================================================================================
  */
 
 import { useState } from "react";
@@ -127,6 +131,7 @@ export default function AdminAccounts({
                 >
                   <option value={ROLES.STAFF}>Nhân viên (Staff)</option>
                   <option value={ROLES.MANAGER}>Quản lý (Manager)</option>
+                  <option value="admin">Quản Trị Viên (Admin)</option>
                   <option value={ROLES.SUPER_ADMIN}>Quản trị cấp cao (Super Admin)</option>
                 </select>
                 <p className="text-xs text-gray-400 mt-2">

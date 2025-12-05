@@ -1,13 +1,15 @@
 /**
- * ERROR BOUNDARY COMPONENT
+ * =================================================================================================
+ * FILE: ErrorBoundary.jsx
+ * MỤC ĐÍCH: Bắt lỗi và ngăn chặn sập trang (Crash).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component bắt lỗi (Error Catching) cho toàn bộ hoặc một phần ứng dụng.
- * Ngăn chặn việc cả ứng dụng bị "trắng trang" (crash) khi có lỗi JavaScript xảy ra ở component con.
- * 
- * Chức năng:
- * 1. Bắt lỗi trong lifecycle methods, constructor và render của component con.
- * 2. Hiển thị giao diện dự phòng (Fallback UI) thân thiện với người dùng.
- * 3. Log lỗi ra console để developer debug.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Cầu chì" của hệ thống điện.
+ * 1. Sự cố: Nếu một bóng đèn (Component con) bị cháy (Lỗi Code), cầu chì sẽ ngắt điện khu vực đó.
+ * 2. Bảo vệ: Thay vì cả căn nhà tối om (Trắng trang), nó chỉ hiện thông báo "Có lỗi xảy ra" ở khu vực đó thôi.
+ * 3. Báo cáo: Ghi lại lỗi để thợ điện (Developer) biết đường mà sửa.
+ * =================================================================================================
  */
 
 import React from 'react';

@@ -1,74 +1,108 @@
-# Dana Travel - Hệ Thống Lập Kế Hoạch Du Lịch Thông Minh
+# DanaTravel: Hệ thống Lập Lịch Trình & Hỗ Trợ Du Lịch
 
-> **Tổng Quan**
->
-> Dana Travel là giải pháp công nghệ hỗ trợ du khách tự động hóa quy trình lập kế hoạch du lịch tại Đà Nẵng, kết hợp thuật toán tối ưu hóa và trí tuệ nhân tạo.
+## Abstract (Tóm tắt)
 
----
-
-## Bối Cảnh & Mục Tiêu
-
-Du lịch tự túc mang lại sự tự do nhưng thường đi kèm với thách thức trong việc tìm kiếm thông tin, sắp xếp lịch trình và quản lý chi phí. Du khách thường mất nhiều giờ để tra cứu, so sánh và tổng hợp dữ liệu từ nhiều nguồn khác nhau.
-
-**Dana Travel** được phát triển để giải quyết vấn đề này bằng cách cung cấp một nền tảng "All-in-One". Hệ thống đóng vai trò như một trợ lý ảo, tự động phân tích nhu cầu, ngân sách và sở thích để đề xuất một lộ trình tối ưu nhất, giúp tiết kiệm thời gian và nâng cao trải nghiệm chuyến đi.
-
-## Luồng Trải Nghiệm Người Dùng
-
-Hệ thống được thiết kế để đơn giản hóa tối đa các thao tác của người dùng:
-
-1.  **Tiếp nhận nhu cầu**: Người dùng cung cấp các thông tin cơ bản: thời gian lưu trú, ngân sách dự kiến và các sở thích cá nhân (ẩm thực, văn hóa, nghỉ dưỡng...).
-2.  **Xử lý & Tối ưu hóa**: Hệ thống áp dụng thuật toán để lựa chọn các điểm đến phù hợp nhất trong cơ sở dữ liệu, đồng thời sắp xếp thứ tự di chuyển để giảm thiểu quãng đường và thời gian.
-3.  **Đề xuất lịch trình**: Kết quả trả về là một kế hoạch chi tiết theo từng khung giờ, bao gồm gợi ý địa điểm tham quan, ăn uống và nơi ở, kèm theo dự toán chi phí cụ thể.
-4.  **Hỗ trợ thời gian thực**: Trong quá trình trải nghiệm, Chatbot AI luôn sẵn sàng cung cấp thông tin, giải đáp thắc mắc hoặc gợi ý các phương án thay thế khi có thay đổi (thời tiết xấu, thay đổi sở thích).
+**DanaTravel** là ứng dụng web thông minh được thiết kế để tối ưu hóa trải nghiệm du lịch tại Đà Nẵng. Hệ thống kết hợp thuật toán lập lịch trình (Constraint Satisfaction Algorithm) với trí tuệ nhân tạo (Google Gemini LLM) để cung cấp giải pháp du lịch cá nhân hóa. Dự án giải quyết vấn đề quá tải thông tin và khó khăn trong việc lên kế hoạch của khách du lịch.
 
 ---
 
-## Tài Liệu Kỹ Thuật
+## 1. Giới thiệu
 
-Dự án cung cấp tài liệu chuyên sâu về thiết kế và vận hành hệ thống:
-
-### [KIẾN TRÚC HỆ THỐNG](docs/ARCHITECTURE.md)
-Mô tả chi tiết thiết kế tổng thể, các luồng dữ liệu, sơ đồ thực thể mối quan hệ (ERD), thuật toán xử lý và các cơ chế bảo mật được áp dụng trong dự án.
+Ngành du lịch đang chuyển đổi số mạnh mẽ. DanaTravel đóng vai trò là một trợ lý du lịch ảo, cung cấp:
+- **Lập lịch trình tự động:** Dựa trên ngân sách, thời gian, sở thích và logic địa lý.
+- **Chatbot thông minh:** Hỗ trợ giải đáp thắc mắc, gợi ý real-time.
+- **Thông tin phong phú:** Cơ sở dữ liệu chi tiết về địa điểm, ẩm thực, văn hóa.
 
 ---
 
-## Tính Năng Chính
+## 2. Kiến trúc Hệ thống
 
-*   **Tự động hóa lịch trình**: Phân tích và tạo kế hoạch du lịch chi tiết dựa trên dữ liệu đầu vào.
-*   **Tư vấn thông minh**: Chatbot tích hợp AI hỗ trợ tra cứu thông tin và xử lý các tình huống phát sinh.
-*   **Trực quan hóa dữ liệu**: Hiển thị lộ trình trên bản đồ tương tác, giúp người dùng dễ dàng hình dung và di chuyển.
+Hệ thống tuân theo kiến trúc **Client-Server** hiện đại:
 
-## Nền Tảng Công Nghệ
+### 2.1 Sơ đồ tổng quan
 
-Dự án được xây dựng trên nền tảng các công nghệ web hiện đại:
-
-*   **Frontend**: React, Vite, Tailwind CSS.
-*   **Backend**: Node.js, Express.js.
-*   **Database**: SQLite / PostgreSQL, Prisma ORM.
-*   **AI Integration**: Google Gemini API.
-
-## Hướng Dẫn Cài Đặt
-
-Yêu cầu hệ thống: Node.js và Git.
-
-```bash
-# 1. Sao chép mã nguồn
-git clone https://github.com/your-repo/dana-travel.git
-
-# 2. Khởi chạy Backend
-cd Backend
-npm install
-npm run dev
-
-# 3. Khởi chạy Frontend
-cd ../Frontend
-npm install
-npm run dev
+```mermaid
+graph TD
+    User[Người dùng] -->|HTTPS| Client[Frontend (React/Vite)]
+    Client -->|REST API| Server[Backend (Node.js/Express)]
+    Server -->|ORM| DB[(SQLite/Prisma)]
+    Server -->|API| Gemini[Google Gemini AI]
+    Admin[Quản trị viên] -->|CMS| Client
 ```
 
-## Đóng Góp & Phát Triển
+### 2.2 Thành phần công nghệ
 
-Dự án luôn hoan nghênh các ý kiến đóng góp và đề xuất cải tiến từ cộng đồng để ngày càng hoàn thiện hơn.
+| Thành phần | Công nghệ | Vai trò |
+| :--- | :--- | :--- |
+| **Frontend** | React 18, Vite, TailwindCSS | Giao diện người dùng, tương tác bản đồ, hiển thị lịch trình |
+| **Backend** | Node.js, Express | Xử lý logic nghiệp vụ, API, xác thực (JWT) |
+| **Database** | SQLite, Prisma ORM | Lưu trữ dữ liệu quan hệ (Locations, Users, Itineraries) |
+| **AI Engine** | Google Gemini 1.5 | Xử lý ngôn ngữ tự nhiên, RAG (Retrieval-Augmented Generation) |
 
 ---
-*Dana Travel Project - 2025*
+
+## 3. Tính năng chính
+
+### 3.1 Tạo Lịch Trình (Smart Itinerary)
+Sử dụng thuật toán `generate-day-schedule-strict` để xây dựng lộ trình từng ngày:
+- **Tối ưu hóa:** Khoảng cách di chuyển, chi phí, giờ mở cửa.
+- **Cá nhân hóa:** Ưu tiên địa điểm theo sở thích (Biển, Văn hóa, Ẩm thực...).
+- **Chi tiết:** Bao gồm chi phí di chuyển (Grab/Taxi), vé tham quan, tiền ăn.
+
+### 3.2 AI Chatbot
+Chatbot hỗ trợ ngữ cảnh, sử dụng RAG để truy xuất thông tin chính xác từ Database trước khi trả lời, giảm thiểu ảo giác (hallucination) của AI.
+
+### 3.3 Dashboard Quản trị
+CMS cho phép admin quản lý, chỉnh sửa dữ liệu địa điểm, xem thống kê người dùng.
+
+---
+
+## 4. Cài đặt và Triển khai
+
+### Yêu cầu
+- Node.js v16+
+- npm hoặc yarn
+
+### Các bước cài đặt
+
+1.  **Clone dự án**
+    ```bash
+    git clone https://github.com/your-repo/Dana-Travel.git
+    cd Dana-Travel
+    ```
+
+2.  **Cài đặt Backend**
+    ```bash
+    cd Backend
+    npm install
+    cp .env.example .env
+    # Cấu hình .env (DATABASE_URL, GEMINI_API_KEY...)
+    npx prisma migrate dev
+    npx prisma db seed
+    npm run dev
+    ```
+
+3.  **Cài đặt Frontend**
+    ```bash
+    cd Frontend
+    npm install
+    cp .env.example .env
+    # Cấu hình VITE_API_BASE_URL
+    npm run dev
+    ```
+
+4.  **Truy cập**
+    - Web App: `http://localhost:5173`
+    - API Server: `http://localhost:3000`
+
+---
+
+## 5. Bảo mật
+
+**QUAN TRỌNG:** Không bao giờ commit file `.env` chứa API Key lên GitHub.
+- Dự án đã cấu hình `.gitignore` để loại bỏ các file nhạy cảm.
+- Vui lòng sử dụng `.env.example` làm mẫu cấu hình.
+
+---
+
+*Báo cáo Đồ án - 2025*

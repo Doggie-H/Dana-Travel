@@ -1,14 +1,19 @@
 /**
- * CENTRALIZED ERROR HANDLER
+ * =================================================================================================
+ * FILE: error.handler.middleware.js
+ * MỤC ĐÍCH: Xử lý lỗi tập trung (Centralized Error Handling).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Middleware xử lý lỗi tập trung cho toàn bộ ứng dụng.
- * Thay vì xử lý lỗi rải rác ở từng Controller, tất cả lỗi sẽ được chuyển về đây (thông qua next(err)).
- * 
- * Vai trò:
- * 1. Ghi log lỗi để debug.
- * 2. Chuẩn hóa định dạng phản hồi lỗi trả về cho Client.
- * 3. Ẩn thông tin nhạy cảm (stack trace) ở môi trường Production.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Middleware này là "Bệnh viện" của hệ thống.
+ * 1. Tiếp nhận: Mọi lỗi xảy ra ở bất kỳ đâu (Controller, Service) đều được chuyển về đây.
+ * 2. Chẩn đoán: Ghi lại lỗi (Log) để bác sĩ (Developer) biết mà sửa.
+ * 3. Phản hồi: Thông báo cho người dùng biết "Có lỗi xảy ra" một cách lịch sự, thay vì hiện màn hình chết chóc.
+ * =================================================================================================
  */
+
+import fs from "fs";
+import path from "path";
 
 /**
  * Middleware xử lý lỗi chính.
@@ -22,6 +27,13 @@ export function errorHandler(err, req, res, next) {
     path: req.path,
     method: req.method,
   });
+
+  try {
+    const logMessage = `[${new Date().toISOString()}] ${req.method} ${req.path}\nMessage: ${err.message}\nStack: ${err.stack}\n\n`;
+    fs.appendFileSync(path.resolve("error.log"), logMessage);
+  } catch (e) {
+    console.error("Failed to write to error.log", e);
+  }
 
   // 2. Xác định mã lỗi HTTP (Status Code)
   // Mặc định là 500 (Internal Server Error) nếu không có mã cụ thể

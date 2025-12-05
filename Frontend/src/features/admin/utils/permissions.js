@@ -103,6 +103,7 @@ export function can(user, permission) {
 export function getRoleLabel(role) {
   switch (role) {
     case ROLES.SUPER_ADMIN: return "Quản Trị Viên Cấp Cao";
+    case "admin": return "Quản Trị Viên"; // Support legacy 'admin' role
     case ROLES.MANAGER: return "Quản Lý";
     case ROLES.STAFF: return "Nhân Viên";
     default: return "Khách";
@@ -115,7 +116,9 @@ export function getRoleLabel(role) {
  */
 export function getRoleBadgeColor(role) {
   switch (role) {
-    case ROLES.SUPER_ADMIN: return "bg-purple-100 text-purple-800 border-purple-200";
+    case ROLES.SUPER_ADMIN: 
+    case "admin":
+      return "bg-purple-100 text-purple-800 border-purple-200";
     case ROLES.MANAGER: return "bg-blue-100 text-blue-800 border-blue-200";
     case ROLES.STAFF: return "bg-gray-100 text-gray-800 border-gray-200";
     default: return "bg-gray-50 text-gray-500";

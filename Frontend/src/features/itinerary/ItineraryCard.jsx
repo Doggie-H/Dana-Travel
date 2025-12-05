@@ -1,12 +1,14 @@
 ﻿/**
- * ITINERARY CARD COMPONENT
+ * =================================================================================================
+ * FILE: ItineraryCard.jsx
+ * MỤC ĐÍCH: Thẻ hiển thị lịch trình của một ngày.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component hiển thị lịch trình chi tiết cho MỘT ngày cụ thể.
- * Bao gồm Header (Ngày tháng) và Body (Danh sách các hoạt động trong ngày).
- * 
- * Props:
- * - day: Object chứa thông tin ngày (dayNumber, date, items[]).
- * - numPeople: Số lượng người tham gia (để tính toán chi phí hiển thị).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Mỗi ngày đi chơi sẽ được gói gọn trong một cái thẻ (Card) này.
+ * 1. Đầu thẻ (Header): Ghi rõ Ngày 1, Ngày 2... và ngày tháng năm.
+ * 2. Thân thẻ (Body): Chứa danh sách các hoạt động (Ăn sáng, Đi tắm biển, Về ngủ...).
+ * =================================================================================================
  */
 
 import { formatDate } from "../../utils/format.utils";
@@ -25,11 +27,11 @@ export default function ItineraryCard({ day, numPeople = 1 }) {
         <div className="flex items-center gap-3">
           {/* Badge Số ngày (VD: 1, 2, 3) */}
           <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center text-white font-bold shadow-sm">
-            {day.dayNumber}
+            {day.dayNumber || day.day}
           </div>
           {/* Tiêu đề ngày */}
           <h5 className="text-lg font-bold text-gray-900">
-            Ngày {day.dayNumber}
+            Ngày {day.dayNumber || day.day}
           </h5>
         </div>
         
@@ -51,6 +53,7 @@ export default function ItineraryCard({ day, numPeople = 1 }) {
                 index={idx} 
                 isLast={idx === day.items.length - 1} // Kiểm tra item cuối để ẩn đường kẻ nối
                 numPeople={numPeople}
+                nextItem={day.items[idx + 1]}
               />
             ))}
           </div>

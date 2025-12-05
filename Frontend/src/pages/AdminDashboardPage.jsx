@@ -1,16 +1,17 @@
 /**
- * ADMIN DASHBOARD PAGE
+ * =================================================================================================
+ * FILE: AdminDashboardPage.jsx
+ * MỤC ĐÍCH: Trang Tổng hành dinh (Admin Dashboard).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Trang quản trị chính của hệ thống.
- * Tích hợp đầy đủ các chức năng quản lý thông qua các Component con.
- * 
- * Tính năng chính:
- * 1. Xác thực & Phân quyền (RBAC): Chỉ hiển thị các tab mà user có quyền truy cập.
- * 2. Dashboard: Thống kê lưu lượng, xu hướng tìm kiếm, nhật ký truy cập.
- * 3. Quản lý Địa điểm: CRUD địa điểm du lịch.
- * 4. Quản lý Kiến thức AI: Dạy Chatbot các câu hỏi/trả lời mới.
- * 5. Quản lý Tài khoản: Thêm/Xóa tài khoản Admin/Staff.
- * 6. Nhật ký Chat: Xem lịch sử tương tác của người dùng với Bot.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Bộ não" quản lý toàn bộ hệ thống. Nó như một cái tủ lớn có nhiều ngăn:
+ * 1. Ngăn Dashboard: Xem báo cáo, thống kê (như xem bản tin thời sự).
+ * 2. Ngăn Địa điểm: Thêm bớt quán xá, chỗ chơi.
+ * 3. Ngăn Tài khoản: Quản lý nhân viên.
+ * 4. Ngăn Chat Logs: Đọc trộm tin nhắn (đùa thôi, là kiểm tra chất lượng AI).
+ * 5. Ngăn Knowledge: Dạy học cho con AI của mình khôn hơn.
+ * =================================================================================================
  */
 
 import { useEffect, useState } from "react";
@@ -108,6 +109,9 @@ function AdminContent() {
   // --- STATE MODAL ---
   const [viewingVersions, setViewingVersions] = useState(null);
   const [versions, setVersions] = useState([]);
+  
+  // State để prefill form Knowledge từ Chat Logs (Dạy AI)
+  const [prefillKnowledge, setPrefillKnowledge] = useState(null);
 
   // Kiểm tra đăng nhập khi component được mount
   useEffect(() => {
@@ -400,6 +404,15 @@ function AdminContent() {
     } catch (e) { alert(e.message); }
   }
 
+  /**
+   * Handle "Dạy AI" từ Chat Logs
+   * Chuyển sang tab Knowledge và tự động điền form với dữ liệu chat
+   */
+  function handleTeachAI({ pattern, reply }) {
+    setPrefillKnowledge({ pattern, reply });
+    setActiveTab("knowledge");
+  }
+
   // --- RENDER LOGIC ---
 
   // Nếu chưa đăng nhập -> Hiển thị Form Login
@@ -458,6 +471,8 @@ function AdminContent() {
           onSave={saveKnowledgeItem}
           onUpdate={updateKnowledgeItem}
           onDelete={deleteKnowledgeItem}
+          prefillData={prefillKnowledge}
+          onPrefillConsumed={() => setPrefillKnowledge(null)}
         />
       )}
 
@@ -467,7 +482,7 @@ function AdminContent() {
           chatLogs={chatLogs}
           user={currentUser}
           onClearLogs={clearLogs}
-          onFlagEdit={() => {}}
+          onFlagEdit={handleTeachAI}
         />
       )}
 

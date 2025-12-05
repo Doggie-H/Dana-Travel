@@ -1,17 +1,16 @@
-// file: frontend/src/pages/ItineraryResultsPage.jsx
-
 /**
- * ItineraryResultsPage Component
+ * =================================================================================================
+ * FILE: ItineraryResultsPage.jsx
+ * MỤC ĐÍCH: Hiển thị kết quả lịch trình du lịch.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Trang hiển thị kết quả lịch trình du lịch đã được tạo.
- * Đây là nơi người dùng xem chi tiết kế hoạch, tổng quan chi phí và thực hiện các hành động tiếp theo.
- * 
- * Các chức năng chính:
- * 1. Hiển thị tổng quan (Summary): Chi phí, số ngày, số người.
- * 2. Hiển thị chi tiết (Details): Danh sách hoạt động theo từng ngày.
- * 3. Tích hợp bản đồ (Maps): Mở Google Maps với lộ trình đã lên.
- * 4. Xuất dữ liệu (Export): In ấn hoặc tải về file JSON.
- * 5. Điều hướng sang Chatbot: Để chỉnh sửa lịch trình nếu cần.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Trang này là "Bảng kế hoạch chi tiết" sau khi AI đã tính toán xong:
+ * 1. Tổng quan (Summary): Đi hết bao nhiêu tiền? Đi mấy ngày?
+ * 2. Chi tiết từng ngày (Timeline): Sáng ăn gì? Chiều đi đâu? Tối ngủ đâu?
+ * 3. Bản đồ (Map): Bấm nút là mở Google Maps chỉ đường đi luôn.
+ * 4. Chatbot (AI Assistant): Nếu không ưng ý, bấm nút Chat để nhờ sửa lại.
+ * =================================================================================================
  */
 
 import { useEffect, useState } from "react";
@@ -77,8 +76,8 @@ export default function ItineraryResultsPage() {
   const handleOpenDayMap = (day) => {
     // Lọc ra các item có tọa độ hợp lệ
     const locations = day.items
-      .filter((item) => item.lat && item.lng)
-      .map((item) => `${item.lat},${item.lng}`);
+      .filter((item) => item.location?.lat && item.location?.lng)
+      .map((item) => `${item.location.lat},${item.location.lng}`);
 
     if (locations.length === 0) {
       alert("Không có tọa độ địa điểm để tạo lộ trình");

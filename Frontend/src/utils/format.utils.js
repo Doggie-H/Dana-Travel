@@ -1,8 +1,14 @@
 /**
- * FORMAT UTILITIES (FRONTEND)
+ * =================================================================================================
+ * FILE: format.utils.js
+ * MỤC ĐÍCH: Bộ công cụ định dạng dữ liệu hiển thị (Tiền, Ngày, Giờ).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Bộ công cụ định dạng dữ liệu hiển thị cho phía Client.
- * Đảm bảo tính nhất quán trong việc hiển thị tiền tệ, ngày tháng và thời gian.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * File này chứa các hàm "Makeup" cho dữ liệu.
+ * Dữ liệu thô (ví dụ: 100000) nhìn rất xấu và khó đọc.
+ * Hàm ở đây sẽ biến nó thành đẹp đẽ (ví dụ: "100.000 vnđ") trước khi đưa lên màn hình.
+ * =================================================================================================
  */
 
 /**
@@ -47,6 +53,11 @@ export function formatDate(date) {
  * @returns {string} - Chuỗi thời gian đã định dạng.
  */
 export function formatTime(time) {
+  // Nếu đã là chuỗi HH:mm (VD: "08:00", "14:30"), trả về nguyên vẹn
+  if (typeof time === "string" && /^\d{1,2}:\d{2}$/.test(time)) {
+    return time;
+  }
+
   const t = time instanceof Date ? time : new Date(time);
   if (isNaN(t.getTime())) {
     return "Invalid time";
@@ -80,33 +91,9 @@ export function formatDateTimeLocal(datetime) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
-/**
- * Lấy chuỗi ngày giờ hiện tại đã định dạng cho input.
- * Thường dùng để set giá trị mặc định (Default Value).
- * 
- * @returns {string} - Chuỗi ngày giờ hiện tại.
- */
-export function getTodayDateTime() {
-  return formatDateTimeLocal(new Date());
-}
-
-/**
- * Lấy chuỗi ngày giờ của ngày mai đã định dạng cho input.
- * Thường dùng cho ngày về (Return Date) mặc định.
- * 
- * @returns {string} - Chuỗi ngày giờ ngày mai.
- */
-export function getTomorrowDateTime() {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return formatDateTimeLocal(tomorrow);
-}
-
 export default {
   formatCurrency,
   formatDate,
   formatTime,
   formatDateTimeLocal,
-  getTodayDateTime,
-  getTomorrowDateTime,
 };

@@ -1,14 +1,15 @@
 /**
- * LOGGER MIDDLEWARE
+ * =================================================================================================
+ * FILE: logger.middleware.js
+ * MỤC ĐÍCH: Ghi lại nhật ký truy cập (Access Log).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Middleware ghi nhật ký truy cập (Access Log) vào cơ sở dữ liệu.
- * Giúp theo dõi lưu lượng truy cập, hành vi người dùng và phát hiện bất thường.
- * 
- * Tính năng thông minh:
- * 1. Bỏ qua các request tĩnh (ảnh) và health check.
- * 2. Bỏ qua các request polling ồn ào (stats, logs).
- * 3. Chỉ ghi log các request thay đổi dữ liệu (POST, PUT, DELETE) hoặc truy cập quan trọng.
- * 4. Tự động nhận diện người dùng (Admin/Guest) qua Token.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Middleware này là "Camera giám sát".
+ * 1. Quan sát: Ai vừa vào? Vào trang nào? Làm gì (Xem hay Sửa)?
+ * 2. Ghi chép: Lưu lại IP, trình duyệt, thời gian vào Database.
+ * 3. Thông minh: Tự động bỏ qua các hành động lặp đi lặp lại (Polling) để đỡ tốn dung lượng bộ nhớ.
+ * =================================================================================================
  */
 
 import prisma from "../utils/prisma.js";

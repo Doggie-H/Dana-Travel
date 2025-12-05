@@ -1,18 +1,17 @@
 /**
- * LOCATION SERVICE
+ * =================================================================================================
+ * FILE: location.service.js
+ * MỤC ĐÍCH: Quản lý dữ liệu Địa điểm (CRUD).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Service này chịu trách nhiệm quản lý dữ liệu địa điểm (CRUD).
- * Nó tương tác trực tiếp với Database thông qua Prisma ORM.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Service này chịu trách nhiệm làm việc trực tiếp với Cơ sở dữ liệu (Database) để lấy thông tin địa điểm.
  * 
- * Các chức năng chính:
- * 1. getAllLocations: Lấy danh sách địa điểm (có hỗ trợ lọc).
- * 2. getLocationById: Lấy chi tiết một địa điểm.
- * 3. createLocation: Thêm địa điểm mới.
- * 4. updateLocation: Cập nhật thông tin địa điểm.
- * 5. deleteLocation: Xóa địa điểm.
- * 
- * Lưu ý: Các trường dữ liệu phức tạp như 'tags' và 'menu' được lưu dưới dạng JSON string trong DB,
- * nên cần parse/stringify khi đọc/ghi.
+ * CÁC CHỨC NĂNG CHÍNH:
+ * 1. Lấy danh sách (Get All): Tìm kiếm khách sạn, quán ăn theo bộ lọc (giá, loại hình, trong nhà/ngoài trời).
+ * 2. Xử lý dữ liệu JSON: Vì database lưu menu/tags dưới dạng chuỗi văn bản (String), 
+ *    service này sẽ tự động chuyển đổi chúng thành danh sách (Array/Object) để Code dễ dùng hơn.
+ * =================================================================================================
  */
 
 import prisma from "../utils/prisma.js";
@@ -44,11 +43,29 @@ export const getAllLocations = async (filters = {}) => {
   const locations = await prisma.location.findMany({ where });
   
   // Map dữ liệu để parse JSON string thành Object/Array
-  return locations.map(loc => ({
-    ...loc,
-    tags: loc.tags ? JSON.parse(loc.tags) : [],
-    menu: loc.menu ? JSON.parse(loc.menu) : null,
-  }));
+  return locations.map(loc => {
+    let tags = [];
+    try {
+      tags = loc.tags ? JSON.parse(loc.tags) : [];
+    } catch (e) {
+      console.error(`Error parsing tags for location ${loc.id}:`, e);
+      tags = []; // Fallback to empty array
+    }
+
+    let menu = null;
+    try {
+      menu = loc.menu ? JSON.parse(loc.menu) : null;
+    } catch (e) {
+      console.error(`Error parsing menu for location ${loc.id}:`, e);
+      menu = null;
+    }
+
+    return {
+      ...loc,
+      tags,
+      menu,
+    };
+  });
 };
 
 /**

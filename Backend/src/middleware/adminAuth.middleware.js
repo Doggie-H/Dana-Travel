@@ -1,12 +1,15 @@
 /**
- * ADMIN AUTH MIDDLEWARE
+ * =================================================================================================
+ * FILE: adminAuth.middleware.js
+ * MỤC ĐÍCH: Kiểm tra xem người dùng có phải là Admin hay không.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Middleware này chịu trách nhiệm xác thực quyền truy cập của Admin.
- * Nó kiểm tra token từ Header hoặc Cookie để đảm bảo người dùng có quyền thực hiện hành động.
- * 
- * Hỗ trợ 2 loại token:
- * 1. Session Token: Token base64 chứa ID và timestamp (được tạo khi đăng nhập).
- * 2. Legacy Token: Token tĩnh từ file .env (dùng cho backward compatibility hoặc super admin).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Middleware này giống như "Cổng kiểm soát an ninh".
+ * 1. Chặn lại: Khi ai đó muốn vào trang Admin, middleware này sẽ chặn lại hỏi "Cho xem thẻ (Token)".
+ * 2. Kiểm tra: Soi thẻ xem có hợp lệ không (còn hạn không, có đúng chữ ký không).
+ * 3. Cho qua: Nếu thẻ xịn, mời vào. Nếu không, mời về (Lỗi 401 Unauthorized).
+ * =================================================================================================
  */
 
 export function adminAuth(req, res, next) {

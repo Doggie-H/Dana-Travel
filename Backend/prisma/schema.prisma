@@ -39,6 +39,9 @@ model Location {
   description String?
   menu        String?  // Stored as JSON string for dish prices
   suggestedDuration Int?
+  openTime    String?  // e.g., "08:00"
+  closeTime   String?  // e.g., "22:00"
+  visitType   String?  // e.g., "beach", "museum-culture"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -77,4 +80,15 @@ model SearchTrend {
   budget    Float?
   people    Int?
   createdAt DateTime @default(now())
+}
+
+model Transport {
+  id          String   @id @default(uuid())
+  name        String   // e.g., "Grab Bike", "Xanh SM Taxi"
+  type        String   // 'bike', 'car4', 'car7', 'taxi'
+  basePrice   Float    // Giá mở cửa (0-2km đầu)
+  pricePerKm  Float    // Giá mỗi km tiếp theo
+  description String?  // Ghi chú (e.g., "Giá tăng giờ cao điểm")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

@@ -1,13 +1,15 @@
 /**
- * STORAGE SERVICE
+ * =================================================================================================
+ * FILE: storage.service.js
+ * MỤC ĐÍCH: Lưu trữ dữ liệu tạm thời trên trình duyệt.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Module quản lý lưu trữ dữ liệu tạm thời trên trình duyệt (Session Storage).
- * Giúp duy trì trạng thái ứng dụng khi người dùng reload trang hoặc chuyển đổi giữa các trang.
- * 
- * Dữ liệu lưu trữ bao gồm:
- * 1. Lịch trình đã tạo (Itinerary).
- * 2. Yêu cầu ban đầu của người dùng (User Request).
- * 3. Lịch sử chat (Chat History).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Chiếc nén bạc" của người dùng.
+ * 1. Giữ đồ: Khi bạn tạo lịch trình xong, nó sẽ lưu vào Session Storage (bộ nhớ tạm).
+ * 2. Tiện lợi: Để khi bạn F5 (tải lại trang) hoặc chuyển qua lại giữa các trang, dữ liệu không bị mất.
+ * 3. An toàn: Tắt trình duyệt là mất (Session), không sợ lộ thông tin nếu dùng máy công cộng.
+ * =================================================================================================
  */
 
 const KEYS = {

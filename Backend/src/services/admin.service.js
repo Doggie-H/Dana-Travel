@@ -1,11 +1,15 @@
 /**
- * ADMIN SERVICE
+ * =================================================================================================
+ * FILE: admin.service.js
+ * MỤC ĐÍCH: Quản lý tài khoản và xác thực người quản trị (Admin).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Service quản lý tài khoản Admin.
- * Chịu trách nhiệm xử lý các nghiệp vụ liên quan đến Admin như:
- * - Đăng nhập (Xác thực mật khẩu).
- * - CRUD tài khoản Admin (Tạo, Sửa, Xóa).
- * - Đổi mật khẩu.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Service này giống như "Bảo vệ" của khu vực Admin.
+ * 1. Đăng nhập (Verify): Kiểm tra xem username và password người dùng nhập có đúng với "sổ cái" (Database) không.
+ * 2. Quản lý (CRUD): Cho phép tạo thêm bảo vệ mới, đổi mật khẩu, hoặc đuổi việc (xóa) ai đó.
+ * 3. Bảo mật: Mọi mật khẩu đều được "mã hóa" (Hash) trước khi lưu, nên kể cả xem Database cũng không biết pass là gì.
+ * =================================================================================================
  */
 
 import prisma from "../utils/prisma.js";

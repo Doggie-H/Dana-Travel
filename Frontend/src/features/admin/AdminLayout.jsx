@@ -1,17 +1,15 @@
 /**
- * ADMIN LAYOUT COMPONENT
+ * =================================================================================================
+ * FILE: AdminLayout.jsx
+ * MỤC ĐÍCH: Khung giao diện chung cho trang Admin.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Layout chung cho trang quản trị (Admin Dashboard).
- * Cung cấp cấu trúc giao diện thống nhất bao gồm:
- * 1. Header: Hiển thị thông tin Admin đang đăng nhập và nút đăng xuất.
- * 2. Navigation Tabs: Thanh điều hướng chuyển đổi giữa các chức năng (Dashboard, Locations, Accounts...).
- * 3. Content Area: Khu vực hiển thị nội dung chính.
- * 
- * Props:
- * - user: Thông tin Admin hiện tại.
- * - activeTab: Tab đang được chọn.
- * - onTabChange: Hàm xử lý khi chuyển tab.
- * - onLogout: Hàm xử lý đăng xuất.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Văn phòng làm việc" của Admin.
+ * 1. Header (Cố định): Hiện tên Admin đang đăng nhập và nút Đăng xuất.
+ * 2. Tabs (Menu): Các ngăn kéo hồ sơ (Dashboard, Địa điểm, Tài khoản...).
+ * 3. Bàn làm việc (Content): Nơi hiển thị nội dung chi tiết của từng ngăn kéo.
+ * =================================================================================================
  */
 
 import { useNavigate } from "react-router-dom";

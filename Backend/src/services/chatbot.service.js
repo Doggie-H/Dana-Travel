@@ -1,13 +1,19 @@
 /**
- * CHATBOT SERVICE
+ * =================================================================================================
+ * FILE: chatbot.service.js
+ * MỤC ĐÍCH: Dịch vụ trí tuệ nhân tạo (AI Service) - Bộ não của Chatbot.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
+ * NGÀY CẬP NHẬT: 2025-12-05
  * 
- * Service này xử lý logic của Chatbot, bao gồm việc phân tích tin nhắn của người dùng (Intent Detection),
- * tìm kiếm câu trả lời từ Knowledge Base, hoặc sử dụng AI để phản hồi.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Service này xử lý mọi tin nhắn người dùng gửi đến. Nó hoạt động theo cơ chế Hybrid (Lai):
+ * 1. Rule-Based (Luật): Kiểm tra các từ khóa đơn giản (mưa, ăn, đổi địa điểm) để xử lý nhanh.
+ * 2. Knowledge Base (Kinh nghiệm): Kiểm tra xem câu hỏi có trong kho dữ liệu mẫu không.
+ * 3. AI Generative (Sáng tạo): Nếu không tìm thấy trong luật hay kho dữ liệu, nó sẽ hỏi Gemini AI.
  * 
- * Các chức năng chính:
- * 1. processChatMessage: Hàm trung tâm điều phối luồng xử lý tin nhắn.
- * 2. Xử lý các Intent cụ thể: Thời tiết, Ăn uống, Đổi địa điểm, Ngân sách.
- * 3. Tích hợp với Gemini AI khi không khớp các kịch bản có sẵn.
+ * LUỒNG XỬ LÝ (RAG PIPELINE):
+ * User Query -> Check Keyword -> Check Knowledge -> Retrieve Data -> Build Prompt -> Call AI -> Response
+ * =================================================================================================
  */
 
 import { getAllLocations } from "./location.service.js";

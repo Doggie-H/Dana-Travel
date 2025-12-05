@@ -1,16 +1,17 @@
 /**
- * BUDGET SERVICE
+ * =================================================================================================
+ * FILE: budget.service.js
+ * MỤC ĐÍCH: Tính toán và phân bổ ngân sách du lịch.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Service này chịu trách nhiệm tính toán và ước lượng chi phí cho chuyến đi.
- * Nó giúp phân bổ ngân sách cho các hạng mục khác nhau (lưu trú, ăn uống, di chuyển)
- * và đưa ra các lời khuyên (tips) dựa trên ngân sách của người dùng.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Service này đóng vai trò là "Kế toán trưởng". Nó giải quyết bài toán: "Với X triệu đồng, tôi nên tiêu thế nào?".
  * 
- * Các chức năng chính:
- * 1. calculateBudgetBreakdown: Phân chia ngân sách tổng thành các khoản nhỏ.
- * 2. estimateAccommodationCost: Ước tính chi phí khách sạn/homestay.
- * 3. estimateFoodCost: Ước tính chi phí ăn uống.
- * 4. estimateTransportCost: Ước tính chi phí di chuyển.
- * 5. summarizeBudget: Tổng hợp chi phí cuối cùng từ lịch trình chi tiết.
+ * CÁC CHỨC NĂNG CHÍNH:
+ * 1. Phân bổ (Allocation): Chia tiền thành các hũ (Ăn, Ở, Đi lại, Vui chơi).
+ * 2. Ước tính (Estimation): Tính toán chi phí dự kiến cho từng mục dựa trên giá thị trường Đà Nẵng.
+ * 3. Lời khuyên (Tips): Cảnh báo nếu người dùng chọn phương án quá đắt so với túi tiền.
+ * =================================================================================================
  */
 
 import {

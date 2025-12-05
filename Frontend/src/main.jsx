@@ -1,13 +1,17 @@
 /**
- * MAIN ENTRY POINT
+ * =================================================================================================
+ * FILE: main.jsx
+ * MỤC ĐÍCH: Điểm khởi nguồn của Frontend (Entry Point).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Điểm khởi đầu của ứng dụng React.
- * Nơi mount ứng dụng vào DOM và cấu hình các Provider cấp cao nhất.
- * 
- * Cấu hình:
- * 1. React.StrictMode: Bật chế độ kiểm tra nghiêm ngặt (chỉ chạy ở dev).
- * 2. BrowserRouter: Kích hoạt React Router cho toàn bộ ứng dụng.
- * 3. Routes Definition: Định nghĩa cấu trúc đường dẫn (URL) và Component tương ứng.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là nơi React "bắt đầu sự sống".
+ * 1. Tìm thẻ <div id="root"> trong file index.html.
+ * 2. Bơm toàn bộ ứng dụng (App) vào trong thẻ đó.
+ * 3. Cài đặt các công cụ hỗ trợ:
+ *    - BrowserRouter: Để quản lý việc chuyển trang không cần reload.
+ *    - StriotMode: Giúp phát hiện lỗi ngầm trong code.
+ * =================================================================================================
  */
 
 import React from "react";

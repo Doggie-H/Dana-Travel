@@ -1,13 +1,15 @@
 /**
- * ADMIN CHAT LOGS COMPONENT
+ * =================================================================================================
+ * FILE: AdminChatLogs.jsx
+ * MỤC ĐÍCH: Kiểm tra lịch sử trò chuyện (Chat History).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component hiển thị lịch sử trò chuyện giữa người dùng và Chatbot.
- * Giúp Admin theo dõi chất lượng phản hồi của AI và cải thiện kiến thức.
- * 
- * Chức năng:
- * 1. Xem danh sách logs chat (User Message & Bot Response).
- * 2. Xóa toàn bộ logs (Chỉ Super Admin).
- * 3. "Dạy AI": Chuyển đổi nhanh một đoạn chat thành kiến thức mới cho AI.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Camera giám sát" phòng Chat.
+ * 1. Theo dõi: Xem khách và Bot đang nói chuyện gì với nhau.
+ * 2. Đánh giá: Xem Bot trả lời có ngu ngơ không?
+ * 3. Huấn luyện thực chiến: Nếu thấy Bot trả lời sai, bấm nút "Dạy AI" để sửa lưng nó ngay lập tức.
+ * =================================================================================================
  */
 
 import { can, PERMISSIONS } from "../utils/permissions";

@@ -1,12 +1,15 @@
 /**
- * FOOTER COMPONENT
+ * =================================================================================================
+ * FILE: Footer.jsx
+ * MỤC ĐÍCH: Chân trang (Footer).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Chân trang của ứng dụng.
- * Hiển thị thông tin bản quyền, thương hiệu và các liên kết phụ.
- * 
- * Đặc điểm:
- * - Responsive: Tự động điều chỉnh bố cục trên mobile/desktop.
- * - Sticky Bottom: Luôn nằm ở dưới cùng của trang (nhờ cấu trúc Flexbox ở App.jsx).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Cái đế" của website.
+ * 1. Thông tin: Tên công ty, Slogan "Lên lịch dễ như ăn bánh".
+ * 2. Liên kết phụ: Điều khoản, Liên hệ (Những thứ ít người bấm nhưng bắt buộc phải có).
+ * 3. Vị trí: Luôn nằm dưới cùng, dù nội dung trang có ngắn cũn cỡn (nhờ Sticky Bottom).
+ * =================================================================================================
  */
 
 export default function Footer() {

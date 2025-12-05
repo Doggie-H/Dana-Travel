@@ -1,12 +1,20 @@
 /**
- * CHAT CONTROLLER
+ * =================================================================================================
+ * FILE: chat.controller.js
+ * MỤC ĐÍCH: Cổng tiếp nhận tin nhắn cho Chatbot AI.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Controller này chịu trách nhiệm xử lý các yêu cầu liên quan đến Chatbot.
- * Nó đóng vai trò là "người gác cổng" (Gatekeeper) tiếp nhận request từ Frontend,
- * kiểm tra tính hợp lệ của dữ liệu, sau đó chuyển giao cho Service xử lý.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là nơi đầu tiên tin nhắn của bạn chạm tới Server:
+ * 1. Nhận tin nhắn (Message) từ người dùng.
+ * 2. Kiểm tra xem tin nhắn có rỗng không (Validation).
+ * 3. Chuyển cho bộ não AI (Service) để suy nghĩ câu trả lời.
+ * 4. Ghi lại nhật ký trò chuyện (Logging).
+ * 5. Gửi câu trả lời của AI lại cho người dùng.
  * 
- * Các chức năng chính:
- * 1. chatHandler: Tiếp nhận tin nhắn, validate, gọi service và trả về phản hồi.
+ * CÁC HÀM CHÍNH:
+ * - chatHandler: Xử lý luồng chat chính.
+ * =================================================================================================
  */
 
 import { processChatMessage } from "../services/chatbot.service.js";
@@ -42,13 +50,15 @@ export async function chatHandler(req, res, next) {
     const response = await processChatMessage(message, context || {});
 
     // 4. Ghi log tương tác (để debug hoặc phân tích sau này)
-    // Việc này nên chạy bất đồng bộ hoặc không chặn luồng chính nếu có thể,
-    // nhưng ở đây ta await để đảm bảo log được ghi.
-    logChatInteraction({
-      userMessage: message,
-      botResponse: response,
-      context: context || {},
-    });
+    // Chạy async để không block response, nhưng vẫn đảm bảo log được ghi
+    try {
+      await logChatInteraction({
+        userMessage: message,
+        botResponse: typeof response === 'object' ? JSON.stringify(response) : String(response),
+      });
+    } catch (logError) {
+      console.error("Lỗi khi ghi log chat:", logError);
+    }
 
     // 5. Trả về kết quả thành công
     res.status(200).json({

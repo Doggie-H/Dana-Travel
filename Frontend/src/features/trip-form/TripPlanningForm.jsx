@@ -1,21 +1,22 @@
-// file: frontend/src/features/trip-form/TripPlanningForm.jsx
-
 /**
- * TripPlanningForm Component
+ * =================================================================================================
+ * FILE: TripPlanningForm.jsx
+ * MỤC ĐÍCH: Form điền thông tin để tạo lịch trình.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Đây là form chính để người dùng nhập thông tin lập kế hoạch du lịch.
- * Được thiết kế theo dạng Multi-step Wizard (Từng bước một) để nâng cao trải nghiệm người dùng.
- * 
- * Các chức năng chính:
- * 1. Thu thập thông tin: Ngân sách, Số người, Thời gian, Phương tiện, Sở thích.
- * 2. Validate dữ liệu: Kiểm tra tính hợp lệ trước khi chuyển bước.
- * 3. Gợi ý thông minh: Tự động gợi ý ngân sách, tính toán thời lượng chuyến đi.
- * 4. Quản lý trạng thái: Sử dụng React State để lưu trữ dữ liệu tạm thời.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Tờ khai thông tin du lịch".
+ * Nó chia làm nhiều bước (Wizard Steps) để người dùng không bị ngợp:
+ * 1. Bước 1 (Tiền & Người): Có bao nhiêu tiền? Đi mấy người?
+ * 2. Bước 2 (Thời gian): Đi ngày nào, về giờ nào?
+ * 3. Bước 3 (Hậu cần): Đi xe gì? Ngủ ở đâu?
+ * 4. Bước 4 (Sở thích): Thích tắm biển hay đi chùa?
+ * => Thu thập đủ thông tin thì gửi cho AI xử lý.
+ * =================================================================================================
  */
 
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+
 
 export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
   // --- STATE MANAGEMENT (QUẢN LÝ TRẠNG THÁI) ---
@@ -81,7 +82,16 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
       }
     }
 
-    // Bước 3 & 4: Không bắt buộc (có giá trị mặc định)
+    // Bước 3: Không bắt buộc (có giá trị mặc định)
+
+    // Bước 4: Kiểm tra Sở thích (Min 1, Max 4)
+    if (step === 4) {
+      if (formData.preferences.length < 1) {
+        newErrors.preferences = "Vui lòng chọn ít nhất 1 sở thích";
+      } else if (formData.preferences.length > 3) {
+        newErrors.preferences = "Vui lòng chọn tối đa 3 sở thích để lịch trình tối ưu nhất";
+      }
+    }
     
     setErrors(newErrors);
     // Trả về true nếu object lỗi rỗng
@@ -201,7 +211,6 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
 
   // Danh sách các tùy chọn sở thích cố định
   const preferencesOptions = [
-    { value: "nature", label: "Thiên nhiên" },
     { value: "beach", label: "Biển" },
     { value: "culture", label: "Văn hóa" },
     { value: "food", label: "Ẩm thực" },
@@ -288,162 +297,81 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
       {/* --- BƯỚC 2: THỜI GIAN --- */}
       {step === 2 && (
         <div className="space-y-5">
-          {/* Bộ chọn ngày (Date Range Picker) */}
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Ngày đi - Ngày về *</label>
-            <DatePicker
-              selected={formData.arriveDateTime ? new Date(formData.arriveDateTime) : null}
-              onChange={(dates) => {
-                const [start, end] = dates;
-                
-                if (start) {
-                  const existingStartTime = formData.arriveDateTime ? new Date(formData.arriveDateTime) : new Date();
-                  start.setHours(existingStartTime.getHours() || 8, existingStartTime.getMinutes() || 0);
-                  handleChange({ target: { name: 'arriveDateTime', value: start.toISOString().slice(0, 16) } });
-                }
-                
-                if (end) {
-                  const existingEndTime = formData.leaveDateTime ? new Date(formData.leaveDateTime) : new Date();
-                  end.setHours(existingEndTime.getHours() || 18, existingEndTime.getMinutes() || 0);
-                  handleChange({ target: { name: 'leaveDateTime', value: end.toISOString().slice(0, 16) } });
-                } else if (start && !end) {
-                  handleChange({ target: { name: 'leaveDateTime', value: '' } });
-                }
-              }}
-              startDate={formData.arriveDateTime ? new Date(formData.arriveDateTime) : null}
-              endDate={formData.leaveDateTime ? new Date(formData.leaveDateTime) : null}
-              selectsRange
-              minDate={new Date()}
-              monthsShown={2}
-              dateFormat="dd/MM/yyyy"
-              placeholderText="Chọn ngày đến và ngày rời đi"
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-white transition-all ${
-                errors.arriveDateTime || errors.leaveDateTime
-                  ? "border-red-300 focus:border-red-500 focus:ring-red-100" 
-                  : "border-gray-100 focus:border-accent-500 focus:ring-accent-100"
-              } focus:ring-4 outline-none text-gray-900 font-medium placeholder-gray-300`}
-            />
-            {(errors.arriveDateTime || errors.leaveDateTime) && (
-              <p className="text-xs font-bold text-red-500 mt-1.5 ml-1">
-                {errors.arriveDateTime || errors.leaveDateTime}
-              </p>
+          {/* Ngày đến */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Ngày đến *</label>
+              <input
+                type="date"
+                value={formData.arriveDateTime ? formData.arriveDateTime.split('T')[0] : ""}
+                min={new Date().toISOString().split('T')[0]}
+                onChange={(e) => {
+                  const date = e.target.value;
+                  const time = formData.arriveDateTime ? formData.arriveDateTime.split('T')[1] : "08:00";
+                  handleChange({ target: { name: 'arriveDateTime', value: date ? `${date}T${time}` : "" } });
+                }}
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-white transition-all ${
+                  errors.arriveDateTime 
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100" 
+                    : "border-gray-100 focus:border-accent-500 focus:ring-accent-100"
+                } focus:ring-4 outline-none text-gray-900 font-medium placeholder-gray-300`}
+              />
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Giờ đến</label>
+              <input
+                type="time"
+                value={formData.arriveDateTime ? formData.arriveDateTime.split('T')[1] : "08:00"}
+                onChange={(e) => {
+                  const time = e.target.value;
+                  const date = formData.arriveDateTime ? formData.arriveDateTime.split('T')[0] : new Date().toISOString().split('T')[0];
+                  handleChange({ target: { name: 'arriveDateTime', value: `${date}T${time}` } });
+                }}
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-white focus:border-accent-500 focus:ring-4 focus:ring-accent-100 outline-none text-gray-900 font-medium"
+              />
+            </div>
+            {errors.arriveDateTime && (
+              <p className="col-span-2 text-xs font-bold text-red-500 ml-1">{errors.arriveDateTime}</p>
             )}
           </div>
 
-          {/* Bộ chọn giờ nhanh (Quick Time Selection) */}
-          {formData.arriveDateTime && formData.leaveDateTime && (
-            <div className="grid md:grid-cols-2 gap-5 animate-fadeIn">
-              {/* Giờ đến */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-3">
-                  Giờ đến Đà Nẵng
-                  <span className="block text-xs font-normal text-gray-500 mt-1">
-                    (Thời gian bạn có mặt tại Đà Nẵng để bắt đầu lịch trình)
-                  </span>
-                </label>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-4 gap-2">
-                    {['06:00', '08:00', '12:00', '14:00', '18:00', '20:00', '22:00'].map((time) => {
-                      const [hours, minutes] = time.split(':');
-                      const currentDate = formData.arriveDateTime ? new Date(formData.arriveDateTime) : null;
-                      const isSelected = currentDate && 
-                        currentDate.getHours() === parseInt(hours) && 
-                        currentDate.getMinutes() === parseInt(minutes);
-                      
-                      return (
-                        <button
-                          key={time}
-                          type="button"
-                          onClick={() => {
-                            if (formData.arriveDateTime) {
-                              const dateStr = formData.arriveDateTime.split('T')[0];
-                              const newDateTime = `${dateStr}T${time}`;
-                              handleChange({ target: { name: 'arriveDateTime', value: newDateTime } });
-                            }
-                          }}
-                          className={`px-3 py-2 rounded-lg border-2 font-medium text-sm transition-all ${
-                            isSelected
-                              ? 'bg-gray-900 text-white border-gray-900'
-                              : 'bg-white text-gray-700 border-gray-200 hover:border-gray-900 hover:bg-gray-50'
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      );
-                    })}
-                    
-                    <input
-                      type="time"
-                      value={formData.arriveDateTime ? formData.arriveDateTime.split('T')[1] : '08:00'}
-                      onChange={(e) => {
-                        if (formData.arriveDateTime && e.target.value) {
-                          const dateStr = formData.arriveDateTime.split('T')[0];
-                          const newDateTime = `${dateStr}T${e.target.value}`;
-                          handleChange({ target: { name: 'arriveDateTime', value: newDateTime } });
-                        }
-                      }}
-                      className="px-3 py-2 rounded-lg border-2 border-gray-200 hover:border-gray-900 focus:border-gray-900 focus:ring-4 focus:ring-gray-100 outline-none text-gray-900 font-medium text-sm text-center transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Giờ về */}
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-3">
-                  Giờ rời Đà Nẵng
-                  <span className="block text-xs font-normal text-gray-500 mt-1">
-                    (Thời gian bạn lên xe/máy bay để kết thúc lịch trình)
-                  </span>
-                </label>
-                <div className="space-y-2">
-                  <div className="grid grid-cols-4 gap-2">
-                    {['06:00', '08:00', '12:00', '14:00', '18:00', '20:00', '22:00'].map((time) => {
-                      const [hours, minutes] = time.split(':');
-                      const currentDate = formData.leaveDateTime ? new Date(formData.leaveDateTime) : null;
-                      const isSelected = currentDate && 
-                        currentDate.getHours() === parseInt(hours) && 
-                        currentDate.getMinutes() === parseInt(minutes);
-                      
-                      return (
-                        <button
-                          key={time}
-                          type="button"
-                          onClick={() => {
-                            if (formData.leaveDateTime) {
-                              const dateStr = formData.leaveDateTime.split('T')[0];
-                              const newDateTime = `${dateStr}T${time}`;
-                              handleChange({ target: { name: 'leaveDateTime', value: newDateTime } });
-                            }
-                          }}
-                          className={`px-3 py-2 rounded-lg border-2 font-medium text-sm transition-all ${
-                            isSelected
-                              ? 'bg-gray-900 text-white border-gray-900'
-                              : 'bg-white text-gray-700 border-gray-200 hover:border-gray-900 hover:bg-gray-50'
-                          }`}
-                        >
-                          {time}
-                        </button>
-                      );
-                    })}
-                    
-                    <input
-                      type="time"
-                      value={formData.leaveDateTime ? formData.leaveDateTime.split('T')[1] : '18:00'}
-                      onChange={(e) => {
-                        if (formData.leaveDateTime && e.target.value) {
-                          const dateStr = formData.leaveDateTime.split('T')[0];
-                          const newDateTime = `${dateStr}T${e.target.value}`;
-                          handleChange({ target: { name: 'leaveDateTime', value: newDateTime } });
-                        }
-                      }}
-                      className="px-3 py-2 rounded-lg border-2 border-gray-200 hover:border-gray-900 focus:border-gray-900 focus:ring-4 focus:ring-gray-100 outline-none text-gray-900 font-medium text-sm text-center transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
+          {/* Ngày về */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Ngày về *</label>
+              <input
+                type="date"
+                value={formData.leaveDateTime ? formData.leaveDateTime.split('T')[0] : ""}
+                min={formData.arriveDateTime ? formData.arriveDateTime.split('T')[0] : new Date().toISOString().split('T')[0]}
+                onChange={(e) => {
+                  const date = e.target.value;
+                  const time = formData.leaveDateTime ? formData.leaveDateTime.split('T')[1] : "18:00";
+                  handleChange({ target: { name: 'leaveDateTime', value: date ? `${date}T${time}` : "" } });
+                }}
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-white transition-all ${
+                  errors.leaveDateTime 
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100" 
+                    : "border-gray-100 focus:border-accent-500 focus:ring-accent-100"
+                } focus:ring-4 outline-none text-gray-900 font-medium placeholder-gray-300`}
+              />
             </div>
-          )}
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Giờ về</label>
+              <input
+                type="time"
+                value={formData.leaveDateTime ? formData.leaveDateTime.split('T')[1] : "18:00"}
+                onChange={(e) => {
+                  const time = e.target.value;
+                  const date = formData.leaveDateTime ? formData.leaveDateTime.split('T')[0] : (formData.arriveDateTime ? formData.arriveDateTime.split('T')[0] : new Date().toISOString().split('T')[0]);
+                  handleChange({ target: { name: 'leaveDateTime', value: `${date}T${time}` } });
+                }}
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-white focus:border-accent-500 focus:ring-4 focus:ring-accent-100 outline-none text-gray-900 font-medium"
+              />
+            </div>
+            {errors.leaveDateTime && (
+              <p className="col-span-2 text-xs font-bold text-red-500 ml-1">{errors.leaveDateTime}</p>
+            )}
+          </div>
           
           {/* Hiển thị tổng thời gian chuyến đi */}
           {durationString && (
@@ -472,8 +400,6 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
                 <option value="own">Xe riêng</option>
                 <option value="grab-bike">Grab/XanhSM Bike</option>
                 <option value="grab-car">Grab/XanhSM Car</option>
-                <option value="taxi">Taxi Truyền thống</option>
-                <option value="public">Xe buýt công cộng</option>
               </select>
               <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -491,8 +417,8 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
               >
                 <option value="free">Nhà người quen / Đã có chỗ</option>
                 <option value="hotel">Khách sạn</option>
+                <option value="guesthouse">Nhà nghỉ (Guesthouse)</option>
                 <option value="homestay">Homestay</option>
-                <option value="resort">Resort nghỉ dưỡng</option>
               </select>
               <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -527,6 +453,11 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
               </label>
             ))}
           </div>
+          {errors.preferences && (
+            <p className="text-sm font-bold text-red-500 mt-2 animate-fadeIn">
+              {errors.preferences}
+            </p>
+          )}
         </div>
       )}
 

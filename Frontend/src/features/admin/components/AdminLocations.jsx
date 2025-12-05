@@ -1,14 +1,16 @@
 /**
- * ADMIN LOCATIONS MANAGEMENT
+ * =================================================================================================
+ * FILE: AdminLocations.jsx
+ * MỤC ĐÍCH: Quản lý danh sách địa điểm ăn chơi.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component quản lý danh sách địa điểm du lịch.
- * Cho phép Admin thêm, sửa, xóa và xem lịch sử thay đổi của địa điểm.
- * 
- * Chức năng:
- * 1. Danh sách địa điểm: Hiển thị tên, loại, khu vực, giá vé.
- * 2. Tìm kiếm & Lọc: Tìm theo tên và lọc theo loại hình (Tham quan, Ăn uống...).
- * 3. Thêm/Sửa địa điểm: Form nhập liệu chi tiết (Tên, Tọa độ, Giá vé, Tags...).
- * 4. Lịch sử thay đổi: Xem các phiên bản trước đó của địa điểm (Versioning).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Cuốn sổ tay địa điểm". Quy định đi đâu, ăn gì.
+ * 1. Danh sách: Liệt kê tất cả quán xá, danh lam thắng cảnh.
+ * 2. Bộ lọc: Tìm nhanh xem quán nào bán mỳ quảng, quán nào có máy lạnh (Indoor).
+ * 3. Thêm/Sửa: Nhập thông tin chi tiết (Giá vé, Giờ mở cửa, Tọa độ bản đồ).
+ * 4. Lịch sử: Ai lỡ tay xóa nhầm thì có thể xem lại bản cũ (Versioning).
+ * =================================================================================================
  */
 
 import { useRef, useState } from "react";

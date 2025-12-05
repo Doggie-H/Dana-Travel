@@ -1,9 +1,15 @@
 /**
- * PRISMA CLIENT INSTANCE
+ * =================================================================================================
+ * FILE: prisma.js
+ * MỤC ĐÍCH: Khởi tạo và quản lý kết nối Database.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * File này khởi tạo và export một instance duy nhất của PrismaClient.
- * Việc sử dụng Singleton pattern giúp tránh tạo quá nhiều kết nối đến Database,
- * đặc biệt quan trọng trong môi trường Serverless hoặc khi reload server.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Cây cầu" nối giữa Code (Javascript) và Dữ liệu (Database).
+ * 1. Singleton: Đảm bảo chỉ có DUY NHẤT một cây cầu được xây. Nếu xây nhiều quá (kết nối nhiều),
+ *    database sẽ bị sập vì quá tải.
+ * 2. Sử dụng: Bất kỳ file nào muốn lấy dữ liệu đều phải import file này.
+ * =================================================================================================
  */
 
 import { createRequire } from "module";

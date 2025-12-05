@@ -1,32 +1,32 @@
 /**
- * APP CONSTANTS
+ * =================================================================================================
+ * FILE: app.constants.js
+ * MỤC ĐÍCH: Chứa toàn bộ các hằng số cấu hình (Config).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * File chứa toàn bộ các hằng số cấu hình cho ứng dụng.
- * Việc tập trung các giá trị này vào một nơi giúp dễ dàng điều chỉnh logic kinh doanh (Business Logic)
- * mà không cần can thiệp sâu vào code xử lý.
- * 
- * Bao gồm:
- * 1. Tỉ lệ phân bổ ngân sách (Budget Allocation).
- * 2. Ngưỡng cảnh báo ngân sách.
- * 3. Chi phí ước tính (Di chuyển, Lưu trú, Ăn uống).
- * 4. Khung giờ hoạt động và thời gian tham quan.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Bảng điều khiển" trung tâm của ứng dụng.
+ * Thay vì sửa code ở 100 chỗ khác nhau, bạn chỉ cần sửa số liệu ở đây.
+ * 1. Ngân sách: Quy định bao nhiêu tiền là "Rẻ", bao nhiêu là "Đắt".
+ * 2. Giá cả: Quy định giá xăng, giá taxi, giá khách sạn trung bình ở Đà Nẵng.
+ * 3. Thời gian: Quy định mấy giờ là "Sáng", một bữa ăn kéo dài bao lâu.
+ * =================================================================================================
  */
 
 // --- 1. CẤU HÌNH NGÂN SÁCH (BUDGET) ---
 
 // Tỉ trọng phân bổ ngân sách cho từng hạng mục (Tổng = 100% hoặc xấp xỉ)
 export const BUDGET_ALLOCATION = {
-  // Lưu trú: Chiếm 20-60% tùy loại hình
+  // Lưu trú: Chiếm 10-35% tùy loại hình
   STAY: {
     free: { min: 0, max: 0 }, // Nhà riêng / nhà người quen -> Miễn phí
-    hotel: { min: 0.35, max: 0.45 }, // Khách sạn tiêu chuẩn
-    guesthouse: { min: 0.25, max: 0.35 }, // Nhà nghỉ tiết kiệm
-    homestay: { min: 0.2, max: 0.3 }, // Homestay trải nghiệm
-    resort: { min: 0.5, max: 0.6 }, // Nghỉ dưỡng cao cấp
+    guesthouse: { min: 0.1, max: 0.2 }, // Nhà nghỉ (10-20%)
+    homestay: { min: 0.2, max: 0.25 }, // Homestay (20-25%)
+    hotel: { min: 0.3, max: 0.35 }, // Khách sạn (30-35%)
   },
 
-  // Ăn uống: 25-35% (Văn hóa ẩm thực là phần quan trọng)
-  FOOD: { min: 0.25, max: 0.35 },
+  // Ăn uống: 30-40% (Tăng lên do giảm lưu trú)
+  FOOD: { min: 0.3, max: 0.4 },
 
   // Di chuyển: 10-20%
   TRANSPORT: { min: 0.1, max: 0.2 },
@@ -46,74 +46,52 @@ export const BUDGET_THRESHOLDS = {
 
 // --- 2. CHI PHÍ ƯỚC TÍNH (COST ESTIMATION) ---
 
+// Mức ngân sách tối thiểu để hệ thống chấp nhận (VND/người/ngày)
+export const MIN_BUDGET_PER_PERSON_PER_DAY = 300000;
+
 // Chi phí di chuyển (VND)
 export const TRANSPORT_COSTS = {
   // Xe máy cá nhân (Phượt thủ)
   own: {
-    perKm: 3000, // Tiền xăng hao mòn
+    perKm: 2000, // Xăng
     parking: 5000, // Phí gửi xe
     capacity: 2, // Số người tối đa
+    speed: 35,
   },
-  // Thuê xe máy
-  "rental-bike": {
-    perDay: 120000, // Giá thuê trung bình/ngày
-    perKm: 3000, // Xăng
-    parking: 5000,
-    capacity: 2,
-  },
-  // Thuê ô tô tự lái
-  "rental-car": {
-    perDay: 800000, // Giá thuê trung bình (4 chỗ)
-    perKm: 5000, // Xăng
-    parking: 20000, // Phí đỗ xe cao hơn
-    capacity: 4,
-  },
+
   // GrabBike / XanhSM Bike (Xe ôm công nghệ)
   "grab-bike": {
-    base: 12000, // Cước phí mở cửa (2km đầu)
-    perKm: 4500, // Giá cước/km tiếp theo
+    base: 15000, // Cước phí mở cửa (2km đầu)
+    perKm: 5000, // Giá cước/km tiếp theo
     capacity: 1,
     speed: 30, // Tốc độ trung bình (km/h)
   },
   // GrabCar / XanhSM Car / Taxi (Taxi công nghệ)
   "grab-car": {
     base: 25000, // Cước phí mở cửa
-    perKm: 12000, // Giá cước/km
+    perKm: 14000, // Giá cước/km
     capacity: 4,
     speed: 40, // Tốc độ trung bình (km/h)
   },
-  // Taxi Truyền thống (Phương án dự phòng)
-  taxi: {
-    base: 20000,
-    perKm: 15000, // Thường đắt hơn công nghệ một chút
-    capacity: 4,
-    speed: 40,
-  },
-  // Xe buýt công cộng (Tiết kiệm nhất)
-  public: {
-    base: 7000, // Vé lượt đồng giá
-    perKm: 0,
-    capacity: 50,
-    speed: 20, // Di chuyển chậm do dừng đỗ
-  },
+  // Đã xóa Taxi truyền thống và Xe buýt theo yêu cầu
 };
 
 // Giá phòng trung bình/đêm (VND) - Tính cho phòng 2 người
 export const ACCOMMODATION_COSTS = {
   free: 0,
-  homestay: 400000, // Homestay đẹp, tiện nghi
-  guesthouse: 300000, // Nhà nghỉ bình dân
+  guesthouse: 250000, // Nhà nghỉ bình dân
+  homestay: 450000, // Homestay đẹp
   hotel: 800000, // Khách sạn 3-4 sao
-  resort: 3500000, // Resort 5 sao ven biển
 };
 
 // Chi phí ăn uống ước tính theo mức độ chi tiêu
+// Điều chỉnh: Giảm giá cho phù hợp với thực tế Đà Nẵng
 export const MEAL_DEFAULTS = {
   mealsPerDay: 3, // Sáng, Trưa, Tối
   priceRanges: {
-    cheap: { min: 30000, max: 60000 }, // Bình dân (Cơm tấm, Bún bò vỉa hè)
-    moderate: { min: 80000, max: 150000 }, // Trung bình (Nhà hàng tầm trung)
-    expensive: { min: 200000, max: 400000 }, // Cao cấp (Nhà hàng sang trọng, Hải sản)
+    cheap: { min: 25000, max: 50000 }, // Bình dân (Cơm tấm, Bún bò vỉa hè, Bánh mì)
+    moderate: { min: 60000, max: 120000 }, // Trung bình (Nhà hàng tầm trung, Quán cơm niêu)
+    expensive: { min: 150000, max: 300000 }, // Cao cấp (Nhà hàng sang trọng, Hải sản)
   },
 };
 
@@ -130,9 +108,9 @@ export const TIME_SLOTS = {
 // Thời gian tham quan trung bình tại mỗi loại địa điểm (phút)
 export const ACTIVITY_DURATIONS = {
   attraction: 120, // Điểm tham quan: 2 tiếng
-  restaurant: 90,  // Ăn uống: 1.5 tiếng
-  hotel: 0,        // Check-in/out không tính vào thời gian hoạt động chính
-  beach: 150,      // Tắm biển: 2.5 tiếng
+  restaurant: 90, // Ăn uống: 1.5 tiếng
+  hotel: 0, // Check-in/out không tính vào thời gian hoạt động chính
+  beach: 150, // Tắm biển: 2.5 tiếng
   "theme-park": 240, // Công viên chủ đề (Bà Nà, Asia Park): 4 tiếng
 };
 
@@ -143,4 +121,5 @@ export default {
   MEAL_DEFAULTS,
   TIME_SLOTS,
   ACTIVITY_DURATIONS,
+  MIN_BUDGET_PER_PERSON_PER_DAY,
 };

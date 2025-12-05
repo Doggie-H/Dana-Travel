@@ -1,10 +1,15 @@
 /**
- * CHAT LOG SERVICE
+ * =================================================================================================
+ * FILE: chatLog.service.js
+ * MỤC ĐÍCH: Ghi lại lịch sử trò chuyện (Chat History).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Service quản lý lịch sử trò chuyện (Chat Logs).
- * Lưu trữ tương tác giữa người dùng và Chatbot để:
- * 1. Cải thiện chất lượng câu trả lời của AI.
- * 2. Admin theo dõi và phân tích nhu cầu người dùng.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Service này là "Thư ký" ghi chép biên bản cuộc họp.
+ * 1. Ghi log: Khi Chatbot trả lời khách, thư ký sẽ ghi lại "Khách hỏi gì - Bot đáp gì".
+ * 2. Truy xuất: Admin có thể xem lại các cuộc hội thoại này để biết khách quan tâm điều gì.
+ * 3. Dọn dẹp: Có chức năng xóa log nếu dữ liệu quá nhiều.
+ * =================================================================================================
  */
 
 import prisma from "../utils/prisma.js";

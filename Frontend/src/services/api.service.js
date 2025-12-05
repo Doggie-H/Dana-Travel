@@ -1,12 +1,15 @@
 /**
- * API SERVICE
+ * =================================================================================================
+ * FILE: api.service.js
+ * MỤC ĐÍCH: Giao tiếp với Server (Backend).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Module quản lý việc giao tiếp với Backend thông qua HTTP Requests (Axios).
- * 
- * Vai trò:
- * 1. Cấu hình Axios Client (Base URL, Timeout, Headers).
- * 2. Xử lý lỗi tập trung (Response Interceptor).
- * 3. Định nghĩa các hàm gọi API cụ thể (Generate Itinerary, Chat, Search...).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Người đưa thư" của Frontend.
+ * 1. Gửi thư (Request): Khi bạn bấm nút "Tạo lịch trình", file này sẽ đóng gói thông tin và gửi sang Backend.
+ * 2. Nhận thư (Response): Khi Backend trả lời, nó sẽ mở thư ra và đưa dữ liệu cho các trang (Pages) hiển thị.
+ * 3. Xử lý sự cố: Nếu gửi thư thất bại (mạng lag, server sập), nó sẽ báo lỗi cho người dùng biết.
+ * =================================================================================================
  */
 
 import axios from "axios";

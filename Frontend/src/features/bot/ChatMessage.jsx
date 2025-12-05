@@ -1,16 +1,15 @@
 /**
- * CHAT MESSAGE COMPONENT
+ * =================================================================================================
+ * FILE: ChatMessage.jsx
+ * MỤC ĐÍCH: Hiển thị một tin nhắn trong khung Chat.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component hiển thị một tin nhắn đơn lẻ trong giao diện Chat.
- * Xử lý hiển thị cho cả tin nhắn của User và Bot.
- * 
- * Chức năng:
- * 1. Bong bóng chat (Chat Bubble): Style khác nhau cho User (Phải, Đen) và Bot (Trái, Trắng).
- * 2. Avatar: Chỉ hiển thị cho Bot để tăng tính nhận diện thương hiệu.
- * 3. Quick Replies: Hiển thị các gợi ý trả lời nhanh (nếu có) từ Bot.
- * 4. Timestamp: Hiển thị thời gian gửi tin nhắn.
- * 
- * Style: Minimalist Luxury (Sử dụng Tailwind CSS).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Cái bong bóng tin nhắn" mà bạn hay thấy trên Zalo/Messenger.
+ * 1. Phân biệt: Tin của mình (User) thì nằm bên phải màu đen. Tin của Bot thì nằm bên trái màu trắng.
+ * 2. Avatar: Chỉ Bot mới có ảnh đại diện cho chuyên nghiệp.
+ * 3. Gợi ý: Đôi khi Bot sẽ đưa ra các nút bấm nhanh (Quick Replies) để bạn đỡ phải gõ phím.
+ * =================================================================================================
  */
 
 export default function ChatMessage({ message, onQuickReply }) {

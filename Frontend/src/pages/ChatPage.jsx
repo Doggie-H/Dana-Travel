@@ -1,14 +1,16 @@
 /**
- * CHAT PAGE
+ * =================================================================================================
+ * FILE: ChatPage.jsx
+ * MỤC ĐÍCH: Giao diện trò chuyện với Trợ lý ảo (Chatbot).
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Trang giao diện Chatbot thông minh.
- * Nơi người dùng tương tác với AI để hỏi đáp, điều chỉnh lịch trình.
- * 
- * Chức năng chính:
- * 1. Hiển thị lịch sử chat (ChatMessage).
- * 2. Gửi tin nhắn mới (Input Area).
- * 3. Gợi ý câu trả lời nhanh (Quick Replies).
- * 4. Tự động tải ngữ cảnh (Context) từ lịch trình đã tạo.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Phòng tiếp dân" nơi người dùng tâm sự với AI.
+ * 1. Khung Chat: Nơi hiển thị đoạn hội thoại (như Zalo/Messenger).
+ * 2. Bong bóng chat (ChatMessage): Tin nhắn của mình và của máy.
+ * 3. Nhập liệu (Input): Chỗ để gõ câu hỏi.
+ * 4. Trí nhớ (Context): AI sẽ nhớ bạn vừa tạo lịch trình đi đâu để tư vấn cho đúng.
+ * =================================================================================================
  */
 
 import { useState, useEffect, useRef } from "react";
@@ -20,6 +22,7 @@ import {
   loadUserRequest,
   saveChatHistory,
   loadChatHistory,
+  saveItinerary,
 } from "../services/storage.service.js";
 import Loading from "../components/Loading";
 
@@ -118,6 +121,37 @@ export default function Chat() {
       };
 
       setMessages((prev) => [...prev, botMessage]);
+
+      // Xử lý itineraryPatch nếu có (thêm/đổi địa điểm)
+      if (response.itineraryPatch) {
+        const currentItinerary = loadItinerary();
+        if (currentItinerary && currentItinerary.days && currentItinerary.days.length > 0) {
+          const patch = response.itineraryPatch;
+          
+          if (patch.action === "add" && patch.locationId) {
+            // Thêm địa điểm mới vào ngày đầu tiên
+            const newItem = {
+              id: patch.locationId,
+              title: patch.message?.replace("Đã thêm ", "").replace(" vào lịch trình", "") || "Địa điểm mới",
+              type: "added-by-chat",
+              timeStart: new Date().toISOString(),
+              timeEnd: new Date().toISOString(),
+            };
+            currentItinerary.days[0].items.push(newItem);
+            saveItinerary(currentItinerary);
+            setContext({ ...context, itinerary: currentItinerary });
+            
+            // Thông báo cho user
+            const confirmMessage = {
+              sender: "bot",
+              text: `Đã thêm địa điểm vào lịch trình của bạn! Bạn có thể xem lịch trình mới ở trang Kết quả.`,
+              timestamp: new Date().toISOString(),
+              quickReplies: ["Xem lịch trình", "Thêm địa điểm khác"],
+            };
+            setMessages((prev) => [...prev, confirmMessage]);
+          }
+        }
+      }
     } catch (error) {
       // Xử lý lỗi
       const errorMessage = {

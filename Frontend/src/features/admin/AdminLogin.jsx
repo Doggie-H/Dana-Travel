@@ -1,13 +1,15 @@
 /**
- * ADMIN LOGIN COMPONENT
+ * =================================================================================================
+ * FILE: AdminLogin.jsx
+ * MỤC ĐÍCH: Trang đăng nhập dành cho Admin.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Form đăng nhập dành cho quản trị viên.
- * 
- * Chức năng:
- * 1. Nhập Username/Password.
- * 2. Hiển thị trạng thái Loading khi đang xác thực.
- * 3. Hiển thị thông báo lỗi nếu đăng nhập thất bại.
- * 4. Giao diện tối giản, tập trung vào form.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Cổng bảo vệ" của khu vực quản trị.
+ * 1. Nhập thông tin: Yêu cầu Admin nhập Tên và Mật khẩu.
+ * 2. Kiểm tra: Gửi thông tin lên Server để xem có đúng không.
+ * 3. Kết quả: Nếu đúng thì mở cửa (vào Dashboard), nếu sai thì báo lỗi đuổi về.
+ * =================================================================================================
  */
 
 import { useState } from "react";

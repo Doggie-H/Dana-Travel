@@ -1,13 +1,20 @@
 /**
- * ITINERARY CONTROLLER
+ * =================================================================================================
+ * FILE: itinerary.controller.js
+ * MỤC ĐÍCH: Tiếp nhận yêu cầu tạo lịch trình từ người dùng và phản hồi kết quả.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Controller này xử lý các yêu cầu tạo lịch trình du lịch.
- * Nhiệm vụ chính là đảm bảo dữ liệu đầu vào (UserRequest) hợp lệ trước khi
- * chuyển cho Service tính toán phức tạp.
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Controller đóng vai trò như "người lễ tân" của khách sạn:
+ * 1. Nhận yêu cầu (Request): Khách muốn đi đâu? Bao nhiêu tiền? Mấy người?
+ * 2. Kiểm tra (Validation): Xem thông tin khách đưa có đủ không? Có hợp lệ không?
+ * 3. Chuyển giao (Delegate): Gọi "Tổng quản lý" (Service) để tính toán lịch trình.
+ * 4. Phản hồi (Response): Trả kết quả cuối cùng cho khách.
  * 
- * Các chức năng chính:
- * 1. generateItineraryHandler: API endpoint để tạo lịch trình.
- * 2. validateUserRequest: Hàm helper kiểm tra tính đúng đắn của dữ liệu.
+ * CÁC HÀM CHÍNH:
+ * - generateItineraryHandler: Xử lý API tạo lịch trình.
+ * - validateUserRequest: Kiểm tra tính hợp lệ của dữ liệu đầu vào.
+ * =================================================================================================
  */
 
 import { generateItinerary } from "../services/itinerary.service.js";
@@ -25,9 +32,16 @@ export async function generateItineraryHandler(req, res, next) {
     const userRequest = req.body;
 
     // 1. Validate dữ liệu đầu vào
+    // Chuẩn hóa dữ liệu đầu vào
+    if (!userRequest.preferences) {
+      userRequest.preferences = [];
+    }
+
     // Nếu dữ liệu sai, trả về lỗi 400 ngay lập tức để tiết kiệm tài nguyên server.
     const errors = validateUserRequest(userRequest);
     if (errors.length > 0) {
+      console.log("❌ Validation failed:", errors);
+      console.log("Request body:", userRequest);
       return res.status(400).json({
         error: "Dữ liệu không hợp lệ (Validation failed)",
         details: errors,
@@ -103,7 +117,7 @@ function validateUserRequest(req) {
   }
 
   // Kiểm tra Phương tiện (Enum Validation)
-  const validTransports = ["own", "rent", "taxi", "public", "grab-bike", "grab-car"];
+  const validTransports = ["own", "grab-bike", "grab-car"];
   if (!req.transport || !validTransports.includes(req.transport)) {
     errors.push(`Phương tiện không hợp lệ. Phải là: ${validTransports.join(", ")}`);
   }
@@ -116,9 +130,11 @@ function validateUserRequest(req) {
     );
   }
 
-  // Kiểm tra Sở thích (Phải là mảng)
-  if (req.preferences && !Array.isArray(req.preferences)) {
-    errors.push("Sở thích (preferences) phải là một danh sách (array).");
+  // Kiểm tra Sở thích (Phải là mảng, Min 1, Max 3)
+  if (!req.preferences || !Array.isArray(req.preferences) || req.preferences.length === 0) {
+    errors.push("Vui lòng chọn ít nhất 1 sở thích.");
+  } else if (req.preferences.length > 3) {
+    errors.push("Vui lòng chọn tối đa 3 sở thích.");
   }
 
   return errors;

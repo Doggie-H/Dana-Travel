@@ -1,17 +1,16 @@
 /**
- * ITINERARY SUMMARY COMPONENT
+ * =================================================================================================
+ * FILE: ItinerarySummary.jsx
+ * MỤC ĐÍCH: Tổng kết chi phí chuyến đi.
+ * NGƯỜI TẠO: Team DanaTravel (AI Support)
  * 
- * Component hiển thị bảng tóm tắt ngân sách của chuyến đi.
- * Giúp người dùng so sánh chi phí ước tính với ngân sách dự kiến ban đầu.
- * 
- * Chức năng:
- * 1. Hiển thị Tổng chi phí ước tính (Estimated Total).
- * 2. Hiển thị Chi phí bình quân đầu người (Per Person).
- * 3. So sánh với ngân sách (Variance):
- *    - Hợp lý (Green): Chênh lệch thấp.
- *    - Vượt ngân sách (Red): Cao hơn dự kiến > 10%.
- *    - Dư nhiều (Accent): Thấp hơn dự kiến > 15%.
- * 4. Hiển thị các gợi ý tối ưu ngân sách (Tips).
+ * MÔ TẢ CHI TIẾT (BEGINNER GUIDE):
+ * Đây là "Bảng kê khai tài chính" sau khi tính toán.
+ * 1. Tổng tiền: Hết bao nhiêu?
+ * 2. Chia đầu người: Mỗi người góp bao nhiêu?
+ * 3. So sánh: Có lố ngân sách dự kiến không? (Màu đỏ là lố, Màu xanh là dư).
+ * 4. Lời khuyên: AI sẽ mách nước cách tiết kiệm nếu thấy bạn tiêu hoang quá.
+ * =================================================================================================
  */
 
 import { formatCurrency } from "../../utils/format.utils";

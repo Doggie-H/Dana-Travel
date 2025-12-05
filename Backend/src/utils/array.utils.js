@@ -57,50 +57,7 @@ export function shuffle(array) {
   return result;
 }
 
-/**
- * Chọn duy nhất 1 phần tử ngẫu nhiên từ mảng.
- * 
- * @param {Array} array - Mảng nguồn.
- * @returns {*} - Phần tử được chọn hoặc undefined nếu mảng rỗng.
- */
-export function pickOne(array) {
-  if (!Array.isArray(array) || array.length === 0) {
-    return undefined;
-  }
-  const index = Math.floor(Math.random() * array.length);
-  return array[index];
-}
-
-/**
- * Lọc bỏ các phần tử trùng lặp trong mảng dựa trên một thuộc tính (key).
- * Hữu ích khi xử lý danh sách đối tượng (Object Array).
- * 
- * @param {Array} array - Mảng nguồn.
- * @param {string} key - Tên thuộc tính dùng để so sánh (ví dụ: 'id').
- * @returns {Array} - Mảng mới chỉ chứa các phần tử duy nhất.
- *
- * @example
- * uniqueBy([{id:1}, {id:2}, {id:1}], 'id') => [{id:1}, {id:2}]
- */
-export function uniqueBy(array, key) {
-  if (!Array.isArray(array)) {
-    return [];
-  }
-
-  const seen = new Set();
-  return array.filter((item) => {
-    const val = item[key];
-    if (seen.has(val)) {
-      return false; // Đã tồn tại -> Bỏ qua
-    }
-    seen.add(val); // Đánh dấu đã thấy
-    return true; // Giữ lại
-  });
-}
-
 export default {
   pickRandom,
   shuffle,
-  pickOne,
-  uniqueBy,
 };
