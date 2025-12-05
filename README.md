@@ -13,6 +13,12 @@ Ngành du lịch đang chuyển đổi số mạnh mẽ. DanaTravel đóng vai t
 - **Chatbot thông minh:** Hỗ trợ giải đáp thắc mắc, gợi ý real-time.
 - **Thông tin phong phú:** Cơ sở dữ liệu chi tiết về địa điểm, ẩm thực, văn hóa.
 
+> 📚 **Tài liệu tham khảo chi tiết:**
+> - [Kiến trúc hệ thống (Architecture)](./docs/ARCHITECTURE.md)
+> - [Hướng dẫn phát triển (Developer Guide)](./docs/HUONG_DAN_PHAT_TRIEN.md)
+> - [Hướng dẫn cơ chế ngân sách (Budget Guide)](./docs/BUDGET_GUIDE.md)
+> - [Tài liệu API (API Docs)](./docs/API.md)
+
 ---
 
 ## 2. Kiến trúc Hệ thống
