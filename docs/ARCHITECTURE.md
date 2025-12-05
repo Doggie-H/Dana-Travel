@@ -69,28 +69,28 @@ Sơ đồ Use Case mô tả các tương tác giữa các tác nhân (Actors) v�
 ### 3.3. Sơ đồ Minh họa
 
 ```mermaid
-usecaseDiagram
-    actor "Khách du lịch" as User
-    actor "Quản trị viên" as Admin
-    actor "Hệ thống AI" as AI
+graph LR
+    User["👤 Khách du lịch"]
+    Admin["👤 Quản trị viên"]
+    AI["🤖 Hệ thống AI"]
 
-    package "Hệ thống DanaTravel" {
-        usecase "Lập lịch trình" as UC1
-        usecase "Chatbot tư vấn" as UC2
-        usecase "Tra cứu địa điểm" as UC3
-        usecase "Đăng nhập Admin" as UC4
-        usecase "Quản lý dữ liệu" as UC5
-    }
+    subgraph System["Hệ thống DanaTravel"]
+        UC1(["Lập lịch trình"])
+        UC2(["Chatbot tư vấn"])
+        UC3(["Tra cứu địa điểm"])
+        UC4(["Đăng nhập Admin"])
+        UC5(["Quản lý dữ liệu"])
+    end
 
     User --> UC1
     User --> UC2
     User --> UC3
 
     Admin --> UC4
-    UC4 ..> UC5 : include
+    UC4 -.-> UC5
 
-    UC2 ..> AI : sử dụng
-    UC1 ..> AI : hỗ trợ
+    UC2 -.-> AI
+    UC1 -.-> AI
 ```
 
 ## 4. Thiết kế Cơ sở dữ liệu (ERD)
@@ -191,6 +191,11 @@ erDiagram
         datetime createdAt
         datetime updatedAt
     }
+
+    Admin ||--o{ Location : "quản lý"
+    Admin ||--o{ Knowledge : "quản lý"
+    Admin ||--o{ Transport : "quản lý"
+    Admin ||--o{ AccessLog : "ghi nhật ký"
 ```
 *Hình 4.2: Sơ đồ ERD thiết kế cơ sở dữ liệu*
 
