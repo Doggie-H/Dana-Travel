@@ -58,19 +58,19 @@ Hệ thống được thiết kế theo mô hình ba tầng (Three-Tier Architec
 
 ```mermaid
 graph TB
-    subgraph Presentation["PRESENTATION LAYER (Client)"]
+    subgraph Presentation["TẦNG TRÌNH BÀY (Client)"]
         React["React 18 SPA<br/>- React Router v6<br/>- Tailwind CSS<br/>- Vite"]
     end
 
-    subgraph Business["BUSINESS LOGIC LAYER (Server)"]
+    subgraph Business["TẦNG XỬ LÝ LOGIC (Server)"]
         Express["Express.js API<br/>Port 3001"]
-        Controllers["Controller Layer<br/>- Itinerary<br/>- Chat<br/>- Location<br/>- Admin"]
-        Services["Service Layer<br/>- ItineraryService<br/>- ChatbotService<br/>- LocationService<br/>- AdminService"]
-        Middleware["Middleware<br/>- Auth<br/>- Logger<br/>- Error Handler"]
+        Controllers["Tầng Controller<br/>- Lịch Trình<br/>- Chat<br/>- Địa Điểm<br/>- Quản Trị"]
+        Services["Tầng Service<br/>- Tạo Lịch Trình<br/>- Chatbot<br/>- Quản Lý Địa Điểm<br/>- Quản Lý Admin"]
+        Middleware["Middleware<br/>- Xác Thực<br/>- Ghi Nhật Ký<br/>- Xử Lý Lỗi"]
     end
 
-    subgraph Data["PERSISTENCE LAYER (Data)"]
-        DB["Prisma ORM<br/>SQLite Dev / PostgreSQL Prod"]
+    subgraph Data["TẦNG LƯU TRỮ DỮ LIỆU"]
+        DB["Prisma ORM<br/>SQLite (Phát Triển) / PostgreSQL (Sản Xuất)"]
     end
 
     subgraph External["EXTERNAL SERVICES"]
@@ -112,27 +112,27 @@ graph TB
 
 ```mermaid
 graph TB
-    subgraph Client["Client"]
-        Browser["Web Browser<br/>(Chrome, Firefox, Safari)"]
-        SPA["Single Page App<br/>React + Vite<br/>- HomePage<br/>- ItineraryResultsPage<br/>- ChatPage<br/>- AdminDashboard"]
-        Storage["Local Storage<br/>Session Data"]
+    subgraph Client["Client (Máy Khách)"]
+        Browser["Trình Duyệt Web<br/>(Chrome, Firefox, Safari)"]
+        SPA["Ứng Dụng Web<br/>React + Vite<br/>- Trang Chủ<br/>- Kết Quả Lịch Trình<br/>- Chat AI<br/>- Bảng Điều Khiển Quản Trị"]
+        Storage["Lưu Trữ Cục Bộ<br/>Dữ Liệu Phiên"]
     end
 
-    subgraph Server["Backend Server"]
+    subgraph Server["Server Backend"]
         API["Express.js API<br/>Port 3001"]
-        Routes["Route Layer<br/>- /api/itinerary/*<br/>- /api/chat/*<br/>- /api/location/*<br/>- /api/admin/*"]
-        Ctrls["Controller Layer<br/>- ItineraryController<br/>- ChatController<br/>- LocationController<br/>- AdminController"]
-        Srvs["Service Layer<br/>- ItineraryService<br/>- ChatbotService<br/>- LocationService<br/>- AdminService"]
+        Routes["Tầng Route<br/>- /api/itinerary/*<br/>- /api/chat/*<br/>- /api/location/*<br/>- /api/admin/*"]
+        Ctrls["Tầng Controller<br/>- LịchTrìnhController<br/>- ChatController<br/>- ĐịaĐiểmController<br/>- QuảnTrịController"]
+        Srvs["Tầng Service<br/>- TạoLịchTrình<br/>- ChatbotService<br/>- QuảnLýĐịaĐiểm<br/>- QuảnLýAdmin"]
     end
 
-    subgraph Data["Data Layer"]
-        DB["SQLite / PostgreSQL<br/>Database"]
+    subgraph Data["Tầng Dữ Liệu"]
+        DB["SQLite / PostgreSQL<br/>Cơ Sở Dữ Liệu"]
         Prisma["Prisma ORM<br/>Schema & Migration"]
     end
 
-    subgraph External["External APIs"]
-        Gemini["Google Gemini"]
-        Maps["Google Maps"]
+    subgraph External["API Bên Ngoài"]
+        Gemini["Google Gemini<br/>Xử Lý NLP"]
+        Maps["Google Maps<br/>Tính Khoảng Cách"]
     end
 
     Browser -->|HTTP/HTTPS| SPA
@@ -143,11 +143,11 @@ graph TB
     Routes --> Ctrls
     Ctrls --> Srvs
 
-    Srvs -->|Query| Prisma
+    Srvs -->|Truy Vấn| Prisma
     Prisma --> DB
 
-    Srvs -.->|API Call| Gemini
-    Srvs -.->|API Call| Maps
+    Srvs -.->|Gọi API| Gemini
+    Srvs -.->|Gọi API| Maps
 ```
 
 ---
@@ -296,26 +296,26 @@ Mối quan hệ chi tiết:
 Hệ thống cung cấp 7 ca sử dụng chính dành cho hai loại tác nhân: khách du lịch và quản trị viên hệ thống.
 
 ```mermaid
-usecaseDiagram
-    actor "Khách Du Lịch" as Tourist
-    actor "Quản Trị Viên" as Admin
+graph TB
+    User["👤 Khách Du Lịch"]
+    Admin["👨‍💼 Quản Trị Viên"]
 
-    usecase "UC-01: Khám phá địa điểm" as UC1
-    usecase "UC-02: Tạo lịch trình tự động" as UC2
-    usecase "UC-03: Chỉnh sửa lịch" as UC3
-    usecase "UC-04: Chat tư vấn" as UC4
-    usecase "UC-05: Quản lý địa điểm" as UC5
-    usecase "UC-06: Xem thống kê" as UC6
-    usecase "UC-07: Quản lý mẫu AI" as UC7
+    UC1["UC-01<br/>Khám Phá Địa Điểm"]
+    UC2["UC-02<br/>Tạo Lịch Trình Tự Động"]
+    UC3["UC-03<br/>Chỉnh Sửa Lịch"]
+    UC4["UC-04<br/>Chat Tư Vấn"]
+    UC5["UC-05<br/>Quản Lý Địa Điểm"]
+    UC6["UC-06<br/>Xem Thống Kê"]
+    UC7["UC-07<br/>Quản Lý Mẫu AI"]
 
-    Tourist --> UC1
-    Tourist --> UC2
-    Tourist --> UC3
-    Tourist --> UC4
+    User -->|Sử Dụng| UC1
+    User -->|Sử Dụng| UC2
+    User -->|Sử Dụng| UC3
+    User -->|Sử Dụng| UC4
 
-    Admin --> UC5
-    Admin --> UC6
-    Admin --> UC7
+    Admin -->|Sử Dụng| UC5
+    Admin -->|Sử Dụng| UC6
+    Admin -->|Sử Dụng| UC7
 ```
 
 Bảng mô tả chi tiết:
@@ -400,30 +400,30 @@ Frontend/
 ```mermaid
 graph TB
     subgraph Frontend["Frontend - React SPA"]
-        App["App.jsx<br/>Router Provider"]
+        App["App.jsx<br/>Nhà Cung Cấp Router"]
 
-        subgraph Pages["Pages Layer"]
-            Home["HomePage<br/>Form Input"]
-            Results["ItineraryResultsPage<br/>Display & Edit"]
-            Chat["ChatPage<br/>Bot Interface"]
-            Admin["AdminDashboardPage<br/>Management"]
+        subgraph Pages["Tầng Pages"]
+            Home["Trang Chủ<br/>Form Nhập Liệu"]
+            Results["Trang Kết Quả Lịch Trình<br/>Hiển Thị & Chỉnh Sửa"]
+            Chat["Trang Chat<br/>Giao Diện Bot"]
+            Admin["Trang Bảng Điều Khiển<br/>Quản Lý"]
         end
 
-        subgraph Components["Components Layer"]
-            Header["Header<br/>Navigation"]
+        subgraph Components["Tầng Components"]
+            Header["Header<br/>Điều Hướng"]
             Footer["Footer"]
-            Loading["Loading Spinner"]
-            ErrorBound["ErrorBoundary"]
-            Messages["ChatMessage"]
-            Cards["Cards & Lists"]
+            Loading["Biểu Tượng Tải"]
+            ErrorBound["Bắt Lỗi"]
+            Messages["Tin Nhắn Chat"]
+            Cards["Thẻ & Danh Sách"]
         end
 
-        subgraph Services["Services Layer"]
-            APIService["api.service.js<br/>REST Client"]
-            StorageService["storage.service.js<br/>LocalStorage"]
+        subgraph Services["Tầng Services"]
+            APIService["api.service.js<br/>Khách Hàng REST"]
+            StorageService["storage.service.js<br/>Lưu Trữ Cục Bộ"]
         end
 
-        subgraph Utils["Utils & Styles"]
+        subgraph Utils["Tiện Ích & Kiểu Dáng"]
             Format["format.utils.js"]
             CSS["main.css<br/>Tailwind"]
         end
@@ -476,36 +476,36 @@ Backend/
 
 ```mermaid
 graph TB
-    subgraph Backend["Backend - Express.js Server"]
-        subgraph Routes["Route Layer"]
+    subgraph Backend["Backend - Server Express.js"]
+        subgraph Routes["Tầng Route"]
             RItinerary["routes/itinerary.routes.js<br/>POST /generate"]
             RChat["routes/chat.routes.js<br/>POST /message"]
             RLocation["routes/location.routes.js<br/>GET /"]
             RAdmin["routes/admin.routes.js<br/>GET/POST/PUT/DELETE"]
         end
 
-        subgraph Controllers["Controller Layer"]
-            CItinerary["ItineraryController<br/>- validate input<br/>- call service"]
+        subgraph Controllers["Tầng Controller"]
+            CItinerary["ItineraryController<br/>- Xác Thực Input<br/>- Gọi Service"]
             CChat["ChatController"]
             CLocation["LocationController"]
             CAdmin["AdminController"]
         end
 
-        subgraph Services["Service Layer - MAIN LOGIC"]
-            SItinerary["ItineraryService<br/>- generateItinerary()<br/>- generateDayScheduleStrict()"]
-            SChat["ChatbotService<br/>- processChatMessage()<br/>- callGeminiAPI()"]
-            SLocation["LocationService<br/>- searchLocations()"]
-            SAdmin["AdminService<br/>- authenticate()"]
+        subgraph Services["Tầng Service - LOGIC CHÍNH"]
+            SItinerary["ItineraryService<br/>- Tạo Lịch Trình<br/>- Tạo Lịch Từng Ngày"]
+            SChat["ChatbotService<br/>- Xử Lý Tin Nhắn Chat<br/>- Gọi Gemini API"]
+            SLocation["LocationService<br/>- Tìm Kiếm Địa Điểm"]
+            SAdmin["AdminService<br/>- Xác Thực Admin"]
         end
 
-        subgraph Utils["Utils & Validators"]
-            Validator["itinerary-validator.js<br/>- filterValidLocations()<br/>- validateBudgetFeasibility()"]
-            DaySchedule["generate-day-schedule-strict.js<br/>- 7-phase logic"]
+        subgraph Utils["Tiện Ích & Xác Thực"]
+            Validator["itinerary-validator.js<br/>- Lọc Địa Điểm Hợp Lệ<br/>- Xác Thực Ngân Sách"]
+            DaySchedule["generate-day-schedule-strict.js<br/>- Logic 7 Giai Đoạn"]
             Constants["scheduling.constants.js<br/>- LOCATION_RULES"]
-            Helpers["itinerary-helpers.js<br/>- distance calc"]
+            Helpers["itinerary-helpers.js<br/>- Tính Khoảng Cách"]
         end
 
-        subgraph Data["Data Layer"]
+        subgraph Data["Tầng Dữ Liệu"]
             ORM["Prisma ORM"]
             DB["SQLite/PostgreSQL"]
         end
@@ -535,7 +535,7 @@ graph TB
 - Node.js 18+
 - Express.js 4.x
 - Prisma 5.x (ORM)
-- SQLite (dev) / PostgreSQL (prod)
+- SQLite (phát triển) / PostgreSQL (sản xuất)
 - Google Gemini API
 - Google Maps API
 - npm 10.x
