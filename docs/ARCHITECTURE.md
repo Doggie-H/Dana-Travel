@@ -683,6 +683,249 @@ graph TB
 - Google Maps API
 - npm 10.x
 
+---
+
+### 5.3. Chi Tiết Lớp Định Tuyến và Điều Khiển (Routing & Controller Layer)
+
+Lớp Route + Controller chịu trách nhiệm nhận yêu cầu HTTP, xác thực dữ liệu ban đầu, và chuyển tiếp đến Service layer.
+
+```mermaid
+graph TB
+    subgraph Routes["Routes Layer - Định Tuyến"]
+        R1["itinerary.routes.js<br/>POST /api/itinerary/generate<br/>GET /api/itinerary/history<br/>PUT /api/itinerary/:id<br/>DELETE /api/itinerary/:id"]
+        R2["chat.routes.js<br/>POST /api/chat/message<br/>GET /api/chat/history<br/>DELETE /api/chat/session"]
+        R3["location.routes.js<br/>GET /api/location<br/>GET /api/location/:id<br/>GET /api/location/search"]
+        R4["admin.routes.js<br/>POST /api/admin/login<br/>GET /api/admin/dashboard<br/>PUT /api/admin/location/:id<br/>POST /api/admin/knowledge"]
+    end
+
+    subgraph Controllers["Controllers Layer - Điều Khiển"]
+        C1["ItineraryController<br/>generateItinerary(req, res)<br/>- Parse JSON payload<br/>- Validate schema<br/>- Check fields<br/>- Call Service"]
+        C2["ChatController<br/>sendMessage(req, res)<br/>- Validate message<br/>- Sanitize input<br/>- Rate limiting<br/>- Call Service"]
+        C3["LocationController<br/>getLocations(req, res)<br/>- Parse query<br/>- Apply filters<br/>- Pagination<br/>- Return results"]
+        C4["AdminController<br/>login(req, res)<br/>- Hash password check<br/>- Generate JWT<br/>- Return token"]
+    end
+
+    subgraph Middleware["Middleware - Xử Lý Ngang"]
+        M1["authMiddleware<br/>- Kiểm tra JWT token<br/>- Xác thực Admin"]
+        M2["errorHandler<br/>- Bắt lỗi<br/>- Format response"]
+        M3["logger<br/>- Ghi log request<br/>- Ghi log response"]
+    end
+
+    subgraph Validation["Validation Layer"]
+        V1["validateItineraryInput()<br/>- Check required fields<br/>- Validate budget<br/>- Check dates"]
+        V2["validateChatInput()<br/>- Message not empty<br/>- Max length 1000"]
+        V3["validateAdminLogin()<br/>- Username format<br/>- Password strength"]
+    end
+
+    R1 --> M1
+    R2 --> M1
+    R3 --> M1
+    R4 --> M1
+
+    M1 --> M3
+    M3 --> C1
+    M3 --> C2
+    M3 --> C3
+    M3 --> C4
+
+    C1 --> V1
+    C2 --> V2
+    C4 --> V3
+
+    V1 -->|Valid| Service["📤 Gọi Service Layer"]
+    V2 -->|Valid| Service
+    V3 -->|Valid| Service
+
+    V1 -->|Invalid| Error["❌ Trả HTTP 400"]
+    V2 -->|Invalid| Error
+    V3 -->|Invalid| Error
+```
+
+**Quy trình xử lý request:**
+
+| Bước | Thành Phần | Công Việc               | Kết Quả               |
+| ---- | ---------- | ----------------------- | --------------------- |
+| 1    | Route      | Khớp URL với endpoint   | Chuyển đến Controller |
+| 2    | Middleware | Kiểm tra JWT, ghi log   | Cho phép hoặc từ chối |
+| 3    | Controller | Parse request, validate | Chuẩn bị dữ liệu      |
+| 4    | Validation | Kiểm tra schema, format | Valid hoặc Error 400  |
+| 5    | Service    | Xử lý logic nghiệp vụ   | Kết quả xử lý         |
+| 6    | Response   | Trả về client           | HTTP 200/400/500      |
+
+---
+
+### 5.4. Chi Tiết Lớp Dịch Vụ (Service Layer)
+
+Lớp Service chứa toàn bộ logic nghiệp vụ, xử lý dữ liệu phức tạp, gọi API bên ngoài, và điều phối database.
+
+```mermaid
+graph TB
+    subgraph ItineraryService["ItineraryService - Tạo Lịch Trình"]
+        IS1["generateItinerary(input)<br/>Bước 1: Validate ngân sách<br/>Bước 2: Chọn lưu trú<br/>Bước 3: Phân bổ ngân sách/ngày<br/>Bước 4: Tạo lịch từng ngày"]
+        IS2["generateDaySchedule(day, budget)<br/>7 pha xử lý:<br/>① Filter hợp lệ<br/>② Loại trừ<br/>③ Sắp xếp<br/>④ Đóng gói<br/>⑤ Tối ưu<br/>⑥ Xác thực"]
+        IS3["validateBudgetFeasibility()<br/>- Tính chi phí tối thiểu<br/>- Kiểm tra khả năng tài chính"]
+    end
+
+    subgraph ChatbotService["ChatbotService - Xử Lý Chat"]
+        CS1["processChatMessage(message)<br/>Bước 1: Phân tích intent<br/>Bước 2: Truy vấn KB<br/>Bước 3: Gọi Gemini"]
+        CS2["extractIntent(text)<br/>- NLP xác định ý định<br/>- Match patterns"]
+        CS3["callGeminiAPI(message)<br/>- Gửi request đến AI<br/>- Parse response"]
+        CS4["logChatMessage(msg, response)<br/>- Lưu vào CHAT_LOG"]
+    end
+
+    subgraph LocationService["LocationService - Quản Lý Địa Điểm"]
+        LS1["getAllLocations(filters)<br/>- Query DB<br/>- Apply filters<br/>- Return list"]
+        LS2["searchLocations(keyword)<br/>- Tìm kiếm theo tên<br/>- Match tags"]
+        LS3["getLocationById(id)<br/>- Query DB<br/>- Return chi tiết"]
+    end
+
+    subgraph AdminService["AdminService - Quản Trị Viên"]
+        AS1["authenticate(username, pwd)<br/>- Hash password<br/>- Compare<br/>- Generate JWT"]
+        AS2["updateLocation(id, data)<br/>- Validate input<br/>- Update DB<br/>- Log audit"]
+        AS3["manageKnowledge(action)<br/>- CRUD Q&A<br/>- Train patterns"]
+    end
+
+    subgraph External["Gọi API Bên Ngoài"]
+        EX1["Google Gemini API<br/>- NLP processing<br/>- Response generation"]
+        EX2["Google Maps API<br/>- Distance Matrix<br/>- Route optimization"]
+    end
+
+    subgraph Utils["Utility Functions"]
+        U1["calculateDistance()<br/>- Gọi Maps API<br/>- Parse result"]
+        U2["formatResponse()<br/>- JSON structure<br/>- Add metadata"]
+        U3["optimizeSchedule()<br/>- TSP solving<br/>- Greedy algorithm"]
+    end
+
+    IS1 --> IS2
+    IS1 --> IS3
+    IS2 --> Utils
+
+    CS1 --> CS2
+    CS2 --> CS3
+    CS3 --> External
+    CS3 --> CS4
+
+    LS1 --> LS2
+    LS2 --> LS3
+
+    AS1 --> AS2
+    AS2 --> AS3
+
+    Utils --> EX1
+    Utils --> EX2
+
+    IS1 -.->|Trả kết quả| Response["📤 Trả về Controller"]
+    CS1 -.->|Trả kết quả| Response
+    LS1 -.->|Trả kết quả| Response
+    AS1 -.->|Trả kết quả| Response
+```
+
+**Trách nhiệm từng Service:**
+
+| Service              | Chức Năng Chính                        | Gọi API    | Gọi Database        |
+| -------------------- | -------------------------------------- | ---------- | ------------------- |
+| **ItineraryService** | Tạo lịch trình tự động, tối ưu chi phí | Maps API   | LOCATION, ITINERARY |
+| **ChatbotService**   | Xử lý tin nhắn, trả lời câu hỏi        | Gemini API | CHAT_LOG, KNOWLEDGE |
+| **LocationService**  | Tìm kiếm, lọc, trả về địa điểm         | Không      | LOCATION            |
+| **AdminService**     | Xác thực, quản lý dữ liệu              | Không      | ADMIN, KNOWLEDGE    |
+
+---
+
+### 5.5. Chi Tiết Lớp Truy Cập Dữ Liệu (Data Access Layer)
+
+Lớp này thông qua **Prisma ORM** để thực hiện CRUD operations với database.
+
+```mermaid
+graph TB
+    subgraph Services["Service Layer<br/>Gọi query"]
+        S1["ItineraryService.query()"]
+        S2["LocationService.query()"]
+        S3["ChatbotService.query()"]
+        S4["AdminService.query()"]
+    end
+
+    subgraph Prisma["Prisma ORM - Data Access Layer"]
+        P1["prisma.location.findMany()<br/>prisma.location.findUnique()"]
+        P2["prisma.itinerary.create()<br/>prisma.itinerary.update()"]
+        P3["prisma.chatLog.create()"]
+        P4["prisma.admin.findUnique()"]
+        P5["prisma.knowledge.findMany()"]
+    end
+
+    subgraph Queries["Query Methods"]
+        Q1["SELECT (Read)<br/>- findMany()<br/>- findUnique()<br/>- findFirst()"]
+        Q2["INSERT (Create)<br/>- create()<br/>- createMany()"]
+        Q3["UPDATE<br/>- update()<br/>- updateMany()"]
+        Q4["DELETE<br/>- delete()<br/>- deleteMany()"]
+    end
+
+    subgraph Database["Database Layer"]
+        DB1["Table: LOCATION<br/>- id, name, address<br/>- lat, lng, type<br/>- ticket, food, extra"]
+        DB2["Table: ITINERARY<br/>- id, name, startDate<br/>- endDate, budget<br/>- preferences"]
+        DB3["Table: ADMIN<br/>- id, username<br/>- passwordHash, email"]
+        DB4["Table: CHAT_LOG<br/>- id, sessionId<br/>- userMessage, botResponse"]
+        DB5["Table: KNOWLEDGE<br/>- id, question<br/>- answer, keywords"]
+    end
+
+    S1 --> P1
+    S1 --> P2
+    S2 --> P1
+    S3 --> P3
+    S4 --> P4
+    S4 --> P5
+
+    P1 --> Q1
+    P2 --> Q2
+    P2 --> Q3
+    P3 --> Q2
+    P4 --> Q1
+    P5 --> Q1
+
+    Q1 --> DB1
+    Q1 --> DB2
+    Q1 --> DB3
+    Q2 --> DB1
+    Q2 --> DB2
+    Q2 --> DB4
+    Q3 --> DB1
+    Q4 --> DB1
+
+    DB1 -.->|SQL Execute| DatabaseEngine["🗄️ PostgreSQL / SQLite"]
+```
+
+**Các hoạt động CRUD qua Prisma:**
+
+| Hoạt Động  | Prisma Method | Bảng      | Ví Dụ                                                           |
+| ---------- | ------------- | --------- | --------------------------------------------------------------- |
+| **Read**   | findMany()    | LOCATION  | `prisma.location.findMany({ where: { type: "restaurant" } })`   |
+| **Read**   | findUnique()  | ADMIN     | `prisma.admin.findUnique({ where: { username: "admin1" } })`    |
+| **Create** | create()      | ITINERARY | `prisma.itinerary.create({ data: { name, budget, dates } })`    |
+| **Create** | create()      | CHAT_LOG  | `prisma.chatLog.create({ data: { userMessage, botResponse } })` |
+| **Update** | update()      | LOCATION  | `prisma.location.update({ where: { id }, data: { name } })`     |
+| **Delete** | delete()      | LOCATION  | `prisma.location.delete({ where: { id } })`                     |
+
+**Mối Quan Hệ Dữ Liệu:**
+
+```
+ADMIN
+  ├─ 1-N → KNOWLEDGE (quản lý Q&A)
+  ├─ 1-N → LOCATION (chỉnh sửa địa điểm)
+  └─ 1-N → ACCESS_LOG (lịch sử truy cập)
+
+LOCATION
+  ├─ 1-N → CHAT_LOG (được đề cập)
+  └─ N-N → ITINERARY (chứa các địa điểm)
+
+ITINERARY
+  ├─ N-N → LOCATION
+  └─ 1-N → ACCESS_LOG
+
+CHAT_LOG (Logging)
+  └─ 1-N → SESSION (lịch sử trò chuyện)
+```
+
+---
+
 ```javascript
 ItineraryService.generateItinerary()
   ├─ validateBudgetFeasibility()
