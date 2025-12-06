@@ -307,7 +307,73 @@ Mối quan hệ chi tiết:
 - **LOCATION - CHAT_LOG** (1-N): Một địa điểm có thể được đề cập nhiều lần trong các cuộc trò chuyện
 - **ITINERARY - LOCATION** (N-N): Một lịch trình chứa nhiều địa điểm, một địa điểm có thể xuất hiện trong nhiều lịch trình
 
-### 3.2. Thông Số Dữ Liệu
+### 3.2. Sơ Đồ Trạng Thái Địa Điểm (Entity State Diagram - Location)
+
+Sơ đồ này thể hiện các trạng thái khác nhau của một địa điểm trong vòng đời của nó và các chuyển đổi giữa các trạng thái.
+
+```mermaid
+stateDiagram-v2
+    [*] --> ChưaKichHoạt: Admin tạo địa điểm mới
+
+    ChưaKichHoạt --> KichHoạt: Admin bật địa điểm<br/>(active = true)
+    ChưaKichHoạt --> XóaMềm: Admin xoá địa điểm<br/>(xóa logic)
+
+    KichHoạt --> ChỉnhSửa: Admin cập nhật thông tin<br/>(tên, giá, giờ mở cửa)
+    KichHoạt --> TamDừng: Địa điểm đóng cửa tạm thời<br/>(bảo trì, sự kiện)
+    KichHoạt --> XóaMềm: Admin xoá địa điểm<br/>(xóa logic)
+
+    ChỉnhSửa --> KichHoạt: Hoàn thành chỉnh sửa
+    ChỉnhSửa --> XóaMềm: Hủy & xoá
+
+    TamDừng --> KichHoạt: Địa điểm hoạt động trở lại
+    TamDừng --> XóaMềm: Quyết định xoá vĩnh viễn (logic)
+
+    XóaMềm --> [*]: Dữ liệu vẫn lưu trong DB<br/>(deleted_at != null)
+
+    note right of KichHoạt
+        Trạng thái chính
+        - Hiển thị trong danh sách
+        - Có thể thêm vào lịch trình
+        - Có thể chat về địa điểm này
+    end note
+
+    note right of ChỉnhSửa
+        Trạng thái tạm thời
+        Admin đang cập nhật:
+        - Tên, địa chỉ, tọa độ
+        - Giá vé, ăn, chi phí khác
+        - Giờ mở cửa, mô tả
+    end note
+
+    note right of TamDừng
+        Trạng thái tạm dừng
+        - Vẫn hiển thị (với dấu⚠️)
+        - Không thêm vào lịch mới
+        - Thông báo "Đóng cửa tạm thời"
+    end note
+
+    note right of XóaMềm
+        Soft Delete (xóa logic)
+        - Không hiển thị trong UI
+        - Dữ liệu vẫn ở DB
+        - Có thể khôi phục
+        - deleted_at được ghi lại
+    end note
+```
+
+**Bảng chuyển đổi trạng thái chi tiết:**
+
+| Trạng Thái Hiện Tại | Sự Kiện                 | Trạng Thái Tiếp Theo | Điều Kiện        | Ghi Chú                   |
+| ------------------- | ----------------------- | -------------------- | ---------------- | ------------------------- |
+| ChưaKichHoạt        | Admin bật (active=true) | KichHoạt             | -                | Địa điểm sẵn sàng sử dụng |
+| KichHoạt            | Admin chỉnh sửa         | ChỉnhSửa             | -                | Đang cập nhật thông tin   |
+| ChỉnhSửa            | Lưu hoàn thành          | KichHoạt             | Data hợp lệ      | Quay về trạng thái chính  |
+| KichHoạt            | Tạm dừng hoạt động      | TamDừng              | Có lý do         | Sẽ quay lại               |
+| TamDừng             | Quay lại hoạt động      | KichHoạt             | -                | Xác nhận không còn sự cố  |
+| Bất Kỳ              | Xoá logic               | XóaMềm               | Quyết định Admin | deleted_at được ghi lại   |
+| XóaMềm              | Khôi phục               | Trạng thái cũ        | Admin yêu cầu    | deleted_at = null         |
+
+### 3.3. Thông Số Dữ Liệu
 
 | Bảng         | Số bản ghi | Ghi chú                                                          |
 | ------------ | ---------- | ---------------------------------------------------------------- |
