@@ -152,6 +152,54 @@ graph TB
 
 ---
 
+### 2.4. Sơ Đồ Luồng Dữ Liệu (DFD - Level 1)
+
+Sơ đồ luồng dữ liệu Level 1 thể hiện cách dữ liệu chuyển động giữa các quá trình chính, kho dữ liệu và các tác nhân ngoài hệ thống.
+
+```mermaid
+graph TB
+    User["<b>Người Dùng/Admin</b><br/>(Tác Nhân Ngoài)"]
+    Frontend["<b>Ứng Dụng Web</b><br/>(React + Vite)<br/>- Hiển thị giao diện<br/>- Thu thập dữ liệu người dùng<br/>- Lưu trữ phiên"]
+    API["<b>API Backend</b><br/>(Express.js)<br/>- Xử lý yêu cầu<br/>- Xác thực & phân quyền<br/>- Điều phối nghiệp vụ"]
+    Services["<b>Tầng Service</b><br/>- TạoLịchTrình<br/>- ChatbotService<br/>- QuảnLýĐịaĐiểm<br/>- QuảnLýAdmin"]
+    Database["<b>Kho Dữ Liệu</b><br/>(PostgreSQL/SQLite)<br/>- Bảng: Admin<br/>- Bảng: Lịch Trình<br/>- Bảng: Địa Điểm<br/>- Bảng: Nhật Ký Chat"]
+    LocalStorage["<b>Lưu Trữ Cục Bộ</b><br/>(Browser)<br/>- Dữ Liệu Phiên<br/>- Bản Nháp Lịch Trình"]
+    Gemini["<b>Google Gemini API</b><br/>- Xử Lý Ngôn Ngữ Tự Nhiên<br/>- Gợi Ý & Trả Lời"]
+    GoogleMaps["<b>Google Maps API</b><br/>- Tính Khoảng Cách<br/>- Chỉ Đường"]
+
+    User -->|1. Nhập Dữ Liệu<br/>Yêu Cầu Lịch Trình| Frontend
+    Frontend -->|2. Gửi Form JSON<br/>POST /api/itinerary| API
+    API -->|3. Xác Thực & Phân Tích| Services
+    Services -->|4. Truy Vấn Dữ Liệu<br/>SELECT Địa Điểm| Database
+    Database -->|5. Trả Về Danh Sách<br/>Địa Điểm & Nhà Hàng| Services
+    Services -->|6a. Gọi API<br/>GET Khoảng Cách| GoogleMaps
+    GoogleMaps -->|6b. Trả Về Ma Trận<br/>Khoảng Cách & Thời Gian| Services
+    Services -->|7. Tạo Lịch Trình<br/>Thuật Toán 7 Pha| Services
+    Services -->|8. Trả JSON<br/>Lịch Trình Hoàn Chỉnh| API
+    API -->|9. Gửi Phản Hồi| Frontend
+    Frontend -->|10. Hiển Thị Kết Quả<br/>Lưu localStorage| LocalStorage
+    User -->|11. Mở Chat| Frontend
+    Frontend -->|12. Gửi Tin Nhắn<br/>POST /api/chat/message| API
+    API -->|13. Chuyển Tiếp| Services
+    Services -->|14. Gọi API<br/>Xử Lý NLP| Gemini
+    Gemini -->|15. Trả Về Phản Hồi| Services
+    Services -->|16. Lưu Log Chat<br/>INSERT| Database
+    Database -->|17. Xác Nhận| Services
+    Services -->|18. Trả Phản Hồi| API
+    API -->|19. Gửi Tin Nhắn| Frontend
+    Frontend -->|20. Hiển Thị Chat| User
+```
+
+**Giải thích quy trình:**
+
+| Pha                        | Mô Tả                                                                                   | Dữ Liệu Chuyển                                         |
+| -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **Tạo Lịch Trình (1-10)**  | Người dùng nhập yêu cầu → Frontend → API → Service → Database → Tính Toán → Trả Kết Quả | Form JSON, Danh sách địa điểm, Lịch trình, Khoảng cách |
+| **Tương Tác Chat (11-20)** | Người dùng gửi tin nhắn → API → Service → Gemini → Lưu Log → Trả Phản Hồi               | Tin nhắn văn bản, Phản hồi AI, Log chat                |
+| **Lưu Trữ**                | Dữ liệu tạm thời lưu trên máy khách, dữ liệu quan trọng lưu DB                          | localStorage, PostgreSQL/SQLite                        |
+
+---
+
 ## 3. THIẾT KẾ DỮ LIỆU
 
 ### 3.1. Sơ Đồ Entity-Relationship (ERD)
