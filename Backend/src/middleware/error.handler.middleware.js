@@ -10,8 +10,7 @@ import path from "path";
  * Middleware xử lý lỗi chính.
  * Phải có đủ 4 tham số (err, req, res, next) để Express nhận diện đây là Error Handler.
  */
-import prisma from "../config/prisma.client.js";
-import { randomUUID } from "crypto";
+import prisma from "../utils/prisma.js";
 
 /**
  * Middleware xử lý lỗi chính.
@@ -40,19 +39,18 @@ export async function errorHandler(err, req, res, next) {
     // Cố gắng lấy user từ request (nếu đã qua auth middleware)
     if (req.user) {
       user = req.user.username || req.user.id;
-    }
+    } 
     // Hoặc parse sơ bộ từ token/cookie nếu chưa qua auth
     else {
-      // Logic đơn giản để lấy user từ cookie/token nếu có (copy logic nhẹ từ logger)
-      const cookieHeader = req.headers["cookie"] || "";
-      if (cookieHeader.includes("admin_token")) {
-        user = "admin (cookies)";
-      }
+       // Logic đơn giản để lấy user từ cookie/token nếu có (copy logic nhẹ từ logger)
+       const cookieHeader = req.headers["cookie"] || "";
+       if (cookieHeader.includes("admin_token")) {
+         user = "admin (cookies)";
+       }
     }
 
     await prisma.errorLog.create({
       data: {
-        id: `L_${randomUUID()}`,
         message: err.message || "Unknown Error",
         stack: err.stack,
         path: req.originalUrl || req.path,
@@ -78,35 +76,9 @@ export async function errorHandler(err, req, res, next) {
     },
   };
 
-  // Chỉ hiển thị chi tiết ở môi trường Development để debug
+  // Chỉ hiển thị Stack Trace ở môi trường Development để debug
   if (process.env.NODE_ENV === "development") {
     errorResponse.error.stack = err.stack;
-
-    // --- LOGIC PHÂN TÍCH LỖI NÂNG CAO (Advanced Debug) ---
-    // Tự động tìm File và Dòng gây lỗi từ Stack Trace
-    const match = err.stack?.match(/at\s+(.+)\:(\d+)\:(\d+)/);
-    if (match) {
-      // [1]: File path, [2]: Line number, [3]: Column
-      const fullPath = match[1];
-      const fileName = path.basename(fullPath);
-      const line = match[2];
-
-      errorResponse.error.debugInfo = {
-        message: "Phát hiện lỗi tại file này:",
-        file: fullPath,
-        fileName: fileName,
-        line: parseInt(line),
-        location: `${fileName}:${line}`,
-        advice: `Vui lòng kiểm tra dòng ${line} trong file ${fileName}.`
-      };
-
-      // Gợi ý sửa lỗi dựa trên keyword
-      if (err.message.includes("is not defined")) {
-        errorResponse.error.debugInfo.hint = "Có thể bạn chưa khai báo biến hoặc quên import thư viện?";
-      } else if (err.message.includes("Cannot read properties of undefined")) {
-        errorResponse.error.debugInfo.hint = "Bạn đang cố truy cập thuộc tính của một object bị null/undefined. Hãy thêm dấu hỏi chấm (?) hoặc kiểm tra dữ liệu đầu vào.";
-      }
-    }
   }
 
   // 6. Trả về phản hồi cho Client

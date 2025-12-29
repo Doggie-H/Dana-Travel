@@ -3,7 +3,7 @@
  * Bao gồm tổng chi phí, chi phí bình quân và so sánh với ngân sách.
  */
 
-import { formatCurrency } from "../../utils/formatUtil";
+import { formatCurrency } from "../../utils/format.utils";
 
 export default function ItinerarySummary({ summary }) {
   if (!summary) return null;

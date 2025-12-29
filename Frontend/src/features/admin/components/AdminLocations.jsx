@@ -4,7 +4,7 @@
  */
 
 import { useRef, useState } from "react";
-import { can, PERMISSIONS } from "../utils/permission-util";
+import { can, PERMISSIONS } from "../utils/permissions";
 
 export default function AdminLocations({
   locations,

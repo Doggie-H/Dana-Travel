@@ -36,8 +36,8 @@ export const BUDGET_THRESHOLDS = {
 
 // --- 2. CHI PHÍ ƯỚC TÍNH (COST ESTIMATION) ---
 
-// Mức ngân sách tối thiểu để hệ thống chấp nhận (VND/người/ngày) - Đã giảm
-export const MIN_BUDGET_PER_PERSON_PER_DAY = 150000;
+// Mức ngân sách tối thiểu để hệ thống chấp nhận (VND/người/ngày)
+export const MIN_BUDGET_PER_PERSON_PER_DAY = 300000;
 
 // Chi phí di chuyển (VND)
 // Chi phí di chuyển (VND)

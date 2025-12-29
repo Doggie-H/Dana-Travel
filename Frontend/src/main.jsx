@@ -22,7 +22,7 @@ const rootElement = document.getElementById("root");
 
 // Import Global Error Boundary
 import GlobalErrorBoundary from "./components/common/GlobalErrorBoundary";
-import { initGlobalErrorLogging } from "./services/logging-service";
+import { initGlobalErrorLogging } from "./services/logging.service";
 
 // Khởi động hệ thống bắt lỗi toàn diện (Window + Promise + Console)
 initGlobalErrorLogging();

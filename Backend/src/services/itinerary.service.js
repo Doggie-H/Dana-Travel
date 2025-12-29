@@ -1,210 +1,337 @@
 /**
- * =================================================================================================
- * ITINERARY SERVICE - TRÌNH ĐIỀU PHỐI LỊCH TRÌNH
- * =================================================================================================
- *
- * Service này đóng vai trò là "Nhạc trưởng" (Orchestrator).
- * Nhiệm vụ:
- * 1. Tiếp nhận yêu cầu từ User (Input).
- * 2. Chuẩn bị dữ liệu cần thiết (Locations, Budget, Hotel).
- * 3. Điều phối việc lập lịch cho từng ngày (gọi schedule-generator).
- * 4. Đóng gói kết quả và trả về (Output).
+ * Service điều phối việc tạo lịch trình du lịch.
+ * Xử lý logic kiểm tra ngân sách, chọn nơi ở, và lập lịch trình chi tiết từng ngày.
  */
 
-import { getAllLocations } from "./location.service.js";
+import { getAllLocations } from "./location.service.js"; 
+import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
-import { TRANSPORT_COSTS as DEFAULT_TRANSPORT_COSTS } from "../config/app.constants.js";
 import {
-  validateBudgetFeasibility,
-} from "../utils/itinerary.validator.js";
+  BUDGET_ALLOCATION,
+  TRANSPORT_COSTS,
+  ACCOMMODATION_COSTS,
+  TIME_SLOTS,
+  ACTIVITY_DURATIONS,
+  MIN_BUDGET_PER_PERSON_PER_DAY,
+} from "../config/app.constants.js";
 import {
+  LOCATION_RULES,
+  SCHEDULING_RULES,
+  canVisitAtTime,
+  isBestTimeToVisit,
+  hasEnoughTimeToVisit,
+  getLocationCategory,
+} from "../config/scheduling.constants.js";
+import {
+  formatCurrency,
+  formatDate,
   getDaysBetween,
   roundToStep,
-} from "../utils/format.util.js";
+} from "../utils/format.utils.js";
+import { pickRandom, shuffle } from "../utils/array.utils.js";
 import {
-  generateDayScheduleStrict
-} from "../utils/schedule.generator.js";
+  validateLocationSelection,
+  filterValidLocations,
+  validateBudgetFeasibility,
+  calculateTotalActivityTime,
+  optimizeLocationSequence,
+  canEndDayAtTime,
+} from "../utils/itinerary-validator.js";
 import {
-  resolveAccommodation,
-  calculateAccommodationCost,
-  getBudgetStatus,
-  formatDate,
-  createErrorDay
-} from "../utils/itinerary.helper.js"; // Updated Import
-import prisma from "../config/prisma.client.js";
+  calculateDistance,
+  calculateTransport,
+  formatTime,
+} from "../utils/itinerary-helpers.js";
+import { generateDayScheduleStrict } from "../utils/generate-day-schedule-strict.js";
 
 /**
- * =================================================================================================
- * MAIN FLOW
- * =================================================================================================
+ * Tạo lịch trình du lịch dựa trên yêu cầu của người dùng.
+ * @param {Object} userRequest
+ * @returns {Promise<Object>} Lịch trình chi tiết
  */
 export const generateItinerary = async (userRequest) => {
-  // --- BƯỚC 1: TIẾP NHẬN & PHÂN TÍCH INPUT ---
+  // Validate & Prepare Data
   const {
     budgetTotal,
     numPeople,
     arriveDateTime,
     leaveDateTime,
-    transport,
-    accommodation,
+    transport, // 'grab-bike', 'taxi', 'rental-bike'...
+    accommodation, // 'homestay', 'hotel'...
     preferences = [],
   } = userRequest;
 
   const startDate = new Date(arriveDateTime);
   const endDate = new Date(leaveDateTime);
-  const numDays = getDaysBetween(startDate, endDate) + 1;
+  const numDays = getDaysBetween(startDate, endDate) + 1; // 0 diff + 1 = 1 day
 
-  console.log(`\n=== BẮT ĐẦU TẠO LỊCH TRÌNH (${numDays} ngày) ===`);
-  console.log(`Budget: ${parseFloat(budgetTotal).toLocaleString()}đ | Khách: ${numPeople}`);
-
-
-  // --- BƯỚC 2: KIỂM TRA TÍNH KHẢ THI (VALIDATION) ---
+  // Validate Budget với strict logic
   const hasOwnTransport = transport === "own" || transport === "rent";
   const budgetCheck = validateBudgetFeasibility(
     budgetTotal,
     numPeople,
     numDays,
-    0,
+    0, // accommodationCost (sẽ tính sau khi chọn hotel)
     hasOwnTransport
   );
-
   if (!budgetCheck.valid) {
-    console.warn("Validation Failed:", budgetCheck.message);
+    console.log(" Budget validation failed:", budgetCheck.message);
     throw { statusCode: 400, message: budgetCheck.message };
   }
 
-
-  // --- BƯỚC 3: CHUẨN BỊ DỮ LIỆU (PREPARATION) ---
+  // Lấy toàn bộ địa điểm từ DB
   const allLocations = await getAllLocations();
-  const hotels = allLocations.filter(l => ["hotel", "homestay", "resort", "guesthouse"].includes(l.type));
 
-  // 3.1 Fetch Transportation from DB & Map to Config
-  const dbTransports = await prisma.transportation.findMany();
-  const transportCosts = { ...DEFAULT_TRANSPORT_COSTS }; // Copy defaults (contains 'own')
+  // Phân loại địa điểm
+  const locationsByType = {
+    attraction: allLocations.filter((l) =>
+      [
+        "attraction",
+        "culture",
+        "history",
+        "nature",
+        "theme-park",
+        "beach",
+        "mountain",
+      ].includes(l.type)
+    ),
+    food: allLocations.filter((l) =>
+      ["restaurant", "cafe", "street-food"].includes(l.type)
+    ),
+    hotel: allLocations.filter((l) =>
+      ["hotel", "homestay", "resort", "guesthouse"].includes(l.type)
+    ),
+  };
 
-  dbTransports.forEach(t => {
-    // Map DB name to Config Keys
-    let key = null;
-    if (t.name === "Grab Bike") key = "grab-bike";
-    else if (t.name === "Xanh SM Bike") key = "xanh-bike";
-    else if (t.name === "Grab Car 4 chỗ") key = "grab-car-4";
-    else if (t.name === "Xanh SM Taxi") key = "xanh-car-4";
-    else if (t.name === "Grab Car 7 chỗ") key = "grab-car-7";
-    else if (t.name === "Xanh SM Luxury") key = "xanh-car-7";
-
-    if (key) {
-      transportCosts[key] = {
-        base: t.basePrice,
-        perKm: t.pricePerKm,
-        speed: 30, // Default fallback
-        label: t.name,
-        // Preserve other props if needed or fallback
-        capacity: t.type === 'car7' ? 7 : (t.type === 'car4' ? 4 : 1)
+  // Chọn Khách sạn (Base Location)
+  let selectedHotel;
+  
+  // Custom logic cho Nhà riêng / Nhà người quen
+  if (accommodation === 'home' || accommodation === 'friend' || accommodation === 'relative' || accommodation === 'free') {
+      selectedHotel = {
+          id: 'user-home',
+          name: 'Nhà riêng / Nhà người quen',
+          type: 'home',
+          address: 'Địa chỉ của bạn tại Đà Nẵng',
+          area: 'Trung tâm',
+          lat: 16.0544, // Tọa độ trung tâm Đà Nẵng (Cầu Rồng)
+          lng: 108.2022,
+          ticket: 0,
+          priceLevel: 'free'
       };
-      // Adjust speeds based on type
-      if (t.type.includes('car')) transportCosts[key].speed = 40;
-    }
-  });
+  } else {
+      // Ưu tiên khách sạn phù hợp với loại hình và ngân sách
+      selectedHotel = selectAccommodation(
+        locationsByType.hotel,
+        accommodation,
+        budgetTotal / numDays,
+        numPeople
+      );
 
+      if (!selectedHotel) {
+        // Fallback an toàn thay vì throw lỗi
+        console.warn("No accommodation found, defaulting to generic hotel");
+        selectedHotel = locationsByType.hotel[0]; 
+      }
+  }
 
-  // --- BƯỚC 4: XÁC ĐỊNH NƠI Ở (ACCOMMODATION) ---
-  const dailyBudget = budgetTotal / numDays;
-  const selectedHotel = resolveAccommodation(accommodation, hotels, dailyBudget, numPeople);
-
-  const accommodationCost = calculateAccommodationCost(selectedHotel, accommodation, numDays, numPeople);
-
-  let remainingBudget = budgetTotal - accommodationCost;
-  const dailyPlayBudget = remainingBudget / numDays;
-
-  console.log(`Nơi ở: ${selectedHotel.name} | Chi phí ở: ${accommodationCost.toLocaleString()}đ`);
-  console.log(`Ngân sách ăn chơi/ngày: ${dailyPlayBudget.toLocaleString()}đ`);
-
-
-  // --- BƯỚC 5: TẠO LỊCH TRÌNH CHI TIẾT (GENERATION LOOP) ---
+  // Xây dựng khung lịch trình
   const itinerary = {
     id: `trip-${Date.now()}`,
     name: `Lịch trình Đà Nẵng ${numDays}N${numDays - 1}Đ`,
-    totalCost: accommodationCost,
+    totalCost: 0,
     days: [],
   };
 
-  const usedLocationIds = new Set([selectedHotel.id]);
+  // Tính chi phí cố định (Khách sạn)
+  const accommodationCost = calculateAccommodationCost(
+    selectedHotel,
+    accommodation,
+    numDays,
+    numPeople
+  );
+  itinerary.totalCost += accommodationCost;
+
+  // Ngân sách còn lại cho Ăn uống + Vé + Di chuyển
+  let remainingBudget = budgetTotal - accommodationCost;
+  const dailyBudget = remainingBudget / numDays;
+
+  // Lập lịch từng ngày
+  let usedLocationIds = new Set([selectedHotel.id]); // Tránh trùng lặp
+  let currentArea = selectedHotel.area || "Hải Châu"; // Bắt đầu từ khu vực khách sạn
 
   for (let i = 0; i < numDays; i++) {
     const currentDate = new Date(startDate);
     currentDate.setDate(startDate.getDate() + i);
 
-    // Xác định giờ giấc linh hoạt
-    let startTime = preferences.some(p => ['beach', 'nature', 'mountain'].includes(p)) ? 6 : 7.5;
-    let endTime = 22.5;
+    // Xác định giờ bắt đầu/kết thúc của ngày
+    // Ngày đầu: Bắt đầu từ giờ đến
+    // Ngày cuối: Kết thúc lúc giờ về
+    // Các ngày giữa: 6h - 23h (Tận dụng tối đa thời gian)
+    let startTime = 6;
+    let endTime = 23;
 
-    if (i === 0) startTime = Math.max(startTime, startDate.getHours() + (startDate.getMinutes() / 60));
-    if (i === numDays - 1) endTime = Math.min(endTime, endDate.getHours() + (endDate.getMinutes() / 60));
+    if (i === 0) startTime = startDate.getHours();
+    if (i === numDays - 1) endTime = endDate.getHours();
 
-    try {
-      const daySchedule = await generateDayScheduleStrict({
-        date: currentDate,
-        startTime,
-        endTime,
-        allLocations,
-        usedLocationIds,
-        transport,
-        numPeople,
-        dailyBudget: dailyPlayBudget,
-        hotel: selectedHotel,
-        hotelType: selectedHotel.type,
-        isFirstDay: i === 0,
-        isLastDay: i === numDays - 1,
-        preferences,
-        accommodationCost,
-        transportCosts
-      });
+    // Tạo danh sách hoạt động trong ngày (sử dụng strict logic)
+    const dayItems = await generateDayScheduleStrict({
+      date: currentDate,
+      startTime,
+      endTime,
+      allLocations: allLocations,
+      usedLocationIds,
+      transport,
+      numPeople,
+      dailyBudget,
+      hotel: selectedHotel,
+      hotelType: selectedHotel.type,
+      isFirstDay: i === 0,
+      isLastDay: i === numDays - 1,
+      preferences, // THÊM: Truyền preferences để filter địa điểm theo sở thích
+      accommodationCost, // THÊM: Tổng chi phí khách sạn để hiển thị lúc check-in
+    });
 
-      // Update Total Cost
-      daySchedule.items.forEach(item => {
-        if (item.location) usedLocationIds.add(item.location.id);
-        if (item.type !== 'accommodation' && item.type !== 'check-in') {
-          itinerary.totalCost += (item.cost?.ticket || 0) + (item.cost?.food || 0) + (item.transport?.cost || 0);
-        }
-      });
+    // Cập nhật chi phí và location đã dùng
+    dayItems.items.forEach((item) => {
+      if (item.location) usedLocationIds.add(item.location.id);
+      
+      // Không cộng chi phí khách sạn vào totalCost ở đây vì đã tính gộp ở trên (accommodationCost)
+      // Các item khách sạn chỉ mang tính hiển thị
+      if (item.type !== 'accommodation' && item.type !== 'check-in') {
+        itinerary.totalCost += item.cost?.ticket || 0;
+        itinerary.totalCost += item.cost?.food || 0;
+        itinerary.totalCost += item.transport?.cost || 0;
+      }
+    });
 
-      itinerary.days.push({
-        day: i + 1,
-        date: formatDate(currentDate),
-        items: daySchedule.items
-      });
-    } catch (error) {
-      console.error(`Lỗi tạo lịch ngày ${i + 1}:`, error);
-      import('fs').then(fs => fs.writeFileSync('SERVICE_ERROR.log', error.stack || error.toString()));
-      itinerary.days.push(createErrorDay(i + 1, currentDate, startTime, endTime));
+    // Cập nhật khu vực hiện tại (để ngày hôm sau tiếp tục hợp lý)
+    // Lấy khu vực của điểm cuối cùng trong ngày (trừ về khách sạn)
+    const lastActivity = dayItems.items
+      .filter(
+        (it) => it.type !== "transport" && it.location?.id !== selectedHotel.id
+      )
+      .pop();
+    if (lastActivity && lastActivity.location?.area) {
+      currentArea = lastActivity.location.area;
     }
+
+    itinerary.days.push({
+      day: i + 1,
+      date: formatDate(currentDate),
+      items: dayItems.items,
+    });
   }
 
-
-  // --- BƯỚC 6: HOÀN TẤT (FINALIZE) ---
+  // Finalize & Format
   const finalItinerary = {
     ...itinerary,
     totalCost: roundToStep(itinerary.totalCost, 1000),
     budgetStatus: getBudgetStatus(itinerary.totalCost, budgetTotal),
   };
 
-  trackSearchHistory(preferences, numPeople, budgetTotal, numDays); // Fire and forget log
+  // --- TRACKING: LƯU XU HƯỚNG TÌM KIẾM ---
+  try {
+    // Chỉ lưu khi tạo lịch trình thành công
+    await import("../utils/prisma.js").then(m => m.default.searchTrend.create({
+      data: {
+        id: `XH_${randomUUID()}`,
+        tags: JSON.stringify(preferences),
+        duration: `${numDays} ngày`,
+        budget: parseFloat(budgetTotal),
+        people: parseInt(numPeople)
+      }
+    }));
+  } catch (e) {
+    console.error("Lỗi tracking xu hướng:", e);
+    // Không throw lỗi để tránh ảnh hưởng trải nghiệm user
+  }
 
   return finalItinerary;
 };
 
-// --- SILENT TRACKING HELPER ---
-async function trackSearchHistory(preferences, numPeople, budget, numDays) {
-  try {
-    const tags = preferences && preferences.length > 0 ? preferences : ["General"];
-    await prisma.searchQuery.create({
-      data: {
-        id: `XH_${randomUUID()}`,
-        tags: JSON.stringify(tags),
-        duration: `${numDays} ngày`,
-        budget: parseFloat(budget),
-        people: parseInt(numPeople)
-      }
-    });
-  } catch (e) { /* Ignore log error */ }
+// --- HELPER FUNCTIONS ---
+
+function selectAccommodation(hotels, type, dailyBudget, numPeople) {
+  // 1. Phân loại ngân sách theo quy tắc mới
+  // dailyBudget là tổng ngân sách/ngày (cho cả nhóm)
+  const perPersonBudget = dailyBudget / numPeople;
+  
+  // Ước tính ngân sách cho lưu trú (lấy trung bình)
+  const estimatedStayBudget = dailyBudget * 0.25; 
+
+  let targetType = "guesthouse"; // Mặc định tiết kiệm
+  
+  // Logic chọn loại hình dựa trên ngân sách và số người
+  if (perPersonBudget > 1200000) {
+     targetType = "hotel";
+  } else if (perPersonBudget > 800000) {
+     // Homestay chỉ dành cho nhóm > 4 người
+     if (numPeople > 4) {
+       targetType = "homestay";
+     } else {
+       targetType = "hotel"; // Ít người thì ở khách sạn cho tiện
+     }
+  } else {
+     targetType = "guesthouse";
+  }
+
+  // Nếu user đã chọn loại cụ thể, tôn trọng user NHƯNG phải check ngân sách
+  if (type && type !== 'any') {
+    if (type === 'hotel' && perPersonBudget < 500000) targetType = 'guesthouse';
+    else targetType = type;
+  }
+
+  // 2. Lọc candidates
+  let candidates = hotels.filter(h => {
+    // Map type của DB (homestay/hotel/guesthouse)
+    if (targetType === 'guesthouse') return h.type === 'guesthouse' || h.priceLevel === 'cheap';
+    if (targetType === 'homestay') return h.type === 'homestay';
+    if (targetType === 'hotel') return h.type === 'hotel'; 
+    return true;
+  });
+
+  // Fallback
+  if (candidates.length === 0) {
+    candidates = hotels;
+  }
+
+  // 3. Chọn cái phù hợp nhất về giá
+  // Sắp xếp theo độ lệch giá so với estimatedStayBudget
+  candidates.sort((a, b) => {
+    const priceA = a.ticket || 0; // ticket field stores room price in seed
+    const priceB = b.ticket || 0;
+    return Math.abs(priceA - estimatedStayBudget) - Math.abs(priceB - estimatedStayBudget);
+  });
+
+  return candidates[0];
+}
+
+function calculateAccommodationCost(hotel, type, numDays, numPeople) {
+  if (type === "free" || type === "home" || type === "friend" || type === "relative") return 0;
+
+  // Giá phòng ước tính (nếu DB không có giá)
+  const basePrice =
+    hotel.ticket ||
+    (hotel.priceLevel === "expensive"
+      ? 1500000
+      : hotel.priceLevel === "moderate"
+      ? 600000
+      : 300000);
+
+  // Giả sử 2 người/phòng
+  const numRooms = Math.ceil(numPeople / 2);
+  return basePrice * numRooms * (numDays - 1); // Tính theo đêm
+}
+
+
+
+
+
+
+
+function getBudgetStatus(total, budget) {
+  if (total > budget * 1.1) return "Vượt ngân sách";
+  if (total < budget * 0.8) return "Tiết kiệm";
+  return "Phù hợp";
 }

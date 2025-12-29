@@ -4,7 +4,7 @@
  */
 
 import { useNavigate } from "react-router-dom";
-import { getRoleLabel, getRoleBadgeColor } from "./utils/permission-util";
+import { getRoleLabel, getRoleBadgeColor } from "./utils/permissions";
 
 export default function AdminLayout({ 
   children, 

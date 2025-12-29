@@ -114,21 +114,21 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
     }
 
     // --- 3. USER TRENDS CHART (BAR - COLORED) ---
-    // TREND CHART: Xử lý nhãn dài thành nhiều dòng để không bị ẩn
-    let trendLabels = trendStats?.length > 0 ? trendStats.map(s => {
-      const tag = s.tag;
-      if (tag === "Vui chơi giải trí") return ["Vui chơi", "giải trí"];
-      if (tag === "Cuộc sống đêm") return ["Cuộc sống", "đêm"]; 
-      return tag;
-    }) : ["Chưa có dữ liệu"];
-
-    let trendData = trendStats?.length > 0 ? trendStats.map(s => s.count) : [0];
+    const trendLabels = trendStats?.length > 0 ? trendStats.map(t => t.tag) : ["Chưa có dữ liệu"];
+    const trendData = trendStats?.length > 0 ? trendStats.map(t => t.count) : [0];
     
     // Màu sắc ngẫu nhiên cho từng cột
     const backgroundColors = [
-      '#FF9AA2', '#56B4E9', '#FFDAC1', 
-      '#85E3D8', '#B599FF', '#FFB7B2', 
-      '#E2F0CB', '#9B99FF'
+      'rgba(255, 99, 132, 0.6)',
+      'rgba(54, 162, 235, 0.6)',
+      'rgba(255, 206, 86, 0.6)',
+      'rgba(75, 192, 192, 0.6)',
+      'rgba(153, 102, 255, 0.6)',
+      'rgba(255, 159, 64, 0.6)',
+      'rgba(199, 199, 199, 0.6)',
+      'rgba(83, 102, 255, 0.6)',
+      'rgba(40, 159, 64, 0.6)',
+      'rgba(210, 99, 132, 0.6)',
     ];
 
     if (trendInstanceRef.current) {
@@ -157,14 +157,7 @@ export default function AdminDashboard({ accessLogs, health, trafficStats, trend
             legend: { display: false }
           },
           scales: {
-            y: { beginAtZero: true },
-            x: {
-              ticks: {
-                maxRotation: 0,
-                minRotation: 0,
-                autoSkip: false, // Force show all
-              }
-            }
+            y: { beginAtZero: true }
           }
         },
       });

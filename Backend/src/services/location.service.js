@@ -1,52 +1,113 @@
 /**
- * =================================================================================================
- * LOCATION SERVICE - QUẢN LÝ DỮ LIỆU ĐỊA ĐIỂM
- * =================================================================================================
- * 
- * Nhiệm vụ:
- * 1. Tương tác trực tiếp với Database (Prisma) để lấy/ghi dữ liệu địa điểm.
- * 2. Xử lý logic chuyển đổi dữ liệu (JSON Parsing for Tags/Menu).
+ * Service quản lý dữ liệu địa điểm (Locations).
+ * Xử lý CRUD, tìm kiếm, lọc và chuyển đổi dữ liệu JSON (tags, menu) từ database.
  */
 
-import prisma from "../config/prisma.client.js";
+import prisma from "../utils/prisma.js";
 import { randomUUID } from "crypto";
 
 /**
- * =================================================================================================
- * PUBLIC API (CRUD)
- * =================================================================================================
+ * Lấy danh sách địa điểm với các bộ lọc tùy chọn.
+ * 
+ * @param {Object} filters - Các tiêu chí lọc.
+ * @param {string} filters.type - Loại địa điểm (restaurant, hotel...).
+ * @param {boolean} filters.indoor - Lọc địa điểm trong nhà.
+ * @param {string} filters.priceLevel - Mức giá (cheap, moderate...).
+ * @param {string} filters.search - Từ khóa tìm kiếm theo tên.
+ * @returns {Promise<Array>} - Danh sách địa điểm đã được format.
  */
-
-// 1. Get All (với Filter optional)
 export const getAllLocations = async (filters = {}) => {
-  const where = buildFilterCondition(filters);
+  const where = {};
+
+  // Xây dựng câu truy vấn động dựa trên filters
+  if (filters.type) where.type = filters.type;
+  if (filters.indoor !== undefined) where.indoor = filters.indoor;
+  if (filters.priceLevel) where.priceLevel = filters.priceLevel;
+  
+  // Tìm kiếm gần đúng (contains) cho tên địa điểm
+  if (filters.search) {
+    where.name = { contains: filters.search };
+  }
+
+  // Thực hiện truy vấn DB
   const locations = await prisma.location.findMany({ where });
-  return locations.map(transformLocationData);
+  
+  // Map dữ liệu để parse JSON string thành Object/Array
+  return locations.map(loc => {
+    let tags = [];
+    try {
+      tags = loc.tags ? JSON.parse(loc.tags) : [];
+    } catch (e) {
+      console.error(`Error parsing tags for location ${loc.id}:`, e);
+      tags = []; // Fallback to empty array
+    }
+
+    let menu = null;
+    try {
+      menu = loc.menu ? JSON.parse(loc.menu) : null;
+    } catch (e) {
+      console.error(`Error parsing menu for location ${loc.id}:`, e);
+      menu = null;
+    }
+
+    return {
+      ...loc,
+      tags,
+      menu,
+    };
+  });
 };
 
-// 2. Get One by ID
+/**
+ * Lấy chi tiết một địa điểm theo ID.
+ * 
+ * @param {string} id - ID của địa điểm.
+ * @returns {Promise<Object|null>} - Object địa điểm hoặc null nếu không tìm thấy.
+ */
 export const getLocationById = async (id) => {
   const loc = await prisma.location.findUnique({ where: { id } });
-  return loc ? transformLocationData(loc) : null;
+  
+  if (!loc) return null;
+  
+  // Parse JSON fields
+  return {
+    ...loc,
+    tags: loc.tags ? JSON.parse(loc.tags) : [],
+    menu: loc.menu ? JSON.parse(loc.menu) : null,
+  };
 };
 
-// 3. Create
+/**
+ * Tạo mới một địa điểm.
+ * 
+ * @param {Object} data - Dữ liệu địa điểm mới.
+ * @returns {Promise<Object>} - Địa điểm vừa tạo.
+ */
 export const createLocation = async (data) => {
   return await prisma.location.create({
     data: {
       id: data.id || `KV_${randomUUID()}`,
       ...data,
-      tags: safeJsonStringify(data.tags || []),
-      menu: safeJsonStringify(data.menu),
+      // Chuyển Array thành JSON string trước khi lưu vào DB
+      tags: JSON.stringify(data.tags || []),
+      menu: data.menu ? JSON.stringify(data.menu) : null,
     }
   });
 };
 
-// 4. Update
+/**
+ * Cập nhật thông tin địa điểm.
+ * 
+ * @param {string} id - ID địa điểm cần sửa.
+ * @param {Object} updates - Các trường thông tin cần cập nhật.
+ * @returns {Promise<Object>} - Địa điểm sau khi cập nhật.
+ */
 export const updateLocation = async (id, updates) => {
   const data = { ...updates };
-  if (data.tags) data.tags = safeJsonStringify(data.tags);
-  if (data.menu) data.menu = safeJsonStringify(data.menu);
+  
+  // Nếu có cập nhật tags hoặc menu, cần stringify lại
+  if (data.tags) data.tags = JSON.stringify(data.tags);
+  if (data.menu) data.menu = JSON.stringify(data.menu);
 
   return await prisma.location.update({
     where: { id },
@@ -54,60 +115,18 @@ export const updateLocation = async (id, updates) => {
   });
 };
 
-// 5. Delete
+/**
+ * Xóa một địa điểm.
+ * 
+ * @param {string} id - ID địa điểm cần xóa.
+ * @returns {Promise<boolean>} - True nếu xóa thành công, False nếu lỗi.
+ */
 export const deleteLocation = async (id) => {
   try {
     await prisma.location.delete({ where: { id } });
     return true;
   } catch (error) {
-    console.error(`Failed to delete location ${id}:`, error);
+    console.error(`Lỗi khi xóa địa điểm ${id}:`, error);
     return false;
   }
 };
-
-
-/**
- * =================================================================================================
- * HELPER FUNCTIONS (INTERNAL)
- * =================================================================================================
- */
-
-// Xây dựng điều kiện lọc cho Prisma
-function buildFilterCondition(filters) {
-  const where = {};
-  if (filters.type) where.type = filters.type;
-  if (filters.indoor !== undefined) where.indoor = filters.indoor;
-  if (filters.priceLevel) where.priceLevel = filters.priceLevel;
-  if (filters.search) where.name = { contains: filters.search };
-  return where;
-}
-
-// Chuyển đổi dữ liệu thô từ DB (JSON string) sang Object
-function transformLocationData(loc) {
-  return {
-    ...loc,
-    tags: safeJsonParse(loc.tags, []),
-    menu: safeJsonParse(loc.menu, null),
-    operatingHours: parseOperatingHours(loc.openTime, loc.closeTime),
-  };
-}
-
-// Parse giờ mở cửa
-function parseOperatingHours(openStr, closeStr) {
-  if (!openStr && !closeStr) return null;
-
-  const start = openStr ? parseInt(openStr.split(':')[0]) : 0;
-  const end = closeStr ? parseInt(closeStr.split(':')[0]) : 24;
-
-  return { start, end };
-}
-
-// Safe JSON Parse Utils
-function safeJsonParse(str, fallback) {
-  try { return str ? JSON.parse(str) : fallback; }
-  catch { return fallback; }
-}
-
-function safeJsonStringify(obj) {
-  return typeof obj === 'string' ? obj : JSON.stringify(obj);
-}

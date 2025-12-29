@@ -1,6 +1,6 @@
 
 import React from "react";
-import { logErrorToBackend } from "../../services/logging-service";
+import { logErrorToBackend } from "../../services/logging.service";
 
 /**
  * Global Error Boundary

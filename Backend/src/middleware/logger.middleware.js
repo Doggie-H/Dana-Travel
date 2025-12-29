@@ -4,7 +4,7 @@
  */
 
 import { randomUUID } from "crypto"; // Fix: Import randomUUID
-import prisma from "../config/prisma.client.js";
+import prisma from "../utils/prisma.js";
 
 export const requestLogger = async (req, res, next) => {
   // 1. Bỏ qua các request không cần thiết (Static files, Health check)
@@ -26,7 +26,7 @@ export const requestLogger = async (req, res, next) => {
   res.on("finish", async () => {
     try {
       const method = req.method;
-
+      
       // 3. Logic lọc thông minh
       // - Luôn ghi log các request thay đổi dữ liệu (POST, PUT, DELETE, PATCH)
       // - BỎ QUA request GET thông thường (đã được xử lý bởi client-side tracking /api/log-visit nếu cần)
@@ -59,7 +59,7 @@ export const requestLogger = async (req, res, next) => {
             const [adminId, timestamp] = decoded.split(":");
             // Kiểm tra token còn hạn (8 tiếng)
             if (adminId && Date.now() - parseInt(timestamp) < 8 * 60 * 60 * 1000) {
-              const admin = await prisma.account.findUnique({
+              const admin = await prisma.admin.findUnique({
                 where: { id: adminId },
                 select: { username: true, role: true }
               });
@@ -69,10 +69,10 @@ export const requestLogger = async (req, res, next) => {
               }
             }
           } else if (token === process.env.ADMIN_TOKEN) {
-            role = "admin";
-            username = "system_admin";
+             role = "admin";
+             username = "system_admin";
           }
-        } catch (e) { }
+        } catch (e) {}
       }
 
       // 4. Ghi log vào Database

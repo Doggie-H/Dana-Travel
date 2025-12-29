@@ -3,7 +3,7 @@
  * Bao gồm thông tin thời gian, địa điểm, chi phí và các visual elements (timeline).
  */
 
-import { formatTime, formatCurrency } from "../../utils/formatUtil";
+import { formatTime, formatCurrency } from "../../utils/format.utils";
 
 export default function ItineraryItem({ item, index, isLast, numPeople = 1, nextItem }) {
   if (!item) return null;
@@ -85,6 +85,16 @@ export default function ItineraryItem({ item, index, isLast, numPeople = 1, next
                          <span>
                            {item.cost.ticket > 0 ? formatCurrency(item.cost.ticket) : "Đã bao gồm"}
                          </span>
+                         {/* Link Traveloka */}
+                         <a 
+                           href={`https://www.traveloka.com/vi-vn/hotel/search?keyword=${encodeURIComponent(item.title)}`}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="text-[10px] text-accent-600 hover:underline mt-0.5 flex items-center gap-1 font-medium"
+                         >
+                           <span>Xem trên Traveloka</span>
+                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                         </a>
                        </div>
                   ) : (
                        // Logic hiển thị cho Vé tham quan
