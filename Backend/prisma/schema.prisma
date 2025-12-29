@@ -7,13 +7,13 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 
 
-// 1. Admin (Tài Khoản)
-model Admin {
+// 1. Account (Tài Khoản)
+model Account {
   id           String    @id // Format: TK_01, TK_02...
   username     String    @unique
   passwordHash String
@@ -48,8 +48,8 @@ model Location {
   updatedAt   DateTime @updatedAt
 }
 
-// 3. Knowledge (Kiến Thức / KB)
-model Knowledge {
+// 3. KnowledgeBase (Kiến Thức / KB)
+model KnowledgeBase {
   id        String   @id // Format: KB_01, KB_02...
   question  String
   answer    String
@@ -58,15 +58,7 @@ model Knowledge {
   updatedAt DateTime @updatedAt
 }
 
-// 4. ChatLog (Tin Nhắn)
-model ChatLog {
-  id          String   @id // Format: TN_01, TN_02...
-  userMessage String
-  botResponse String
-  timestamp   DateTime @default(now())
-}
-
-// 5. AccessLog (Truy Cập)
+// 4. AccessLog (Truy Cập)
 model AccessLog {
   id        String   @id // Format: TC_01, TC_02...
   ip        String
@@ -78,8 +70,8 @@ model AccessLog {
   timestamp DateTime @default(now())
 }
 
-// 6. SearchTrend (Xu Hướng)
-model SearchTrend {
+// 5. SearchQuery (Xu Hướng / Tìm kiếm)
+model SearchQuery {
   id        String   @id // Format: XH_01, XH_02...
   tags      String   // JSON string of selected tags
   duration  String?  // e.g., "1 ngày", "2 ngày"
@@ -88,8 +80,10 @@ model SearchTrend {
   createdAt DateTime @default(now())
 }
 
-// 7. Transport (Phương Tiện)
-model Transport {
+
+
+// 7. Transportation (Phương Tiện)
+model Transportation {
   id          String   @id // Format: PT_01, PT_02...
   name        String   // e.g., "Grab Bike", "Xanh SM Taxi"
   type        String   // 'bike', 'car4', 'car7', 'taxi'
@@ -113,16 +107,4 @@ model ErrorLog {
   createdAt DateTime @default(now())
 }
 
-model SystemSetting {
-  key         String   @id
-  value       String
-  description String?
-  updatedAt   DateTime @updatedAt
-}
 
-model AIPrompt {
-  key         String   @id
-  content     String   // DB TEXT type ideally, String in Prisma is text in SQLite
-  description String?
-  updatedAt   DateTime @updatedAt
-}

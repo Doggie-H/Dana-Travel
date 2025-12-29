@@ -4,7 +4,7 @@
  */
 
 import { useState } from "react";
-import { can, PERMISSIONS, ROLES } from "../utils/permissions";
+import { can, PERMISSIONS, ROLES } from "../utils/permission-util";
 
 export default function AdminAccounts({
   accounts,

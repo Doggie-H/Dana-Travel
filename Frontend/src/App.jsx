@@ -6,21 +6,18 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
+
 
 export default function App() {
   // --- SESSION TRACKING ---
   // Ghi nhận lượt truy cập mỗi khi có session mới (F5 hoặc mở tab mới)
+  // Ghi nhận lượt truy cập mỗi khi có session mới (F5 hoặc mở tab mới)
   useEffect(() => {
-    const hasVisited = sessionStorage.getItem("visited");
-    
-    if (!hasVisited) {
-      // Gọi API init-session để server ghi nhận thống kê
-      // Đánh dấu ngay lập tức để tránh gọi 2 lần (do React StrictMode)
-      sessionStorage.setItem("visited", "true");
-
-      // Thêm timestamp để tránh browser cache request
-      fetch(`http://localhost:3001/api/init-session?t=${Date.now()}`, { method: "POST" })
+    // REAL MODE: Chỉ ghi nhận tracking 1 lần mỗi phiên (Session)
+    // Dùng sessionStorage để check. Set ngay lập tức để tránh React Strict Mode gọi 2 lần.
+    if (!sessionStorage.getItem("visited")) {
+      sessionStorage.setItem("visited", "true"); // Lock ngay
+      fetch(`/api/init-session?t=${Date.now()}`, { method: "POST" })
         .catch(err => console.error("Lỗi khi ghi nhận lượt truy cập:", err));
     }
   }, []);
@@ -41,7 +38,7 @@ export default function App() {
       </main>
 
       {/* FOOTER: Chân trang */}
-      <Footer />
+
     </div>
   );
 }

@@ -37,7 +37,7 @@ export default function AdminLogin({ onLogin, loading, error }) {
         )}
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
           {/* Username Input */}
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
@@ -50,6 +50,7 @@ export default function AdminLogin({ onLogin, loading, error }) {
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-gray-900 focus:ring-0 transition-all outline-none font-medium text-gray-900 placeholder-gray-300"
               placeholder="Nhập username..."
               autoFocus
+              autoComplete="off"
             />
           </div>
 
@@ -64,6 +65,7 @@ export default function AdminLogin({ onLogin, loading, error }) {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-gray-900 focus:ring-0 transition-all outline-none font-medium text-gray-900 placeholder-gray-300"
               placeholder="••••••••"
+              autoComplete="new-password"
             />
           </div>
 

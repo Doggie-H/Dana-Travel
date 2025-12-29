@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { can, PERMISSIONS } from "../utils/permissions";
+import { can, PERMISSIONS } from "../utils/permission-util";
 
 export default function AdminKnowledge({
   knowledgeItems,

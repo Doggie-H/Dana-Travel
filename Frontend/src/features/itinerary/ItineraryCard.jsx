@@ -3,7 +3,7 @@
  * Bao gồm danh sách các hoạt động và thông tin ngày tháng.
  */
 
-import { formatDate } from "../../utils/format.utils";
+import { formatDate } from "../../utils/formatUtil";
 import ItineraryItem from "./ItineraryItem";
 
 export default function ItineraryCard({ day, numPeople = 1 }) {

@@ -21,10 +21,11 @@ import loggingRoutes from "./routes/logging.routes.js";
 // Import Middleware xử lý lỗi
 import { notFoundHandler, errorHandler } from "./middleware/error.handler.middleware.js";
 import { requestLogger } from "./middleware/logger.middleware.js";
-import prisma from "./utils/prisma.js";
+import prisma from "./config/prisma.client.js";
 
 // Khởi tạo ứng dụng Express
 const app = express();
+console.log("Server restarting to apply Knowledge Base Injection...");
 
 // Cổng mặc định là 3001 nếu không có cấu hình
 const PORT = Number(process.env.PORT) || 3001;
@@ -78,6 +79,12 @@ app.get("/api/ping", (req, res) => {
   res.json({ ok: true, message: "Server is running!", time: new Date() });
 });
 
+// --- IN-MEMORY SESSION TRACKING (Standard: 30 Minutes) ---
+// Map<String, Number> -> Key: "IP:Role", Value: Timestamp (Date.now())
+// Dữ liệu sẽ tồn tại trong RAM.
+const sessionStore = new Map();
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 Phút
+
 // Log Visit: API để ghi nhận lượt truy cập (dùng cho thống kê)
 app.post("/api/init-session", async (req, res) => {
   try {
@@ -101,8 +108,8 @@ app.post("/api/init-session", async (req, res) => {
         if (decoded.includes(":")) {
           const [adminId, timestamp] = decoded.split(":");
           // Kiểm tra token hết hạn (8 tiếng)
-          if (adminId && Date.now() - parseInt(timestamp) < 8 * 60 * 60 * 1000) {
-            const admin = await prisma.admin.findUnique({
+          if (adminId && Date.now() - parseInt(timestamp) < 7 * 24 * 60 * 60 * 1000) {
+            const admin = await prisma.account.findUnique({
               where: { id: adminId },
               select: { username: true, role: true }
             });
@@ -117,14 +124,31 @@ app.post("/api/init-session", async (req, res) => {
       }
     }
 
+    // STANDARD DEDUP: 30-Minute Sliding Window
+    const sessionKey = `${ip}:${role}`;
+    const now = Date.now();
+    const lastSeen = sessionStore.get(sessionKey);
+
+    if (lastSeen && (now - lastSeen < SESSION_TIMEOUT)) {
+      // Vẫn trong phiên làm việc (chưa quá 30p) -> Update timestamp (sliding window) & Ignore Log
+      // NOTE: Google Analytics cập nhật timestamp khi có hit mới để kéo dài session.
+      // Nhưng ở đây ta chỉ đếm "Visit" (Session Start), nên ta giữ nguyên mốc cũ 
+      // hoặc update tùy định nghĩa. Để tránh spam db, ta chỉ update RAM.
+      sessionStore.set(sessionKey, now);
+      return res.json({ success: true, ignored: true, reason: "Session active" });
+    }
+
+    // New Session (Chưa có hoặc đã quá 30p) -> Ghi log & Lưu timestamp mới
+    sessionStore.set(sessionKey, now);
+
     // Ghi vào bảng AccessLog
     await prisma.accessLog.create({
       data: {
-        id: `TC_${randomUUID()}`, // Fix: Add required ID
+        id: `TC_${randomUUID()}`,
         ip: ip,
         userAgent: req.get("User-Agent"),
         endpoint: "/",
-        method: "VISIT", // Method đặc biệt đánh dấu session mới
+        method: "VISIT",
         username: username,
         role: role,
       },
@@ -142,6 +166,8 @@ app.use("/api/chat", chatRoutes);           // Xử lý Chatbot AI
 app.use("/api/location", locationRoutes);   // Xử lý địa điểm du lịch
 app.use("/api/admin", adminRoutes);         // Xử lý quản trị (cần đăng nhập)
 app.use("/api/logs", loggingRoutes);        // Endpoint ghi log lỗi
+
+
 
 // --- 3. XỬ LÝ LỖI (ERROR HANDLING) ---
 

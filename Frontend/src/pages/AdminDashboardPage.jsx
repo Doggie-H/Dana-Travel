@@ -1,72 +1,34 @@
 /**
- * Trang Dashboard quản trị viên.
- * Tích hợp các module quản lý: Dashboard, Địa điểm, Tài khoản, Chat Logs, Knowledge Base.
+ * =================================================================================================
+ * ADMIN DASHBOARD PAGE
+ * =================================================================================================
+ * 
+ * Trang quản trị chính của hệ thống.
+ * Nhiệm vụ:
+ * 1. Quản lý trạng thái xác thực (Login/Logout).
+ * 2. Điều hướng giữa các Tab chức năng.
+ * 3. Kết nối UI với dữ liệu từ AdminService.
  */
 
-import { useEffect, useState } from "react";
-import { can, PERMISSIONS } from "../features/admin/utils/permissions";
+import { useEffect, useState, useCallback } from "react";
+import { can, PERMISSIONS } from "../features/admin/utils/permission-util";
+import AdminService from "../services/admin-service";
 
 // Components
+import ErrorBoundary from "../components/ErrorBoundary";
 import AdminLogin from "../features/admin/AdminLogin";
 import AdminLayout from "../features/admin/AdminLayout";
 import AdminDashboard from "../features/admin/components/AdminDashboard";
 import AdminLocations from "../features/admin/components/AdminLocations";
-import AdminChatLogs from "../features/admin/components/AdminChatLogs";
 import AdminKnowledge from "../features/admin/components/AdminKnowledge";
 import AdminAccounts from "../features/admin/components/AdminAccounts";
-import ErrorBoundary from "../components/ErrorBoundary";
 
 /**
- * Modal hiển thị lịch sử thay đổi của một địa điểm.
- * Giúp Admin theo dõi ai đã sửa gì và vào lúc nào.
+ * =================================================================================================
+ * MAIN COMPONENT
+ * =================================================================================================
  */
-function VersionHistoryModal({ versions, onClose }) {
-  if (!versions) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fadeIn">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-slideUp">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h3 className="font-display text-xl font-bold text-gray-900">Lịch sử thay đổi</h3>
-          <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
-            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
-        </div>
-        <div className="max-h-[60vh] overflow-y-auto p-6 space-y-6">
-          {versions.length === 0 ? (
-            <p className="text-center text-gray-400 text-sm">Chưa có lịch sử thay đổi.</p>
-          ) : (
-            versions.map((v) => (
-              <div key={v.id} className="relative pl-8 border-l-2 border-gray-100 last:border-0 pb-6 last:pb-0">
-                <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gray-200 border-4 border-white shadow-sm"></div>
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-                    {new Date(v.changedAt).toLocaleString("vi-VN")}
-                  </span>
-                  <span className="text-xs font-medium text-gray-400">bởi {v.changedBy}</span>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700">
-                  <p className="font-bold text-gray-900 mb-2">{v.action === "update" ? "Cập nhật thông tin" : "Tạo mới"}</p>
-                  {v.changes && (
-                    <ul className="space-y-1">
-                      {Object.entries(v.changes).map(([key, val]) => (
-                        <li key={key} className="flex gap-2">
-                          <span className="font-mono text-xs text-gray-500 w-20">{key}:</span>
-                          <span className="text-gray-900 font-medium truncate">{String(val)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function Admin() {
+export default function AdminPage() {
   return (
     <ErrorBoundary>
       <AdminContent />
@@ -75,418 +37,246 @@ export default function Admin() {
 }
 
 function AdminContent() {
-  // Cấu hình API Base URL
-  // Cấu hình API Base URL (Direct Backend to avoid Proxy issues)
-  const API_BASE = "http://localhost:3001/api";
+  // --- STATE LAYER ---
+  const [authed, setAuthed] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
 
-  // --- STATE QUẢN LÝ ---
-  const [authed, setAuthed] = useState(false); // Trạng thái đăng nhập
-  const [currentUser, setCurrentUser] = useState(null); // Thông tin user hiện tại
-  const [activeTab, setActiveTab] = useState("dashboard"); // Tab đang chọn
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  
-  // --- STATE DỮ LIỆU ---
-  const [health, setHealth] = useState(null);
-  const [locations, setLocations] = useState([]);
-  const [chatLogs, setChatLogs] = useState([]);
-  const [accessLogs, setAccessLogs] = useState([]);
-  const [trafficStats, setTrafficStats] = useState([]);
-  const [trendStats, setTrendStats] = useState([]);
-  const [knowledgeItems, setKnowledgeItems] = useState([]);
-  const [adminAccounts, setAdminAccounts] = useState([]);
-  
-  // --- STATE MODAL ---
+  // Tab State
+  const [activeTab, setActiveTab] = useState("dashboard");
+
+  // Data State
+  const [data, setData] = useState({
+    health: null,
+    traffic: [],
+    logs: [],
+    trends: [],
+    locations: [],
+    knowledge: [],
+    accounts: []
+  });
+
+  // Modal & Edit State
   const [viewingVersions, setViewingVersions] = useState(null);
   const [versions, setVersions] = useState([]);
-  
-  // State để prefill form Knowledge từ Chat Logs (Dạy AI)
   const [prefillKnowledge, setPrefillKnowledge] = useState(null);
 
-  // Kiểm tra đăng nhập khi component được mount
+  // Loading & Error State
+  const [busy, setBusy] = useState(false);
+  const [loginError, setLoginError] = useState(null);
+
+
+  // --- INITIALIZATION ---
   useEffect(() => {
-    checkAuth();
+    verifySession();
   }, []);
 
-  /**
-   * Kiểm tra trạng thái xác thực với Server.
-   * Nếu cookie hợp lệ, server sẽ trả về thông tin user.
-   */
-  async function checkAuth() {
-    try {
-      const res = await fetch(`${API_BASE}/admin/me`, { credentials: "include" });
-      const data = await res.json();
-      
-      if (res.ok && data.success) {
-        setAuthed(true);
-        setCurrentUser(data.admin);
-        // Tải dữ liệu ban đầu dựa trên quyền hạn
-        fetchInitialData(data.admin);
-      } else {
-        setAuthed(false);
-        setCurrentUser(null);
-      }
-    } catch (e) {
-      console.error("Lỗi kiểm tra xác thực:", e);
-      setAuthed(false);
-      setCurrentUser(null);
-    }
-  }
-
-  // Tự động làm mới dữ liệu Dashboard mỗi 5 giây (Real-time monitoring)
+  // --- POLLING LAYER (Real-time updates) ---
   useEffect(() => {
     if (!authed) return;
 
+    // Load data khi chuyển tab
+    loadTabSpecificData(activeTab);
+
+    // Auto-refresh Dashboard realtime
     const interval = setInterval(() => {
-      if (activeTab === "dashboard") {
-        fetchTrafficStats();
-        fetchAccessLogs();
-        fetchTrendStats();
-        fetchHealth();
-      }
+      if (activeTab === "dashboard") refreshDashboardData();
     }, 5000);
 
     return () => clearInterval(interval);
   }, [authed, activeTab]);
 
-  // --- CÁC HÀM XỬ LÝ AUTH ---
 
-  async function login(username, password) {
-    setLoading(true);
-    setError(null);
+  // --- LOGIC: AUTHENTICATION ---
+  
+  async function verifySession() {
     try {
-      const res = await fetch(`${API_BASE}/admin/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Đăng nhập thất bại");
-
-      setAuthed(true);
-      setCurrentUser(data.admin);
-      await fetchInitialData(data.admin);
+      const user = await AdminService.checkAuth();
+      if (user) {
+        setAuthed(true);
+        setCurrentUser(user);
+        refreshDashboardData(); // Load ngay dữ liệu ban đầu
+      } else {
+        setAuthed(false);
+      }
     } catch (e) {
-      setError(e.message);
+      console.error("Session Check Failed:", e);
     } finally {
-      setLoading(false);
+      setIsAuthChecking(false);
     }
   }
 
-  async function logout() {
+  async function handleLogin(username, password) {
+    setBusy(true);
+    setLoginError(null);
     try {
-      await fetch(`${API_BASE}/admin/logout`, { method: "POST", credentials: "include" });
+      const user = await AdminService.login(username, password);
+      setAuthed(true);
+      setCurrentUser(user);
+      refreshDashboardData();
+    } catch (e) {
+      setLoginError(e.message);
     } finally {
-      setAuthed(false);
-      setCurrentUser(null);
-      setLocations([]);
-      setChatLogs([]);
+      setBusy(false);
     }
   }
 
-  // --- CÁC HÀM TẢI DỮ LIỆU (DATA FETCHING) ---
-
-  async function fetchInitialData(user) {
-    await fetchHealth();
-    // Kiểm tra quyền trước khi tải dữ liệu nhạy cảm
-    if (can(user, PERMISSIONS.VIEW_DASHBOARD)) {
-      await fetchTrafficStats();
-      await fetchAccessLogs();
-      await fetchTrendStats();
-    }
-    if (can(user, PERMISSIONS.VIEW_LOCATIONS)) await fetchLocations();
-    if (can(user, PERMISSIONS.VIEW_LOGS)) await fetchChatLogs();
-    if (can(user, PERMISSIONS.MANAGE_KNOWLEDGE)) await fetchKnowledge();
-    if (can(user, PERMISSIONS.MANAGE_ACCOUNTS)) await fetchAdminAccounts();
+  async function handleLogout() {
+    await AdminService.logout();
+    setAuthed(false);
+    setCurrentUser(null);
+    setData({ health: null, traffic: [], logs: [], trends: [], locations: [], knowledge: [], accounts: [] });
   }
 
-  async function fetchHealth() {
-    try {
-      const res = await fetch(`${API_BASE}/admin/health`, { credentials: "include" });
-      if (res.ok) setHealth(await res.json());
-    } catch {}
-  }
 
-  async function fetchTrafficStats() {
-    try {
-      const res = await fetch(`${API_BASE}/admin/stats/traffic`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) setTrafficStats(data.data || []);
-    } catch (e) { console.error(e); }
-  }
+  // --- LOGIC: DATA FETCHING ---
 
-  async function fetchTrendStats() {
+  const refreshDashboardData = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE}/admin/stats/trends`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) setTrendStats(data.data || []);
-    } catch (e) { console.error(e); }
-  }
+      const [health, traffic, logs, trends] = await Promise.all([
+        AdminService.fetchHealth(),
+        AdminService.fetchTrafficStats(),
+        AdminService.fetchAccessLogs(),
+        AdminService.fetchTrendStats()
+      ]);
+      setData(prev => ({ ...prev, health, traffic, logs, trends }));
+    } catch (e) { console.warn("Dashboard sync error", e); }
+  }, []);
 
-  async function fetchAccessLogs() {
+  async function loadTabSpecificData(tab) {
+    if (!currentUser) return;
     try {
-      const res = await fetch(`${API_BASE}/admin/access-logs`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) setAccessLogs(data.data || []);
-    } catch (e) { console.error(e); }
-  }
-
-  async function fetchLocations() {
-    try {
-      const res = await fetch(`${API_BASE}/admin/locations`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) setLocations(data.data || []);
-    } catch (e) { console.error(e); }
-  }
-
-  async function fetchChatLogs() {
-    try {
-      const res = await fetch(`${API_BASE}/admin/chat-logs?limit=100`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) setChatLogs(data.data || []);
-    } catch (e) { console.error(e); }
-  }
-
-  async function fetchKnowledge() {
-    try {
-      const res = await fetch(`${API_BASE}/admin/knowledge`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) setKnowledgeItems(data.data || []);
-    } catch (e) { console.error(e); }
-  }
-
-  async function fetchAdminAccounts() {
-    try {
-      const res = await fetch(`${API_BASE}/admin/accounts`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) {
-        if (Array.isArray(data.data)) {
-           setAdminAccounts(data.data);
-        } else {
-           setAdminAccounts([]);
-        }
+      if (tab === "locations" && can(currentUser, PERMISSIONS.VIEW_LOCATIONS)) {
+        const locations = await AdminService.getLocations();
+        setData(prev => ({ ...prev, locations }));
       }
-    } catch (e) { console.error(e); }
+      if (tab === "knowledge" && can(currentUser, PERMISSIONS.MANAGE_KNOWLEDGE)) {
+        const knowledge = await AdminService.getKnowledgeItems();
+        setData(prev => ({ ...prev, knowledge }));
+      }
+      if (tab === "accounts" && can(currentUser, PERMISSIONS.MANAGE_ACCOUNTS)) {
+        const accounts = await AdminService.getAccounts();
+        setData(prev => ({ ...prev, accounts }));
+      }
+    } catch (e) { console.error(`Failed to load data for tab ${tab}`, e); }
   }
 
-  async function fetchVersions(locationId) {
+
+  // --- LOGIC: ACTIONS (CRUD) ---
+
+  async function handleLocationAction(action, payload) {
     try {
-      const res = await fetch(`${API_BASE}/admin/locations/${locationId}/versions`, { credentials: "include" });
-      const data = await res.json();
-      if (res.ok) {
-        setVersions(data.data || []);
-        setViewingVersions(locationId);
+      if (action === "save") {
+        await AdminService.saveLocation(payload.data, payload.mode);
+        loadTabSpecificData("locations");
+      } else if (action === "delete") {
+        if (!confirm("Xóa địa điểm này?")) return;
+        await AdminService.deleteLocation(payload.id);
+        loadTabSpecificData("locations");
+      } else if (action === "versions") {
+        const hist = await AdminService.getLocationVersions(payload.id);
+        setVersions(hist);
+        setViewingVersions(payload.id);
       }
     } catch (e) { alert(e.message); }
   }
 
-  // --- CÁC HÀM THAO TÁC DỮ LIỆU (ACTIONS) ---
-
-  async function saveLocation(loc, mode) {
-    const method = mode === "new" ? "POST" : "PUT";
-    const url = mode === "new" ? `${API_BASE}/admin/locations` : `${API_BASE}/admin/locations/${mode}`;
-    
-    // Chuẩn hóa dữ liệu trước khi gửi
-    const payload = {
-      ...loc,
-      lat: Number(loc.lat),
-      lng: Number(loc.lng),
-      ticket: Number(loc.ticket),
-      tags: typeof loc.tags === 'string' ? loc.tags.split(",").map(t => t.trim()).filter(Boolean) : loc.tags
-    };
-
+  async function handleKnowledgeAction(action, payload) {
     try {
-      const res = await fetch(url, {
-        method,
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Lưu thất bại");
-      await fetchLocations();
+      if (action === "save") {
+        await AdminService.saveKnowledgeItem(payload.item, false);
+      } else if (action === "update") {
+        await AdminService.saveKnowledgeItem(payload.item, true);
+      } else if (action === "delete") {
+        if (!confirm("Xóa mục này?")) return;
+        await AdminService.deleteKnowledgeItem(payload.id);
+      }
+      loadTabSpecificData("knowledge");
     } catch (e) { alert(e.message); }
   }
 
-  async function deleteLocation(id) {
-    if (!confirm("Xóa địa điểm này?")) return;
+  async function handleAccountAction(action, payload) {
     try {
-      const res = await fetch(`${API_BASE}/admin/locations/${id}`, { method: "DELETE", credentials: "include" });
-      if (!res.ok) throw new Error("Xóa thất bại");
-      await fetchLocations();
+      if (action === "create") {
+        await AdminService.createAccount(payload.account);
+        alert("Tạo tài khoản thành công!");
+      } else if (action === "delete") {
+        if (!confirm("Xóa tài khoản này?")) return;
+        await AdminService.deleteAccount(payload.id);
+      }
+      loadTabSpecificData("accounts");
     } catch (e) { alert(e.message); }
   }
 
-  async function clearLogs() {
-    if (!confirm("Xóa toàn bộ logs?")) return;
-    try {
-      const res = await fetch(`${API_BASE}/admin/chat-logs`, { method: "DELETE", credentials: "include" });
-      if (!res.ok) throw new Error("Xóa thất bại");
-      setChatLogs([]);
-    } catch (e) { alert(e.message); }
-  }
 
-  async function saveKnowledgeItem(item) {
-    try {
-      const payload = {
-        ...item,
-        tags: typeof item.tags === 'string' ? item.tags.split(",").map(t => t.trim()).filter(Boolean) : item.tags,
-        meta: item.patternType === "fuzzy" ? { threshold: Number(item.meta_threshold) } : {}
-      };
-      const res = await fetch(`${API_BASE}/admin/knowledge`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Lưu thất bại");
-      await fetchKnowledge();
-    } catch (e) { alert(e.message); }
-  }
+  // --- RENDER ---
 
-  async function updateKnowledgeItem(item) {
-    try {
-      const payload = {
-        ...item,
-        tags: typeof item.tags === 'string' ? item.tags.split(",").map(t => t.trim()).filter(Boolean) : item.tags,
-        meta: item.patternType === "fuzzy" ? { threshold: Number(item.meta_threshold) } : {}
-      };
-      const res = await fetch(`${API_BASE}/admin/knowledge/${item.id}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Cập nhật thất bại");
-      await fetchKnowledge();
-    } catch (e) { alert(e.message); }
-  }
+  if (isAuthChecking) return <div className="h-screen flex items-center justify-center">Đang tải...</div>;
 
-  async function deleteKnowledgeItem(id) {
-    if (!confirm("Xóa mục này?")) return;
-    try {
-      const res = await fetch(`${API_BASE}/admin/knowledge/${id}`, { method: "DELETE", credentials: "include" });
-      if (!res.ok) throw new Error("Xóa thất bại");
-      await fetchKnowledge();
-    } catch (e) { alert(e.message); }
-  }
-
-  async function createAccount(acc) {
-    try {
-      const res = await fetch(`${API_BASE}/admin/accounts`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(acc),
-      });
-      if (!res.ok) throw new Error("Tạo tài khoản thất bại");
-      await fetchAdminAccounts();
-      alert("Tạo tài khoản thành công!");
-    } catch (e) { alert(e.message); }
-  }
-
-  async function deleteAccount(id) {
-    if (!confirm("Xóa tài khoản này?")) return;
-    try {
-      const res = await fetch(`${API_BASE}/admin/accounts/${id}`, { method: "DELETE", credentials: "include" });
-      if (!res.ok) throw new Error("Xóa thất bại");
-      await fetchAdminAccounts();
-    } catch (e) { alert(e.message); }
-  }
-
-  /**
-   * Handle "Dạy AI" từ Chat Logs
-   * Chuyển sang tab Knowledge và tự động điền form với dữ liệu chat
-   */
-  function handleTeachAI({ pattern, reply }) {
-    setPrefillKnowledge({ pattern, reply });
-    setActiveTab("knowledge");
-  }
-
-  // --- RENDER LOGIC ---
-
-  // Nếu chưa đăng nhập -> Hiển thị Form Login
   if (!authed) {
-    return <AdminLogin onLogin={login} loading={loading} error={error} />;
+    return <AdminLogin onLogin={handleLogin} loading={busy} error={loginError} />;
   }
 
-  // Định nghĩa các Tab dựa trên quyền hạn của User
+  // Define Tabs based on Permissions
   const tabs = [
     { id: "dashboard", label: "Dashboard", permission: PERMISSIONS.VIEW_DASHBOARD },
     { id: "locations", label: "Địa điểm", permission: PERMISSIONS.VIEW_LOCATIONS },
     { id: "knowledge", label: "AI Knowledge", permission: PERMISSIONS.MANAGE_KNOWLEDGE },
-    { id: "chatlogs", label: "Chat Logs", permission: PERMISSIONS.VIEW_LOGS },
     { id: "accounts", label: "Tài khoản", permission: PERMISSIONS.MANAGE_ACCOUNTS },
   ].filter(tab => can(currentUser, tab.permission));
 
-  // Chuyển về tab đầu tiên nếu tab hiện tại không được phép truy cập
-  if (!tabs.find(t => t.id === activeTab) && tabs.length > 0) {
-    setActiveTab(tabs[0].id);
-  }
+  // Auto-switch tab if current one is invalid
+  if (!tabs.find(t => t.id === activeTab) && tabs.length > 0) setActiveTab(tabs[0].id);
 
   return (
     <AdminLayout 
       user={currentUser} 
-      onLogout={logout} 
+      onLogout={handleLogout} 
       activeTab={activeTab} 
       onTabChange={setActiveTab}
       tabs={tabs}
     >
-      {/* Tab Dashboard */}
       {activeTab === "dashboard" && (
         <AdminDashboard 
-          accessLogs={accessLogs} 
-          health={health} 
-          trafficStats={trafficStats} 
-          trendStats={trendStats} 
+          accessLogs={data.logs} 
+          health={data.health} 
+          trafficStats={data.traffic} 
+          trendStats={data.trends} 
         />
       )}
       
-      {/* Tab Quản lý Địa điểm */}
       {activeTab === "locations" && (
         <AdminLocations 
-          locations={locations} 
+          locations={data.locations} 
           user={currentUser}
-          onSave={saveLocation}
-          onDelete={deleteLocation}
-          onFetchVersions={fetchVersions}
+          onSave={(loc, mode) => handleLocationAction("save", { data: loc, mode })}
+          onDelete={(id) => handleLocationAction("delete", { id })}
+          onFetchVersions={(id) => handleLocationAction("versions", { id })}
         />
       )}
 
-      {/* Tab Quản lý Kiến thức AI */}
       {activeTab === "knowledge" && (
         <AdminKnowledge 
-          knowledgeItems={knowledgeItems}
+          knowledgeItems={data.knowledge}
           user={currentUser}
-          onSave={saveKnowledgeItem}
-          onUpdate={updateKnowledgeItem}
-          onDelete={deleteKnowledgeItem}
+          onSave={(item) => handleKnowledgeAction("save", { item })}
+          onUpdate={(item) => handleKnowledgeAction("update", { item })}
+          onDelete={(id) => handleKnowledgeAction("delete", { id })}
           prefillData={prefillKnowledge}
           onPrefillConsumed={() => setPrefillKnowledge(null)}
         />
       )}
 
-      {/* Tab Nhật ký Chat */}
-      {activeTab === "chatlogs" && (
-        <AdminChatLogs 
-          chatLogs={chatLogs}
-          user={currentUser}
-          onClearLogs={clearLogs}
-          onFlagEdit={handleTeachAI}
-        />
-      )}
-
-      {/* Tab Quản lý Tài khoản */}
       {activeTab === "accounts" && (
         <AdminAccounts 
-          accounts={adminAccounts}
+          accounts={data.accounts}
           user={currentUser}
-          onCreate={createAccount}
-          onDelete={deleteAccount}
+          onCreate={(acc) => handleAccountAction("create", { account: acc })}
+          onDelete={(id) => handleAccountAction("delete", { id })}
         />
       )}
 
-      {/* Modal Lịch sử thay đổi */}
+      {/* Helper Modals */}
       {viewingVersions && (
         <VersionHistoryModal 
           versions={versions} 
@@ -494,5 +284,35 @@ function AdminContent() {
         />
       )}
     </AdminLayout>
+  );
+}
+
+// Sub-component for versions
+function VersionHistoryModal({ versions, onClose }) {
+  if (!versions) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fadeIn">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-slideUp">
+        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <h3 className="font-display text-xl font-bold text-gray-900">Lịch sử thay đổi</h3>
+          <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors">✕</button>
+        </div>
+        <div className="max-h-[60vh] overflow-y-auto p-6 space-y-6">
+          {versions.length === 0 ? <p className="text-center text-gray-400">Chưa có lịch sử.</p> : versions.map(v => (
+            <div key={v.id} className="relative pl-8 border-l-2 border-gray-100 last:border-0 pb-6 last:pb-0">
+               <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-gray-200 border-4 border-white shadow-sm" />
+               <div className="flex justify-between items-start mb-2">
+                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">{new Date(v.changedAt).toLocaleString("vi-VN")}</span>
+                 <span className="text-xs font-medium text-gray-400">bởi {v.changedBy}</span>
+               </div>
+               <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700">
+                 <p className="font-bold text-gray-900 mb-2">{v.action === "update" ? "Cập nhật" : "Tạo mới"}</p>
+                 {v.changes && <ul className="space-y-1">{Object.entries(v.changes).map(([k, val]) => <li key={k} className="flex gap-2"><span className="font-mono text-xs text-gray-500 w-20">{k}:</span><span className="text-gray-900 truncate">{String(val)}</span></li>)}</ul>}
+               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

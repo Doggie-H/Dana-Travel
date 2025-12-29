@@ -8,11 +8,11 @@
 
 import { PrismaClient } from '@prisma/client';
 import { seedClean } from './seeders/clean.seeder.js';
-import { seedAdmin } from './seeders/admin.seeder.js';
-import { seedKnowledge } from './seeders/knowledge.seeder.js';
+import { seedAdmin } from './seeders/account.seeder.js';
+import { seedKnowledge } from './seeders/knowledge.base.seeder.js';
 import { seedLocations } from './seeders/location.seeder.js';
-import { seedTransport } from './seeders/transport.seeder.js';
-import { seedSystem } from './seeders/system.seeder.js';
+import { seedTransport } from './seeders/transportation.seeder.js';
+
 
 const prisma = new PrismaClient();
 
@@ -35,8 +35,7 @@ async function main() {
     // 5. Seed Transport
     await seedTransport(prisma);
 
-    // 6. Seed System Settings & Prompts
-    await seedSystem(prisma);
+
 
     console.log('Seeding completed successfully!');
   } catch (e) {

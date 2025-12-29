@@ -1,126 +1,139 @@
 /**
- * Controller xử lý tạo lịch trình.
- * Validate yêu cầu người dùng và điều phối service tạo lịch trình.
+ * =================================================================================================
+ * ITINERARY CONTROLLER - BỘ ĐIỀU KHIỂN TẠO LỊCH TRÌNH
+ * =================================================================================================
+ * 
+ * Nhiệm vụ:
+ * 1. Nhận request từ Client (API Endpoint).
+ * 2. Validate dữ liệu đầu vào (Input Validation).
+ * 3. Gọi Service để xử lý logic nghiệp vụ (Business Logic).
+ * 4. Trả về kết quả cho Client (Response).
  */
 
+import { randomUUID } from "crypto";
+import prisma from "../config/prisma.client.js";
 import { generateItinerary } from "../services/itinerary.service.js";
 
 /**
- * API Handler: Tạo lịch trình từ yêu cầu người dùng.
- * Endpoint: POST /api/itinerary/generate
- * 
- * @param {Object} req - Request object.
- * @param {Object} res - Response object.
- * @param {Function} next - Error handler middleware.
+ * =================================================================================================
+ * API HANDLERS
+ * =================================================================================================
+ */
+
+/**
+ * [POST] /api/itinerary/generate
+ * Tạo lịch trình dựa trên thông tin người dùng cung cấp.
  */
 export async function generateItineraryHandler(req, res, next) {
   try {
     const userRequest = req.body;
 
-    // 1. Validate dữ liệu đầu vào
-    // Chuẩn hóa dữ liệu đầu vào
+    // --- BƯỚC 1: CHUẨN HÓA & VALIDATE DATA ---
+    // Đảm bảo preferences luôn là mảng
     if (!userRequest.preferences) {
       userRequest.preferences = [];
     }
 
-    // Nếu dữ liệu sai, trả về lỗi 400 ngay lập tức để tiết kiệm tài nguyên server.
-    const errors = validateUserRequest(userRequest);
-    if (errors.length > 0) {
-      console.log("Validation failed:", errors);
-      console.log("Request body:", userRequest);
+    // Kiểm tra tính hợp lệ
+    const validationErrors = validateUserRequest(userRequest);
+    if (validationErrors.length > 0) {
+      console.warn("Bad Request:", validationErrors);
       return res.status(400).json({
-        error: "Dữ liệu không hợp lệ (Validation failed)",
-        details: errors,
+        success: false,
+        error: "Dữ liệu không hợp lệ",
+        details: validationErrors,
       });
     }
 
-    // 2. Gọi Service để tạo lịch trình
-    // Đây là nơi logic "nặng" (tính toán, thuật toán) được thực thi.
+    // --- RECORD SEARCH STATS (FIRE & FORGET) ---
+    // Ghi lại xu hướng tìm kiếm để hiển thị lên Dashboard
+    try {
+      await prisma.searchQuery.create({
+        data: {
+          id: `XH_${randomUUID()}`,
+          tags: JSON.stringify(userRequest.preferences || []),
+          budget: Number(userRequest.budgetTotal),
+          people: Number(userRequest.numPeople),
+          duration: userRequest.arriveDateTime && userRequest.leaveDateTime
+            ? `${Math.ceil(Math.abs(new Date(userRequest.leaveDateTime) - new Date(userRequest.arriveDateTime)) / (1000 * 60 * 60 * 24))} ngày`
+            : null
+        }
+      });
+    } catch (e) {
+      console.error("Stats Error:", e.message);
+    }
+
+    // --- BƯỚC 2: GỌI SERVICE XỬ LÝ ---
+    // Chuyển giao cho Service xử lý logic phức tạp
+    console.log(`Received Itinerary Request for ${userRequest.numPeople} people, Budget: ${userRequest.budgetTotal}`);
     const itinerary = await generateItinerary(userRequest);
 
-    // 3. Trả về kết quả
+    // --- BƯỚC 3: TRẢ VỀ KẾT QUẢ ---
     res.status(200).json({
       success: true,
       data: itinerary,
     });
+
   } catch (error) {
-    // Chuyển lỗi cho middleware xử lý trung tâm
+    // Chuyển lỗi cho Global Error Handler
     next(error);
   }
 }
 
 /**
- * Hàm kiểm tra tính hợp lệ của UserRequest.
- * Kiểm tra các trường bắt buộc, kiểu dữ liệu, và logic nghiệp vụ cơ bản (VD: ngày về > ngày đi).
- * 
- * @param {Object} req - Đối tượng request từ người dùng.
- * @returns {string[]} - Mảng chứa các thông báo lỗi (nếu có).
+ * =================================================================================================
+ * HELPER FUNCTIONS (VALIDATION)
+ * =================================================================================================
  */
+
 function validateUserRequest(req) {
   const errors = [];
 
-  // Kiểm tra Ngân sách (Phải là số dương)
-  if (
-    !req.budgetTotal ||
-    typeof req.budgetTotal !== "number" ||
-    req.budgetTotal <= 0
-  ) {
+  // 1. Validate Ngân sách (Positive Number)
+  if (!req.budgetTotal || typeof req.budgetTotal !== "number" || req.budgetTotal <= 0) {
     errors.push("Ngân sách (budgetTotal) phải là số dương.");
   }
 
-  // Kiểm tra Số người (Phải >= 1)
-  if (
-    !req.numPeople ||
-    typeof req.numPeople !== "number" ||
-    req.numPeople < 1
-  ) {
+  // 2. Validate Số người (Min 1)
+  if (!req.numPeople || typeof req.numPeople !== "number" || req.numPeople < 1) {
     errors.push("Số người (numPeople) phải lớn hơn hoặc bằng 1.");
   }
 
-  // Kiểm tra Ngày đến (Arrive Date)
-  if (!req.arriveDateTime) {
-    errors.push("Ngày đến (arriveDateTime) là bắt buộc.");
-  } else {
-    const arriveDate = new Date(req.arriveDateTime);
-    if (isNaN(arriveDate.getTime())) {
-      errors.push("Ngày đến không đúng định dạng.");
-    }
+  // 3. Validate Thời gian (Dates)
+  if (!req.arriveDateTime || isNaN(new Date(req.arriveDateTime).getTime())) {
+    errors.push("Ngày đến (arriveDateTime) không hợp lệ.");
   }
 
-  // Kiểm tra Ngày về (Leave Date)
-  if (!req.leaveDateTime) {
-    errors.push("Ngày về (leaveDateTime) là bắt buộc.");
-  } else {
-    const leaveDate = new Date(req.leaveDateTime);
-    if (isNaN(leaveDate.getTime())) {
-      errors.push("Ngày về không đúng định dạng.");
-    }
+  if (!req.leaveDateTime || isNaN(new Date(req.leaveDateTime).getTime())) {
+    errors.push("Ngày về (leaveDateTime) không hợp lệ.");
+  }
 
-    // Logic: Ngày về phải sau ngày đến
-    if (req.arriveDateTime && leaveDate <= new Date(req.arriveDateTime)) {
+  // Logic: Ngày về phải sau ngày đến
+  if (req.arriveDateTime && req.leaveDateTime) {
+    const arrive = new Date(req.arriveDateTime);
+    const leave = new Date(req.leaveDateTime);
+    if (leave <= arrive) {
       errors.push("Ngày về phải sau ngày đến.");
     }
   }
 
-  // Kiểm tra Phương tiện (Enum Validation)
-  const validTransports = ["own", "grab-bike", "grab-car"];
-  if (!req.transport || !validTransports.includes(req.transport)) {
-    errors.push(`Phương tiện không hợp lệ. Phải là: ${validTransports.join(", ")}`);
+  // 4. Validate Enum (Transport & Accommodation)
+  const validTransports = ["own", "grab-bike", "grab-car", "rent", "taxi"];
+  if (req.transport && !validTransports.includes(req.transport)) {
+    // Cho phép null/undefined (sẽ có default), nhưng nếu có value thì phải đúng
+    errors.push(`Phương tiện không hợp lệ. Valid: ${validTransports.join(", ")}`);
   }
 
-  // Kiểm tra Chỗ ở (Enum Validation)
-  const validAccommodations = ["free", "hotel", "homestay", "resort"];
-  if (!req.accommodation || !validAccommodations.includes(req.accommodation)) {
-    errors.push(
-      `Loại chỗ ở không hợp lệ. Phải là: ${validAccommodations.join(", ")}`
-    );
+  const validAccommodations = ["free", "hotel", "homestay", "resort", "friend", "relative", "home", "any"];
+  if (req.accommodation && !validAccommodations.includes(req.accommodation)) {
+    errors.push(`Loại chỗ ở không hợp lệ. Valid: ${validAccommodations.join(", ")}`);
   }
 
-  // Kiểm tra Sở thích (Phải là mảng, Min 1, Max 3)
-  if (!req.preferences || !Array.isArray(req.preferences) || req.preferences.length === 0) {
-    errors.push("Vui lòng chọn ít nhất 1 sở thích.");
-  } else if (req.preferences.length > 3) {
-    errors.push("Vui lòng chọn tối đa 3 sở thích.");
+  // 5. Validate Preferences (Max 3)
+  if (req.preferences && Array.isArray(req.preferences)) {
+    if (req.preferences.length > 5) { // Nới lỏng lên 5
+      errors.push("Vui lòng chọn tối đa 5 sở thích.");
+    }
   }
 
   return errors;
