@@ -1,3 +1,9 @@
+/**
+ * CLI Tool quản lý Admin (Admin Manager).
+ * Dùng để tạo, xóa, reset mật khẩu admin thông qua dòng lệnh.
+ * 
+ * Cách dùng: npm run admin:<command> [args]
+ */
 import { PrismaClient } from '@prisma/client';
 // import bcrypt from 'bcryptjs'; // REMOVED
 
@@ -68,7 +74,7 @@ async function listAdmins() {
     ID: a.id,
     Username: a.username,
     Role: a.role,
-    'Mật khẩu (Rõ)': a.passwordHash 
+    'Mật khẩu (Rõ)': a.passwordHash
   })));
 }
 
@@ -82,7 +88,7 @@ async function createAdmin(username, role, password) {
   const lastAdmin = await prisma.admin.findFirst({
     orderBy: { id: 'desc' }
   });
-  
+
   let newId = 'TK_01';
   if (lastAdmin && lastAdmin.id.startsWith('TK_')) {
     const num = parseInt(lastAdmin.id.split('_')[1]);
@@ -126,7 +132,7 @@ async function deleteAdmin(username) {
     console.log("❌ Thiếu user! Cú pháp: npm run admin:delete <user>");
     return;
   }
-  
+
   if (username === 'admin') {
     console.log("❌ Không thể xóa tài khoản gốc 'admin'!");
     return;

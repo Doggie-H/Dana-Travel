@@ -36,6 +36,7 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
 
   /**
    * Chuyển đổi giữa các bước (Next/Prev).
+   * 
    * @param {number} delta - Số bước cần nhảy (+1 hoặc -1).
    */
   const goto = (delta) => {
@@ -44,6 +45,8 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
 
   /**
    * Kiểm tra tính hợp lệ của dữ liệu trong bước hiện tại.
+   * Logic kiểm tra riêng biệt cho từng bước (1, 2, 4).
+   * 
    * @returns {boolean} - True nếu hợp lệ, False nếu có lỗi.
    */
   const validateStep = () => {
@@ -107,12 +110,24 @@ export default function TripPlanningForm({ onSubmit, defaultValues = {} }) {
 
   // --- HELPER FUNCTIONS (CÁC HÀM HỖ TRỢ) ---
 
+  /**
+   * Loại bỏ các ký tự không phải số.
+   * @param {string} value - Chuỗi đầu vào.
+   */
   const cleanNumber = (value) => value.replace(/\D/g, "").replace(/^0+/, "") || "";
+
+  /**
+   * Định dạng số thành chuỗi có dấu chấm phân cách hàng nghìn.
+   * @param {number} num - Số cần format.
+   */
   const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
   /**
-   * Xử lý khi nhập ngân sách.
-   * Tự động tạo các gợi ý số tiền chẵn (VD: nhập 5 -> gợi ý 500k, 5tr...).
+   * Xử lý khi người dùng nhập ngân sách.
+   * - Format số tiền hiển thị.
+   * - Tự động tạo các gợi ý số tiền chẵn (Smart Suggestions).
+   * 
+   * @param {Object} e - Event object.
    */
   const handleBudgetChange = (e) => {
     const raw = e.target.value;

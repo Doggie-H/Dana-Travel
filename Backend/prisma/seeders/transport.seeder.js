@@ -1,4 +1,9 @@
-
+/**
+ * TRANSPORT SEEDER
+ * 
+ * Nạp dữ liệu phương tiện di chuyển (Grab, Taxi, Xe máy...).
+ * Dùng tính toán chi phí di chuyển trong lịch trình.
+ */
 import { transport } from '../data/transport.js';
 import { randomUUID } from 'crypto';
 

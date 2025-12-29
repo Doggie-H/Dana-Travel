@@ -1,4 +1,11 @@
 
+/**
+ * LOGGING CONTROLLER
+ * 
+ * Kiểm soát việc ghi nhận log lỗi từ Client/Server vào Database.
+ * Giúp developer theo dõi sức khỏe hệ thống.
+ */
+
 import { randomUUID } from "crypto";
 import prisma from "../utils/prisma.js";
 

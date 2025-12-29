@@ -1,0 +1,4081 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[14pt,a4paper]{extarticle}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+% --- Added for layout and cover styling ---
+\usepackage[a4paper, top=20mm, bottom=20mm, left=30mm, right=20mm]{geometry}
+\usepackage{titlesec}
+\usepackage{fmtcount}
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+\titleformat{\section}{\normalfont\bfseries\large}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalfont\bfseries}{\thesubsection.}{1em}{}
+\titleformat{\subsubsection}{\normalfont\bfseries}{\thesubsubsection.}{1em}{}
+\usepackage[most]{tcolorbox}
+\usepackage{titletoc}
+\usepackage{ragged2e}
+\justifying
+\usepackage{setspace}
+\setstretch{1.4}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Mô tả}
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=8pt,
+  tabsize=4,
+  breaklines=true,
+  showspaces=false,
+  showstringspaces=false,
+  frame=single,
+  rulecolor=\color{black},
+  backgroundcolor=\color{white},
+  captionpos=b,
+  keepspaces=true,
+}
+\newtcblisting{pythoncode}[2][]{
+  listing engine=listings,
+  colback=white,
+  colframe=black,
+  listing only,
+  listing style=pythonstyle,
+  left=5pt,
+  right=5pt,
+  top=5pt,
+  bottom=5pt,
+  enhanced,
+  sharp corners,
+  boxrule=0.5pt,
+  title=#2,
+  fonttitle=\bfseries,
+  #1
+}
+\usepackage{mdframed}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usepackage{pifont}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{booktabs}
+% LuaLaTeX font setup
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{polyglossia}
+\setdefaultlanguage{vietnamese}
+
+\begin{document}
+  % --- COVER PAGE (inserted) ---
+  \pagestyle{empty}
+  \AddToShipoutPictureBG*{%
+    \put(-205,-120){%
+      \includegraphics[width=35.2cm,height=37.75cm]{D:/Study/tailieu/khungbia.png}%
+    }%
+  }
+  \pagenumbering{gobble}
+
+  \begin{center}
+    \Large\textbf{ĐẠI HỌC ĐÀ NẴNG}\\[0.5em]
+    \Large\textbf{TRƯỜNG ĐẠI HỌC SƯ PHẠM}\\[2em]
+    \begin{tikzpicture}[remember picture,overlay]
+      \node at (2.32cm,1.5cm) {\includegraphics[width=20.5cm]{D:/Study/tailieu/duongphanchia.png}};
+    \end{tikzpicture}
+    \large\textbf{KHOA TOÁN TIN}
+  \end{center}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node at (7.8cm,-2cm) {\includegraphics[width=5.5cm]{D:/Study/tailieu/icon.png}};
+  \end{tikzpicture}
+  \vspace{4cm}
+
+  \begin{center}
+    \LARGE\textbf{ĐỀ CƯƠNG ĐỒ ÁN CHUYÊN NGÀNH}\\[1em]
+    \Large\textbf{ĐỀ TÀI}\\[0.5em]
+    \Large\textbf{PHÁT TRIỂN WEBSITE BÁN HÀNG BOARD GAME VỚI CHATBOT TƯ VẤN BÁN HÀNG}\\[0.5em]
+  \end{center}
+  \vfill
+  \begin{center}
+    \begin{tcolorbox}[
+      colback=gray!5,
+      colframe=black,
+      coltitle=black,
+      boxrule=3.5pt,
+      arc=10pt,
+      width=0.8\textwidth,
+      height=5cm,
+      drop shadow=black!30,
+      enhanced,
+    ]
+      \begin{spacing}{1.5}
+        \large
+        \textbf{Giảng viên hướng dẫn:} TS.Trần Văn Hưng\\
+        \textbf{Ngành:} Công Nghệ Thông Tin\\
+        \textbf{Lớp sinh hoạt:} 23CNTT3\\
+        \textbf{Sinh viên thực hiện:} Huỳnh Kim Đô
+      \end{spacing}
+    \end{tcolorbox}
+  \end{center}
+  \vspace{0.5cm}
+
+  \begin{center}
+    \large\textbf{Đà Nẵng, năm 2025}
+  \end{center}
+
+  \newpage
+
+  % --- TABLE OF CONTENTS ---
+  \tableofcontents
+  \newpage
+
+  % --- PAGE STYLE AFTER COVER ---
+  \pagestyle{fancy}
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \pagenumbering{arabic}
+  \setcounter{page}{1}
+
+  % --- START CONTENT ---
+  \newpage
+  \section{ĐẶT VẤN ĐỀ}
+  \label{sec:intro}
+
+% Content for ĐẶT VẤN ĐỀ section goes here
+
+  \newpage
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\begin{quote}
+Đà Nẵng, ngày \ldots\ldots. tháng ...\ldots.. năm 2025
+\end{quote}
+
+\textbf{Giảng viên hướng dẫn}
+
+\textbf{\hfill\break
+}
+
+\textbf{NHẬN XÉT CỦA GIẢNG VIÊN CHẤM ĐỒ ÁN}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\textbf{................................................................................................................}
+
+\begin{quote}
+Đà Nẵng, ngày \ldots\ldots.. tháng \ldots\ldots. năm 2025
+
+\textbf{Giảng viên chấm đồ án}
+\end{quote}
+
+\textbf{LỜI CẢM ƠN}
+
+Lời đầu tiên, em xin gửi lời cảm ơn chân thành đến các Thầy, Cô giáo
+trong Khoa Tin học -- Trường Đại học Sư phạm, Đại học Đà Nẵng đã tận
+tình giảng dạy và trang bị cho em những kiến thức nền tảng quý báu trong
+suốt thời gian học tập tại trường.
+
+Đặc biệt, em xin bày tỏ lòng biết ơn sâu sắc đến thầy PGS.TS Trần Văn
+Hưng Thầy đã dành thời gian quý báu để định hướng đề tài, sửa chữa những
+sai sót và chỉ dẫn tận tình giúp em hoàn thành đồ án này đúng tiến độ.
+
+Đồ án "Xây dựng ứng dụng lập lịch trình và hỗ trợ du lịch Đà Nẵng
+(DanaTravel)" là kết quả của quá trình nỗ lực học hỏi và tìm tòi công
+nghệ mới (ReactJS, Node.js, AI Gemini). Tuy nhiên, do kiến thức và kinh
+nghiệm thực tế của em còn hạn chế, nên báo cáo khó tránh khỏi những
+thiếu sót. Em rất mong nhận được sự đóng góp ý kiến của quý Thầy, Cô để
+đề tài được hoàn thiện hơn, cũng như để em rút kinh nghiệm cho các dự án
+sau này
+
+Em xin chân thành cảm ơn!
+
+\begin{quote}
+\textbf{Huỳnh Kim Đô}
+\end{quote}
+
+\textbf{\hfill\break
+}
+
+\newpage
+\section{Mục Lục}\label{mux1ee5c-lux1ee5c}
+
+\hyperref[mux1edf-ux111ux1ea7u]{MỞ ĐẦU
+\hyperref[mux1edf-ux111ux1ea7u]{8}}
+
+\hyperref[chux1b0ux1a1ng-1-cux1a1-sux1edf-luxfd-thuyux1ebft]{CHƯƠNG 1:
+CƠ SỞ LÝ THUYẾT
+\hyperref[chux1b0ux1a1ng-1-cux1a1-sux1edf-luxfd-thuyux1ebft]{10}}
+
+\hyperref[_Toc215923986]{1.1 Các chuẩn web nền tảng (Web Standards)
+\hyperref[_Toc215923986]{10}}
+
+\hyperref[_Toc215923987]{1.1.1 Tổng quan về HTML 5
+\hyperref[_Toc215923987]{10}}
+
+\hyperref[_Toc215923988]{1.1.2 Tổng quan về CSS
+\hyperref[_Toc215923988]{10}}
+
+\hyperref[_Toc215923989]{1.2 Công nghệ phát triển Giao diện (Frontend)
+\hyperref[_Toc215923989]{11}}
+
+\hyperref[_Toc215923990]{1.2.1 Ngôn ngữ lập trình JavaScript (ES6+)
+\hyperref[_Toc215923990]{11}}
+
+\hyperref[_Toc215923991]{1.2.2 Tổng quan về ReactJS
+\hyperref[_Toc215923991]{11}}
+
+\hyperref[_Toc215923992]{1.2.3 Framework Tailwind CSS
+\hyperref[_Toc215923992]{12}}
+
+\hyperref[_Toc215923993]{1.3 Công nghệ phát triển Hệ thống máy chủ
+(Backend) \hyperref[_Toc215923993]{13}}
+
+\hyperref[_Toc215923994]{1.3.1 Tổng quan về Node.js
+\hyperref[_Toc215923994]{13}}
+
+\hyperref[_Toc215923995]{1.3.2 Framework Express.js
+\hyperref[_Toc215923995]{14}}
+
+\hyperref[_Toc215923996]{1.3.3 Chuẩn RESTful API
+\hyperref[_Toc215923996]{14}}
+
+\hyperref[_Toc215923997]{1.4 Hệ quản trị Cơ sở dữ liệu (Database)
+\hyperref[_Toc215923997]{15}}
+
+\hyperref[_Toc215923998]{1.4.1 SQLite \hyperref[_Toc215923998]{15}}
+
+\hyperref[_Toc215923999]{1.4.2 Prisma ORM (Object-Relational Mapping)
+\hyperref[_Toc215923999]{16}}
+
+\hyperref[_Toc215924000]{1.5 Trí tuệ nhân tạo và Mô hình ngôn ngữ lớn
+(LLM) \hyperref[_Toc215924000]{17}}
+
+\hyperref[_Toc215924001]{1.5.1 Mô hình Generative AI (Google Gemini)
+\hyperref[_Toc215924001]{17}}
+
+\hyperref[_Toc215924002]{1.5.2 Kỹ thuật RAG (Retrieval-Augêmnted
+Generation) \hyperref[_Toc215924002]{18}}
+
+\hyperref[_Toc215924003]{1.6 Lý thuyết bài toán xếp lịch (Scheduling)
+\hyperref[_Toc215924003]{18}}
+
+\hyperref[_Toc215924004]{1.6.1 Bài toán thỏa mãn ràng buộc (CSP)
+\hyperref[_Toc215924004]{18}}
+
+\hyperref[_Toc215924005]{1.6.2 Giải thuật Heuristic (Heuristic
+Algorithm) \hyperref[_Toc215924005]{19}}
+
+\hyperref[chux1b0ux1a1ng-2-phuxe2n-tuxedch-vuxe0-thiux1ebft-kux1ebf-web]{CHƯƠNG
+2: PHÂN TÍCH VÀ THIẾT KẾ WEB
+\hyperref[chux1b0ux1a1ng-2-phuxe2n-tuxedch-vuxe0-thiux1ebft-kux1ebf-web]{21}}
+
+\hyperref[_Toc215924007]{2.1 Phân tích Tác nhân hệ thống (System Actors
+Analysis) \hyperref[_Toc215924007]{21}}
+
+\hyperref[_Toc215924008]{2.1.1 Tác nhân: Khách du lịch vãng lai (Guest
+User) \hyperref[_Toc215924008]{21}}
+
+\hyperref[_Toc215924009]{2.1.2 Tác nhân: Quản trị viên hệ thống (System
+Administrator) \hyperref[_Toc215924009]{21}}
+
+\hyperref[_Toc215924010]{2.2 Xây dựng Chân dung người dùng (User
+Personas \& Algorithm Mapping) \hyperref[_Toc215924010]{22}}
+
+\hyperref[_Toc215924011]{2.2.1 Persona A: "Sinh viên du lịch bụi" (The
+Budget Backpacker) \hyperref[_Toc215924011]{22}}
+
+\hyperref[_Toc215924012]{2.2.2 Persona B: "Gia đình nghỉ dưỡng" (The
+Family Vacationer) \hyperref[_Toc215924012]{22}}
+
+\hyperref[_Toc215924013]{2.2.3 Persona C: "Cặp đôi lãng mạn" (The
+Honeymooners) \hyperref[_Toc215924013]{23}}
+
+\hyperref[_Toc215924014]{2.3 Đặc tả chi tiết yêu cầu chức năng : Lập
+lịch trình tự động (Automated Itinerary Generation)
+\hyperref[_Toc215924014]{23}}
+
+\hyperref[_Toc215924015]{2.3.1 Dữ liệu đầu vào (Input)
+\hyperref[_Toc215924015]{23}}
+
+\hyperref[_Toc215924016]{2.3.2 Quy trình xử lý (Process)
+\hyperref[_Toc215924016]{23}}
+
+\hyperref[_Toc215924017]{2.3.3 Dữ liệu đầu ra (Output)
+\hyperref[_Toc215924017]{24}}
+
+\hyperref[_Toc215924018]{2.4 Đặc tả chức năng: Trợ lý ảo tư vấn (AI
+Chatbot Consultation) \hyperref[_Toc215924018]{25}}
+
+\hyperref[_Toc215924019]{2.4.1 Dữ liệu đầu vào (Input)
+\hyperref[_Toc215924019]{25}}
+
+\hyperref[_Toc215924020]{2.4.2 Quy trình xử lý (Process) Quy trình áp
+dụng kỹ thuật RAG (Retrieval Augmented Generation):
+\hyperref[_Toc215924020]{25}}
+
+\hyperref[_Toc215924021]{2.4.3 Dữ liệu đầu ra (Output)
+\hyperref[_Toc215924021]{25}}
+
+\hyperref[_Toc215924022]{2.5 Đặc tả chức năng: Quản trị dữ liệu (Data
+Management) \hyperref[_Toc215924022]{26}}
+
+\hyperref[_Toc215924023]{2.5.1 Quản lý Địa điểm (CRUD Locations)
+\hyperref[_Toc215924023]{26}}
+
+\hyperref[_Toc215924024]{2.5.2 Quản lý Tri thức (Knowledge Base
+Management) \hyperref[_Toc215924024]{26}}
+
+\hyperref[_Toc215924025]{2.5.3 Thống kê và Giám sát (Monitoring)
+\hyperref[_Toc215924025]{26}}
+
+\hyperref[_Toc215924026]{2.6 Hiệu năng (Performance Efficiency)
+\hyperref[_Toc215924026]{26}}
+
+\hyperref[_Toc215924027]{2.6.1 Thời gian phản hồi (Response Time
+Latency) \hyperref[_Toc215924027]{26}}
+
+\hyperref[_Toc215924028]{2.6.2 Khả năng chịu tải (Throughput)
+\hyperref[_Toc215924028]{27}}
+
+\hyperref[_Toc215924029]{2.7 Tính tin cậy và Sẵn sàng (Reliability \&
+Availability) \hyperref[_Toc215924029]{27}}
+
+\hyperref[_Toc215924030]{2.7.1 Cơ chế hoạt động độc lập (Offline
+Capability) \hyperref[_Toc215924030]{27}}
+
+\hyperref[_Toc215924031]{2.7.2 Xử lý lỗi toàn cục (Global Error
+Handling) \hyperref[_Toc215924031]{27}}
+
+\hyperref[_Toc215924032]{2.8 An toàn và Bảo mật thông tin (Security)
+\hyperref[_Toc215924032]{27}}
+
+\hyperref[_Toc215924033]{2.8.1 Kiểm soát truy cập (Access Control)
+\hyperref[_Toc215924033]{27}}
+
+\hyperref[_Toc215924034]{2.8.2 Bảo mật dữ liệu nhạy cảm
+\hyperref[_Toc215924034]{28}}
+
+\hyperref[_Toc215924035]{2.9 Khả năng bảo trì và Mở rộng
+(Maintainability \& Scalability) \hyperref[_Toc215924035]{28}}
+
+\hyperref[_Toc215924036]{2.9.1 Kiến trúc Modular Monolith
+\hyperref[_Toc215924036]{28}}
+
+\hyperref[_Toc215924037]{2.9.2 Khả năng mở rộng Database
+\hyperref[_Toc215924037]{28}}
+
+\hyperref[_Toc215924038]{2.10 Quy trình nghiệp vụ Sinh lịch trình du
+lịch (Itinerary Generation Process) \hyperref[_Toc215924038]{28}}
+
+\hyperref[_Toc215924039]{2.11 Quy trình nghiệp vụ: Hội thoại thông minh
+(Conversation Flow) \hyperref[_Toc215924039]{29}}
+
+\hyperref[_Toc215924040]{2.12 Sơ đồ trạng thái của Địa điểm (Entity
+State Diagram) \hyperref[_Toc215924040]{30}}
+
+\hyperref[_Toc215924041]{2.13 Kiến trúc tổng thể (High-Level
+Architecture) \hyperref[_Toc215924041]{32}}
+
+\hyperref[_Toc215924042]{2.14 Thiết kế chi tiết kiến trúc Backend
+(Layered Architecture) \hyperref[_Toc215924042]{33}}
+
+\hyperref[_Toc215924043]{2.14.1 Lớp Định tuyến và Điều khiển (Controller
+Layer) \hyperref[_Toc215924043]{33}}
+
+\hyperref[_Toc215924044]{2.14.2 Lớp Dịch vụ (Service Layer)
+\hyperref[_Toc215924044]{33}}
+
+\hyperref[_Toc215924045]{2.14.3 Lớp Truy cập Dữ liệu (Data Access Layer
+/ Repository) \hyperref[_Toc215924045]{33}}
+
+\hyperref[_Toc215924046]{2.15 Thiết kế Kiến trúc Frontend
+(Component-Based Architecture) \hyperref[_Toc215924046]{34}}
+
+\hyperref[_Toc215924047]{2.16 Chiến lược Mô hình hóa Dữ liệu
+\hyperref[_Toc215924047]{34}}
+
+\hyperref[_Toc215924048]{2.17 Đặc tả chi tiết các Bảng dữ liệu (Table
+Specifications) \hyperref[_Toc215924048]{34}}
+
+\hyperref[_Toc215924049]{2.17.1 Bảng Location (Địa điểm) Đây là bảng
+trung tâm (Core Table). \hyperref[_Toc215924049]{34}}
+
+\hyperref[_Toc215924050]{2.17.2 Bảng Knowledge (Tri thức AI)
+\hyperref[_Toc215924050]{35}}
+
+\hyperref[_Toc215924051]{2.17.3 Bảng Admin (Quản trị viên)
+\hyperref[_Toc215924051]{35}}
+
+\hyperref[_Toc215924052]{2.17.4 Bảng AccessLog (Nhật ký truy cập)
+\hyperref[_Toc215924052]{35}}
+
+\hyperref[_Toc215924053]{2.18 Chiến lược Tối ưu hóa Hiệu năng Cơ sở dữ
+liệu (Database Performance Strategy) \hyperref[_Toc215924053]{35}}
+
+\hyperref[_Toc215924054]{2.18.1 Chiến lược đánh chỉ mục (Indexing
+Strategy) \hyperref[_Toc215924054]{35}}
+
+\hyperref[_Toc215924055]{2.18.2 Quản lý kết nối (Connection Management)
+\hyperref[_Toc215924055]{36}}
+
+\hyperref[_Toc215924056]{2.18.3 Tối ưu hóa truy vấn dữ liệu (Query
+Optimization) \hyperref[_Toc215924056]{36}}
+
+\hyperref[_Toc215924057]{2.19 Định nghĩa bài toán và Không gian tìm kiếm
+\hyperref[_Toc215924057]{36}}
+
+\hyperref[_Toc215924058]{2.19.1 Mô hình toán học:
+\hyperref[_Toc215924058]{36}}
+
+\hyperref[_Toc215924059]{2.19.2 Các ràng buộc cứng (Hard Constraints):
+\hyperref[_Toc215924059]{36}}
+
+\hyperref[_Toc215924060]{2.20 Thiết kế chi tiết Giải thuật 7 Pha (The
+7-Phase Algorithm) \hyperref[_Toc215924060]{37}}
+
+\hyperref[_Toc215924061]{2.21 Cơ chế Fallback và Xử lý ngoại lệ
+(Fallback Mechanism) \hyperref[_Toc215924061]{38}}
+
+\hyperref[_Toc215924062]{2.22 Kiến trúc Module AI (AI Module
+Architecture) \hyperref[_Toc215924062]{38}}
+
+\hyperref[_Toc215924063]{2.22.1 Tầng Adapter (Lớp thích ứng):
+\hyperref[_Toc215924063]{39}}
+
+\hyperref[_Toc215924064]{2.22.2 Cơ chế RAG (Retrieval Augmented
+Generation): \hyperref[_Toc215924064]{39}}
+
+\hyperref[_Toc215924065]{2.23 Kỹ thuật Prompt Engineering (Kỹ nghệ ra
+lệnh cho AI) \hyperref[_Toc215924065]{39}}
+
+\hyperref[_Toc215924066]{2.24 Quản lý lịch sử hội thoại (Conversation
+History Management) \hyperref[_Toc215924066]{40}}
+
+\hyperref[_Toc215924067]{2.25 Chiến lược thiết kế trải nghiệm (UX
+Strategy) \hyperref[_Toc215924067]{40}}
+
+\hyperref[_Toc215924068]{2.26 Thiết kế chi tiết các màn hình (Screen
+Design) \hyperref[_Toc215924068]{40}}
+
+\hyperref[_Toc215924069]{2.26.1 Màn hình Nhập liệu thông minh (Smart
+Input Form) \hyperref[_Toc215924069]{40}}
+
+\hyperref[_Toc215924070]{2.26.2 Màn hình Kết quả Lịch trình (Itinerary
+Timeline) \hyperref[_Toc215924070]{41}}
+
+\hyperref[_Toc215924071]{2.26.3 Giao diện Chatbot (Conversational UI)
+\hyperref[_Toc215924071]{41}}
+
+\hyperref[_Toc215924072]{2.27 Cơ chế Bảo mật đa lớp (Layered Security)
+\hyperref[_Toc215924072]{41}}
+
+\hyperref[_Toc215924073]{2.27.1 Bảo mật ở mức Ứng dụng (Application
+Level) \hyperref[_Toc215924073]{41}}
+
+\hyperref[_Toc215924074]{2.27.2 Bảo mật ở mức Quản trị (Admin Security)
+\hyperref[_Toc215924074]{41}}
+
+\hyperref[_Toc215924075]{2.28 Chiến lược Quản lý Lỗi (Error Handling
+Strategy) \hyperref[_Toc215924075]{42}}
+
+\hyperref[_Toc215924076]{2.28.1 Centralized Error Handling (Xử lý lỗi
+tập trung) \hyperref[_Toc215924076]{42}}
+
+\hyperref[_Toc215924077]{2.28.2 Fallback Logic (Logic dự phòng)
+\hyperref[_Toc215924077]{42}}
+
+\hyperref[citations]{CHƯƠNG 3: KẾT QUẢ VÀ ỨNG DỤNG
+\hyperref[citations]{43}}
+
+\hyperref[_Toc215924079]{3.1 Môi trường và công cụ phát triển
+\hyperref[_Toc215924079]{43}}
+
+\hyperref[_Toc215924080]{3.1.1 Cấu hình phần cứng (Development
+Environment) \hyperref[_Toc215924080]{43}}
+
+\hyperref[_Toc215924081]{3.1.2 Nền tảng và Thư viện Phần mềm Danh sách
+các công nghệ cốt lõi được sử dụng trong mã nguồn:
+\hyperref[_Toc215924081]{43}}
+
+\hyperref[_Toc215924082]{3.2 Quy trình cài đặt và triển khai (deployment
+guide) \hyperref[_Toc215924082]{43}}
+
+\hyperref[_Toc215924083]{3.3 Kết quả hiện thực hóa các chức năng
+(detailed implementation) \hyperref[_Toc215924083]{44}}
+
+\hyperref[_Toc215924084]{3.3.1 Phân hệ Khách du lịch - Trang chủ (Home
+Page) \hyperref[_Toc215924084]{44}}
+
+\hyperref[_Toc215924085]{3.3.2 Phân hệ Khách du lịch - Lập lịch trình
+thông minh (Smart Itinerary) \hyperref[_Toc215924085]{45}}
+
+\hyperref[_Toc215924086]{3.3.3 Phân hệ Khách du lịch - Trợ lý ảo AI (RAG
+Chatbot) \hyperref[_Toc215924086]{47}}
+
+\hyperref[_Toc215924087]{3.3.4 Phân hệ Quản trị viên (Admin Dashboard)
+\hyperref[_Toc215924087]{48}}
+
+\hyperref[_Toc215924088]{3.4 KỊCH BẢN KIỂM THỬ VÀ KẾT QUẢ (SYSTEM
+TESTING) \hyperref[_Toc215924088]{49}}
+
+\hyperref[_Toc215924089]{3.5 Đánh giá hiệu năng (performance evaluation)
+\hyperref[_Toc215924089]{50}}
+
+\hyperref[_Toc215924090]{3.5.1 Hiệu năng phía Máy chủ (Backend Latency)
+\hyperref[_Toc215924090]{51}}
+
+\hyperref[_Toc215924091]{3.5.2 Hiệu năng phía Máy khách (Frontend
+Metrics) \hyperref[_Toc215924091]{51}}
+
+\hyperref[kux1ebft-luux1eadn]{KẾT LUẬN
+\hyperref[kux1ebft-luux1eadn]{52}}
+
+\hyperref[tuxe0i-liux1ec7u-tham-khux1ea3o]{TÀI LIỆU THAM KHẢO
+\hyperref[tuxe0i-liux1ec7u-tham-khux1ea3o]{53}}
+
+\hyperref[phux1ee5-lux1ee5c]{PHỤ LỤC \hyperref[phux1ee5-lux1ee5c]{54}}
+
+\section{\texorpdfstring{\hfill\break
+MỞ ĐẦU}{ MỞ ĐẦU}}\label{mux1edf-ux111ux1ea7u}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Lý do chọn đề tài}
+\end{enumerate}
+
+Trong bối cảnh du lịch Đà Nẵng đang phục hồi và phát triển mạnh mẽ sau
+đại dịch, nhu cầu tìm kiếm thông tin và lên kế hoạch cho chuyến đi của
+du khách ngày càng tăng cao. Tuy nhiên, em nhận thấy một vấn đề thực tế
+(pain point) mà rất nhiều du khách, đặc biệt là các nhóm bạn trẻ hoặc
+khách du lịch tự túc gặp phải: đó là sự quá tải thông tin ("information
+overload"). Có quá nhiều bài review trên mạng xã hội, quá nhiều địa điểm
+ăn uống, vui chơi khiến du khách bối rối không biết sắp xếp lịch trình
+sao cho hợp lý về mặt thời gian và địa lý.
+
+Hiện nay đã có các công cụ hỗ trợ như Google Maps hay TripAdvisor, nhưng
+chúng chỉ dừng lại ở việc tra cứu thông tin rời rạc. Chưa có nhiều ứng
+dụng miễn phí, đơn giản cho phép du khách nhập vào số ngày đi và sở
+thích, sau đó hệ thống tự động trả về một lịch trình chi tiết từng khung
+giờ (Sáng - Trưa - Chiều - Tối) mà không cần đăng nhập phức tạp.
+
+Xuất phát từ nhu cầu thực tế đó, cùng với mong muốn áp dụng các kiến
+thức đã học về công nghệ Web và Trí tuệ nhân tạo (Generative AI) vào
+thực tiễn, em quyết định lựa chọn đề tài: \textbf{"Xây dựng hệ thống hỗ
+trợ lập lịch trình du lịch Đà Nẵng tích hợp Chatbot tư vấn thông minh
+(Dana Travel)"}.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \textbf{Mục tiêu của đề tài}
+\end{enumerate}
+
+Đề tài tập trung giải quyết hai bài toán cốt lõi:
+
+\begin{itemize}
+\item
+  Thứ nhất: Xây dựng một công cụ lập lịch trình tự động (Itinerary
+  Generator). Hệ thống phải có khả năng sắp xếp các địa điểm tham quan,
+  ăn uống, vui chơi vào các khung giờ phù hợp trong ngày dựa trên một
+  tập luật cố định (Rule-based) để đảm bảo tính khả thi cho chuyến đi
+  (Ví dụ: Không thể đi Bà Nà Hills vào buổi tối, hoặc phải ăn trưa sau
+  khi tham quan xong).
+\item
+  Thứ hai: Tích hợp một trợ lý ảo (AI Chatbot) sử dụng mô hình ngôn ngữ
+  lớn (LLM) để tương tác tự nhiên với người dùng, giải đáp các thắc mắc
+  nằm ngoài kịch bản có sẵn và đưa ra các gợi ý mang tính cá nhân hóa.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  \textbf{Đối tượng và phạm vi nghiên cứu}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Đối tượng nghiên cứu:
+
+  \begin{itemize}
+  \item
+    Các công nghệ phát triển Web hiện đại: ReactJS (Frontend), Node.js
+    (Backend).
+  \item
+    Hệ quản trị cơ sở dữ liệu gọn nhẹ SQLite và công cụ ORM Prisma.
+  \item
+    Kỹ thuật Prompt Engineering để tích hợp Google Gemini API.
+  \item
+    Các thuật toán sắp xếp lịch trình dựa trên luật (Rule-based
+    Scheduling).
+  \end{itemize}
+\item
+  Phạm vi nghiên cứu:
+
+  \begin{itemize}
+  \item
+    Hệ thống tập trung vào dữ liệu du lịch tại thành phố Đà Nẵng và một
+    số khu vực lân cận (Hội An).
+  \item
+    Về mặt người dùng: Hệ thống hướng tới sự tiện lợi tối đa, cho phép
+    khách du lịch sử dụng ngay các tính năng chính mà không cần đăng ký
+    tài khoản (Anonymous User). Chức năng quản trị (Admin) sẽ yêu cầu
+    xác thực bảo mật.
+  \end{itemize}
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\item
+  \textbf{Phương pháp nghiên cứu}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Phương pháp tham khảo tài liệu: Nghiên cứu tài liệu chính hãng
+  (Documentation) của React, Node.js, Prisma và Google AI Studio.
+\item
+  Phương pháp phân tích thiết kế hệ thống: Sử dụng mô hình phân lớp
+  (Layered Architecture) để tổ chức mã nguồn, phân tích yêu cầu chức
+  năng và phi chức năng.
+\item
+  Phương pháp thực nghiệm: Xây dựng ứng dụng thực tế, tiến hành kiểm thử
+  các kịch bản sinh lịch trình và hội thoại với Chatbot để đánh giá độ
+  chính xác.
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\item
+  \textbf{Bố cục báo cáo}
+\end{enumerate}
+
+Ngoài phần mở đầu và kết luận, báo cáo được chia thành 3 chương:
+
+\begin{itemize}
+\item
+  Chương 1: Cơ sở lý thuyết. Trình bày các nền tảng công nghệ và lý
+  thuyết thuật toán được sử dụng.
+\item
+  Chương 2: Phát biểu vấn đề. Phân tích chi tiết bài toán, đặc tả yêu
+  cầu và thiết kế hệ thống (CSDL, Kiến trúc).
+\item
+  Chương 3: Kết quả và Ứng dụng. Trình bày kết quả cài đặt chương trình,
+  demo giao diện và các kịch bản kiểm thử.
+\end{itemize}
+
+\textbf{\hfill\break
+}
+
+\newpage
+\section{CHƯƠNG 1: CƠ SỞ LÝ
+THUYẾT}\label{chux1b0ux1a1ng-1-cux1a1-sux1edf-luxfd-thuyux1ebft}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215923986}{}\textbf{Các chuẩn web
+  nền tảng (Web Standards)}
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\phantomsection\label{_Toc215923987}{}\textbf{Tổng quan về
+    HTML 5}
+  \end{enumerate}
+\end{enumerate}
+
+HTML (HyperText Markup Language) là ngôn ngữ đánh dấu tiêu chuẩn để tạo
+ra cấu trúc của các trang web. Phiên bản HTML5 là phiên bản mới nhất,
+mang lại nhiều cải tiến vượt bậc về khả năng xử lý đa phương tiện và ngữ
+nghĩa học (Semantics).
+
+\includegraphics[width=1.71667in,height=1.71667in,alt={W3C HTML5 Logo}]{media/image5.png}
+
+HTML5 không chỉ đơn thuần là định dạng văn bản mà đã phát triển thành
+một nền tảng ứng dụng mạnh mẽ. Cấu trúc một tài liệu HTML bao gồm các
+phần tử ngữ nghĩa (semantic elements) như \textless header\textgreater,
+\textless nav\textgreater, \textless main\textgreater,
+\textless footer\textgreater. Các thẻ này giúp trình duyệt và các công
+cụ tìm kiếm (SEO) hiểu rõ ý nghĩa của nội dung, đồng thời cải thiện khả
+năng tiếp cận (Accessibility) cho người dùng khuyết tật.
+
+Trong các ứng dụng hiện đại sử dụng ReactJS, HTML không được viết trực
+tiếp mà thông qua cú pháp JSX (JavaScript XML). JSX cho phép viết cấu
+trúc HTML ngay trong mã JavaScript, giúp việc xây dựng các thành phần
+giao diện (Components) trở nên trực quan và gắn kết chặt chẽ với logic
+xử lý.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215923988}{}\textbf{Tổng quan về
+  CSS}
+\end{enumerate}
+
+CSS (Cascading Style Sheets) là ngôn ngữ dùng để mô tả cách hiển thị của
+các phần tử HTML trên màn hình, giấy in hoặc các phương tiện khác. CSS3
+là phiên bản nâng cấp với các tính năng đồ họa mạnh mẽ như đổ bóng, bo
+tròn, hiệu ứng chuyển động (animation) mà không cần dùng đến hình ảnh
+hay Flash.
+
+\includegraphics[width=1.38333in,height=1.38333in,alt={Css - Free brands and logotypes icons}]{media/image6.png}
+
+Nếu HTML là khung xương thì CSS chính là "lớp da" và "lớp trang điểm",
+quyết định giao diện thẩm mỹ của ứng dụng. Một yêu cầu bắt buộc của đồ
+án là ứng dụng phải chạy tốt trên cả điện thoại và máy tính. Em sử dụng
+CSS Media Queries để tự động điều chỉnh kích thước, bố cục giao diện dựa
+trên độ rộng màn hình của thiết bị người dùng. Trong dự án, các file cấu
+hình như postcss.config.js giúp xử lý các quy tắc CSS hiện đại để tương
+thích với nhiều trình duyệt khác nhau.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215923989}{}\textbf{Công nghệ phát
+  triển Giao diện (Frontend)}
+\end{enumerate}
+
+Để vượt qua giới hạn của các trang web tĩnh truyền thống, em sử dụng các
+thư viện và framework hiện đại để xây dựng một ứng dụng web động
+(Dynamic Web App).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215923990}{}\textbf{Ngôn ngữ lập
+  trình JavaScript (ES6+)}
+\end{enumerate}
+
+JavaScript được Brendan Eich tạo ra tại Netscape năm 1995. Từ một ngôn
+ngữ kịch bản đơn giản chạy trên trình duyệt, JavaScript đã lột xác nhờ
+sự chuẩn hóa ECMAScript (ES). Phiên bản ES6 (2015) mang đến những cải
+tiến đột phá như: từ khóa let/const để quản lý biến an toàn, Arrow
+Function giúp viết hàm ngắn gọn, và Modules để tổ chức mã nguồn khoa học
+hơn.
+
+\includegraphics[width=3.44444in,height=1.37778in,alt={javaScript ES6 2015 what you need to know as a Developer?}]{media/image7.png}
+
+Đặc điểm quan trọng nhất của JavaScript là mô hình Đơn luồng
+(Single-thread) kết hợp với cơ chế Vòng lặp sự kiện (Event Loop)
+
+Cơ chế này cho phép JavaScript xử lý các tác vụ bất đồng bộ (như gọi
+API, đọc file) mà không làm "đóng băng" giao diện người dùng, thông qua
+các kỹ thuật như Callback, Promise và cú pháp hiện đại Async/Await.
+
+Trong dự án này, JavaScript đóng vai trò là ngôn ngữ chủ đạo xuyên suốt
+từ phía máy khách (Frontend) đến phía máy chủ (Backend), tạo nên sự đồng
+nhất về mặt ngữ pháp và tư duy lập trình (Full-stack JavaScript).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215923991}{}\textbf{Tổng quan về
+  ReactJS}
+\end{enumerate}
+
+ReactJS là một thư viện JavaScript mã nguồn mở được Facebook (Meta) phát
+triển, dùng để xây dựng giao diện người dùng (UI). Khác với cách thao
+tác DOM truyền thống (như jQuery), React tiếp cận theo hướng Dựa trên
+thành phần (Component-based). Giao diện được chia nhỏ thành các thành
+phần độc lập (như Header, Footer, Card), có khả năng tái sử dụng cao.
+
+\includegraphics[width=3.65in,height=1.825in,alt={Reactjs logo - Free Icon PNG, SVG}]{media/image8.png}
+
+Cơ sở lý thuyết quan trọng của React là DOM ảo (Virtual DOM). Thay vì
+cập nhật trực tiếp lên DOM thật (rất tốn tài nguyên), React tạo ra một
+bản sao của DOM trong bộ nhớ. Khi dữ liệu thay đổi, React so sánh sự
+khác biệt (Diffing) và chỉ cập nhật những phần thực sự thay đổi lên màn
+hình. Điều này giúp tối ưu hóa hiệu năng render.
+
+React cũng phổ biến khái niệm SPA (Single Page Application). Ứng dụng
+chỉ tải một trang HTML duy nhất, sau đó nội dung được cập nhật động mà
+không cần tải lại trang, mang lại trải nghiệm mượt mà như ứng dụng
+Desktop.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  \protect\phantomsection\label{_Toc215923992}{}\textbf{Framework
+  Tailwind CSS}
+\end{enumerate}
+
+Tailwind CSS là một framework CSS mã nguồn mở, được phát triển với triết
+lý utility-first, giúp xây dựng giao diện người dùng (UI) nhanh chóng và
+linh hoạt. Khác với cách viết CSS truyền thống (như Bootstrap với các
+component dựng sẵn), Tailwind tiếp cận theo hướng dựa trên lớp tiện ích
+(Utility-based). Giao diện được tạo ra bằng cách kết hợp các class nhỏ
+gọn (như flex, text-center, bg-blue-500), cho phép tùy biến cao và tái
+sử dụng dễ dàng.
+
+\includegraphics[width=1.44167in,height=1.44167in,alt={Tailwind CSS Logo Rounded 67565433 PNG}]{media/image9.png}
+
+Cơ sở lý thuyết quan trọng của Tailwind là utility classes\textbf{.}
+Thay vì định nghĩa CSS riêng cho từng thành phần, Tailwind cung cấp sẵn
+hàng trăm lớp tiện ích mô tả trực tiếp các thuộc tính CSS (màu sắc,
+khoảng cách, bố cục\ldots). Khi cần thay đổi giao diện, lập trình viên
+chỉ việc chỉnh sửa class trong HTML, giúp giảm thiểu việc viết CSS thủ
+công và tối ưu hóa tốc độ phát triển.
+
+Tailwind cũng phổ biến khái niệm Responsive Design. Framework này tích
+hợp sẵn hệ thống breakpoint (sm:, md:, lg:, xl:), cho phép giao diện tự
+động thích ứng trên nhiều kích thước màn hình mà không cần viết media
+query phức tạp. Ngoài ra, Tailwind hỗ trợ tùy biến theme (màu sắc, font,
+spacing\ldots) thông qua file cấu hình, giúp dễ dàng đồng bộ hóa thiết
+kế trong toàn bộ dự án.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  \protect\phantomsection\label{_Toc215923993}{}\textbf{Công nghệ phát
+  triển Hệ thống máy chủ (Backend)}
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\phantomsection\label{_Toc215923994}{}\textbf{Tổng quan về
+    Node.js}
+  \end{enumerate}
+\end{enumerate}
+
+Node.js là một môi trường chạy JavaScript mã nguồn mở, được xây dựng
+trên V8 Engine của Google Chrome. Khác với JavaScript truyền thống vốn
+chỉ chạy trong trình duyệt, Node.js cho phép lập trình viên chạy
+JavaScript ở phía máy chủ (server-side). Điều này mở rộng khả năng của
+JavaScript, biến nó thành một ngôn ngữ lập trình toàn diện cho cả
+frontend và backend.
+
+\includegraphics[width=1.8366in,height=1.125in,alt={A logo of a company AI-generated content may be incorrect.}]{media/image10.png}
+
+Cơ sở lý thuyết quan trọng của Node.js là mô hình bất đồng bộ
+(asynchronous) và hướng sự kiện (event-driven). Thay vì xử lý tuần tự và
+chặn luồng (blocking), Node.js sử dụng cơ chế non-blocking I/O. Khi có
+tác vụ như đọc file, truy vấn cơ sở dữ liệu hay gọi API, Node.js không
+chờ kết quả mà tiếp tục xử lý các tác vụ khác, sau đó nhận phản hồi
+thông qua callback hoặc Promise. Cách tiếp cận này giúp Node.js có hiệu
+năng cao, đặc biệt phù hợp cho các ứng dụng cần xử lý nhiều kết nối đồng
+thời.
+
+Node.js cũng phổ biến khái niệm Single-threaded Event Loop. Mặc dù chỉ
+chạy trên một luồng duy nhất, Node.js có thể quản lý hàng nghìn kết nối
+nhờ cơ chế event loop và thư viện libuv. Đây là điểm khác biệt lớn so
+với các server truyền thống vốn tạo nhiều luồng (multi-thread) cho mỗi
+kết nối, dễ gây tốn tài nguyên.
+
+Ngoài ra, Node.js đi kèm với npm (Node Package Manager) -- hệ sinh thái
+thư viện khổng lồ, giúp lập trình viên dễ dàng cài đặt, chia sẻ và tái
+sử dụng các module. Nhờ đó, Node.js trở thành nền tảng lý tưởng để xây
+dựng ứng dụng web thời gian thực (real-time) như chat app, game online,
+API server, và cả các hệ thống microservices.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215923995}{}\textbf{Framework
+  Express.js}
+\end{enumerate}
+
+Express.js là một framework web mã nguồn mở dành cho Node.js, được thiết
+kế để xây dựng ứng dụng web và API một cách nhanh chóng, linh hoạt và
+tối giản. Khác với việc tự viết toàn bộ logic xử lý HTTP trong Node.js,
+Express cung cấp một lớp trừu tượng đơn giản, giúp lập trình viên dễ
+dàng định nghĩa tuyến đường (routes), middleware, và xử lý yêu cầu/ phản
+hồi.
+
+\includegraphics[width=2.73333in,height=1.19651in,alt={About Express.js. Express.js is a Web server framework\ldots{} \textbar{} by Rahul Fernando \textbar{} Medium}]{media/image11.png}
+
+Cơ sở lý thuyết quan trọng của Express là middleware. Middleware là các
+hàm trung gian nằm trong chuỗi xử lý request--response. Mỗi middleware
+có thể thực hiện một tác vụ cụ thể (như xác thực, logging, parse dữ liệu
+JSON, xử lý lỗi), sau đó chuyển tiếp yêu cầu sang middleware tiếp theo.
+Cách tiếp cận này giúp ứng dụng dễ mở rộng, dễ bảo trì và có cấu trúc rõ
+ràng.
+
+Express cũng phổ biến khái niệm Routing. Thay vì phải viết logic phức
+tạp để phân tích URL, Express cho phép định nghĩa các tuyến đường theo
+cú pháp đơn giản, ví dụ:
+
+app.get(\textquotesingle/users\textquotesingle, (req, res)
+=\textgreater{} \{
+
+~ res.send(\textquotesingle Danh sách người dùng\textquotesingle);
+
+\});
+
+Điều này giúp quản lý API và các endpoint trong ứng dụng một cách trực
+quan.
+
+Ngoài ra, Express hỗ trợ tích hợp dễ dàng với nhiều template engine (như
+Pug, EJS, Handlebars) để render HTML động, và có khả năng kết nối với cơ
+sở dữ liệu (MongoDB, MySQL, PostgreSQL\ldots) thông qua các thư viện bên
+ngoài. Nhờ hệ sinh thái npm phong phú, Express có thể mở rộng để phục vụ
+từ ứng dụng nhỏ đến hệ thống lớn.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\item
+  \protect\phantomsection\label{_Toc215923996}{}\textbf{Chuẩn RESTful
+  API}
+\end{enumerate}
+
+RESTful API (Representational State Transfer) là một chuẩn kiến trúc phổ
+biến trong việc xây dựng hệ thống giao tiếp giữa Client và Server. Khác
+với cách truyền dữ liệu phức tạp hoặc giữ trạng thái trên server, REST
+tiếp cận theo hướng đơn giản, phi trạng thái (Stateless) và tận dụng
+đúng ngữ nghĩa của giao thức HTTP.
+
+\includegraphics[width=1.87535in,height=1.44444in,alt={REST API logo on white background}]{media/image12.jpeg}
+
+Cơ sở lý thuyết quan trọng của REST là tính phi trạng thái (Stateless).
+Mỗi request từ client phải chứa đầy đủ thông tin cần thiết (ví dụ: dữ
+liệu, token xác thực). Server không lưu trạng thái của client giữa các
+request, nhờ đó hệ thống dễ mở rộng, giảm tải bộ nhớ và tăng khả năng xử
+lý song song.
+
+REST cũng phổ biến khái niệm phương thức chuẩn HTTP. Mỗi hành động được
+ánh xạ trực tiếp với một phương thức HTTP:
+
+\begin{itemize}
+\item
+  GET → Lấy dữ liệu (ví dụ: danh sách người dùng).
+\item
+  POST → Tạo mới dữ liệu (ví dụ: thêm lịch trình).
+\item
+  PUT → Cập nhật dữ liệu hiện có.
+\item
+  DELETE → Xóa dữ liệu.
+\end{itemize}
+
+Ngoài ra, REST định nghĩa tài nguyên (resource) thông qua URL rõ ràng.
+Ví dụ:
+
+GET /api/users ~ ~ ~ ~→ Lấy danh sách người dùng
+
+POST /api/schedules ~ → Tạo mới lịch trình
+
+PUT /api/users/123 ~ ~→ Cập nhật thông tin user có ID = 123
+
+DELETE /api/users/123 → Xóa user có ID = 123
+
+REST thường sử dụng \textbf{JSON} làm định dạng dữ liệu truyền tải, nhờ
+tính gọn nhẹ, dễ đọc và dễ tích hợp với nhiều nền tảng khác nhau (web,
+mobile, IoT\ldots).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215923997}{}\textbf{Hệ quản trị Cơ
+  sở dữ liệu (Database)}
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\phantomsection\label{_Toc215923998}{}\textbf{SQLite}
+  \end{enumerate}
+\end{enumerate}
+
+SQLite là một hệ quản trị cơ sở dữ liệu quan hệ (RDBMS) mã nguồn mở, gọn
+nhẹ và tự chứa (self-contained). Khác với các hệ quản trị cơ sở dữ liệu
+truyền thống như MySQL hay PostgreSQL vốn hoạt động theo mô hình
+client--server, SQLite tiếp cận theo hướng embedded database -- toàn bộ
+cơ sở dữ liệu được lưu trữ trong một file duy nhất trên hệ thống
+
+\includegraphics[width=1.16667in,height=1.16667in,alt={sqlite Vector Icons free download in SVG, PNG Format}]{media/image13.png}
+
+Cơ sở lý thuyết quan trọng của SQLite là tính đơn giản và gọn nhẹ. Không
+cần cài đặt phức tạp hay chạy dịch vụ nền, SQLite có thể được tích hợp
+trực tiếp vào ứng dụng. Điều này giúp lập trình viên dễ dàng triển khai
+cơ sở dữ liệu mà không cần quản lý server riêng biệt.
+
+SQLite cũng phổ biến khái niệm file-based database. Toàn bộ dữ liệu
+(bảng, chỉ mục, trigger\ldots) được lưu trong một file .sqlite hoặc .db.
+Việc sao lưu, di chuyển hay chia sẻ cơ sở dữ liệu chỉ đơn giản là copy
+file này.
+
+Ngoài ra, SQLite vẫn tuân thủ chuẩn SQL-92, hỗ trợ đầy đủ các câu lệnh
+SQL như SELECT, INSERT, UPDATE, DELETE, cùng với các tính năng như
+transaction, foreign key, và indexing. Mặc dù không mạnh mẽ bằng các hệ
+quản trị lớn trong xử lý dữ liệu khổng lồ, SQLite lại cực kỳ hiệu quả
+cho ứng dụng vừa và nhỏ, hoặc các hệ thống nhúng (embedded systems).
+
+\begin{itemize}
+\item
+  Ưu điểm
+
+  \begin{itemize}
+  \item
+    Gọn nhẹ: Không cần cài đặt phức tạp, chỉ cần một file duy nhất.
+  \item
+    Nhanh chóng: Tối ưu cho ứng dụng có lượng dữ liệu vừa phải.
+  \item
+    Dễ tích hợp: Phù hợp cho ứng dụng desktop, mobile, IoT.
+  \item
+    Đa nền tảng: Hoạt động trên hầu hết hệ điều hành.
+  \end{itemize}
+\item
+  Hạn chế
+
+  \begin{itemize}
+  \item
+    Không phù hợp cho hệ thống phân tán hoặc dữ liệu cực lớn.
+  \item
+    Thiếu các tính năng nâng cao như replication, clustering.
+
+    \begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \item
+      \protect\phantomsection\label{_Toc215923999}{}\textbf{Prisma ORM
+      (Object-Relational Mapping)}
+    \end{enumerate}
+  \end{itemize}
+\end{itemize}
+
+Prisma là một ORM (Object-Relational Mapping) hiện đại dành cho Node.js
+và TypeScript, giúp lập trình viên tương tác với cơ sở dữ liệu một cách
+trực quan, an toàn và hiệu quả. Khác với việc viết truy vấn SQL thủ
+công, Prisma tiếp cận theo hướng type-safe và declarative, cho phép định
+nghĩa mô hình dữ liệu trong file schema, sau đó tự động sinh ra client
+để thao tác với database.
+
+\includegraphics[width=1.19167in,height=1.19167in,alt={Prisma Orm color icon in PNG, SVG}]{media/image14.jpeg}
+
+Cơ sở lý thuyết quan trọng của Prisma là Prisma Schema. Đây là file
+trung tâm (schema.prisma) nơi lập trình viên định nghĩa các bảng
+(model), quan hệ (relation), và cấu hình kết nối cơ sở dữ liệu. Từ
+schema này, Prisma sẽ sinh ra Prisma Client -- một thư viện tự động, cho
+phép gọi hàm như prisma.user.findMany() thay vì viết câu lệnh SQL phức
+tạp.
+
+Prisma cũng phổ biến khái niệm type-safety. Vì Prisma được tích hợp chặt
+chẽ với TypeScript, mọi truy vấn đều được kiểm tra kiểu dữ liệu ngay
+trong quá trình viết code. Điều này giúp giảm thiểu lỗi runtime, tăng độ
+tin cậy và năng suất phát triển.
+
+Ngoài ra, Prisma hỗ trợ Migration System để quản lý thay đổi cấu trúc cơ
+sở dữ liệu. Khi cập nhật schema, Prisma có thể tự động tạo migration
+script, đảm bảo database luôn đồng bộ với mô hình dữ liệu trong code.
+
+\begin{itemize}
+\item
+  Ưu điểm
+
+  \begin{itemize}
+  \item
+    Type-safe: Tích hợp với TypeScript, giảm thiểu lỗi khi truy vấn dữ
+    liệu.
+  \item
+    Dễ sử dụng: API trực quan, dễ đọc, thay thế cho SQL phức tạp.
+  \item
+    Hỗ trợ nhiều DB: Tương thích với PostgreSQL, MySQL, SQLite,
+    MongoDB\ldots{}
+  \item
+    Migration tiện lợi: Quản lý thay đổi schema dễ dàng.
+  \item
+    Hiện đại: Thiết kế phù hợp với hệ sinh thái JavaScript/TypeScript.
+  \end{itemize}
+\item
+  Hạn chế
+
+  \begin{itemize}
+  \item
+    Phụ thuộc vào hệ sinh thái Node.js/TypeScript.
+  \item
+    Không phù hợp cho những dự án cần tối ưu truy vấn SQL phức tạp ở mức
+    thấp.
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924000}{}\textbf{Trí tuệ nhân
+    tạo và Mô hình ngôn ngữ lớn (LLM)}
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924001}{}\textbf{Mô hình
+      Generative AI (Google Gemini)}
+    \end{enumerate}
+  \end{enumerate}
+\end{itemize}
+
+Google Gemini là mô hình Generative AI thế hệ mới của Google DeepMind,
+được thiết kế để xử lý đa phương thức (multimodal) -- nghĩa là có khả
+năng hiểu và tạo nội dung từ văn bản, hình ảnh, âm thanh, và thậm chí cả
+mã nguồn. Đây là bước tiến lớn trong việc xây dựng trí tuệ nhân tạo toàn
+diện, vượt xa các mô hình chỉ dựa trên văn bản
+
+\includegraphics[width=1.8in,height=0.4067in,alt={A black background with a black square AI-generated content may be incorrect.}]{media/image15.png}
+
+Gemini là dòng mô hình AI tạo sinh (Generative AI) của Google, kế thừa
+từ Bard và phát triển bởi Google DeepMind.
+
+Nó được thiết kế để trở thành AI đa năng, có thể hỗ trợ viết, lập kế
+hoạch, phân tích dữ liệu, sáng tạo nội dung, và tương tác tự nhiên với
+người dùng.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924002}{}\textbf{Kỹ thuật RAG
+  (Retrieval-Augêmnted Generation)}
+\end{enumerate}
+
+RAG (Retrieval-Augmented Generation) là một kỹ thuật trong lĩnh vực
+Generative AI, kết hợp giữa khả năng tìm kiếm thông tin (retrieval) và
+khả năng sinh ngôn ngữ tự nhiên (generation). Khác với mô hình ngôn ngữ
+truyền thống vốn chỉ dựa vào dữ liệu đã được huấn luyện, RAG tiếp cận
+theo hướng bổ sung kiến thức từ nguồn dữ liệu bên ngoài, giúp câu trả
+lời chính xác, cập nhật và giàu ngữ cảnh hơn.
+
+\includegraphics[width=1.86667in,height=1.86667in,alt={What is Retrieval-Augmented Generation (RAG)? \textbar{} Google Cloud}]{media/image16.png}
+
+Cơ sở lý thuyết quan trọng của RAG là sự kết hợp hai thành phần:
+
+\begin{itemize}
+\item
+  Retrieval (Truy xuất): Khi nhận câu hỏi từ người dùng, hệ thống sẽ tìm
+  kiếm thông tin liên quan từ cơ sở dữ liệu, tài liệu, hoặc kho tri thức
+  bên ngoài.
+\item
+  Generation (Sinh ngôn ngữ): Sau khi có thông tin, mô hình ngôn ngữ sẽ
+  tổng hợp và diễn đạt lại thành câu trả lời tự nhiên, mạch lạc, dễ
+  hiểu.
+\end{itemize}
+
+RAG cũng phổ biến khái niệm augmenting knowledge tức là tăng cường kiến
+thức cho mô hình. Thay vì chỉ dựa vào dữ liệu huấn luyện tĩnh (có thể
+lỗi thời), RAG cho phép mô hình truy cập thông tin mới nhất, đảm bảo câu
+trả lời luôn cập nhật và phù hợp với ngữ cảnh thực tế.
+
+Ví dụ: Khi người dùng hỏi về ``thông tin vé, giờ mở cửa'', một mô hình
+ngôn ngữ thuần túy có thể không biết. Nhưng với RAG, hệ thống sẽ truy
+xuất dữ liệu từ nguồn tin tức, sau đó sinh câu trả lời chính xác và tự
+nhiên.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924003}{}\textbf{Lý thuyết bài
+  toán xếp lịch (Scheduling)}
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\phantomsection\label{_Toc215924004}{}\textbf{Bài toán thỏa
+    mãn ràng buộc (CSP)}
+  \end{enumerate}
+\end{enumerate}
+
+Bài toán thỏa mãn ràng buộc (CSP -- Constraint Satisfaction Problem) là
+một mô hình toán học trong trí tuệ nhân tạo và khoa học máy tính, dùng
+để biểu diễn và giải quyết các vấn đề có tập biến (variables) và tập
+ràng buộc (constraints). Khác với cách giải quyết tuần tự hoặc
+brute-force, CSP tiếp cận theo hướng khai thác cấu trúc ràng buộc để thu
+hẹp không gian tìm kiếm, từ đó tìm ra nghiệm hợp lệ một cách hiệu quả.
+
+Cơ sở lý thuyết quan trọng của CSP là biểu diễn vấn đề bằng ba thành
+phần chính:
+
+\begin{itemize}
+\item
+  Tập biến (Variables): Các đại lượng cần tìm giá trị (ví dụ: màu của
+  các vùng trên bản đồ, thời gian cho các lớp học).
+\item
+  Miền giá trị (Domains): Tập hợp các giá trị có thể gán cho mỗi biến
+  (ví dụ: \{Đỏ, Xanh, Vàng\} cho bài toán tô màu bản đồ).
+\item
+  Tập ràng buộc (Constraints): Các điều kiện mà nghiệm phải thỏa mãn (ví
+  dụ: hai vùng kề nhau không được cùng màu).
+\end{itemize}
+
+CSP cũng phổ biến khái niệm tìm kiếm có ràng buộc (Constraint-based
+search). Thay vì thử tất cả khả năng, thuật toán sẽ loại bỏ các giá trị
+không hợp lệ ngay từ đầu (forward checking, arc consistency), giúp giảm
+đáng kể số lượng trạng thái cần xét.
+
+Ví dụ điển hình của CSP:
+
+\begin{itemize}
+\item
+  Ràng buộc thời gian (Time Windows): Địa điểm phải mở cửa trong giờ
+  tham quan.
+\item
+  Ràng buộc loại hình (Category Constraints): Buổi trưa/tối bắt buộc là
+  Ăn uống (FOOD), Sáng/Chiều là Tham quan (ATTRACTION/BEACH).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924005}{}\textbf{Giải thuật
+    Heuristic (Heuristic Algorithm)}
+  \end{enumerate}
+\end{itemize}
+
+Giải thuật Heuristic (Heuristic Algorithm) là một phương pháp giải quyết
+vấn đề dựa trên kinh nghiệm, quy tắc phỏng đoán hoặc chiến lược gần
+đúng, thay vì tìm kiếm lời giải tối ưu tuyệt đối. Khác với các giải
+thuật chính xác (exact algorithms) vốn đảm bảo tìm ra nghiệm tối ưu
+nhưng thường tốn kém thời gian, heuristic tiếp cận theo hướng ``thực
+dụng'' -- chấp nhận lời giải tốt đủ nhanh trong những bài toán phức tạp.
+
+Cơ sở lý thuyết quan trọng của heuristic là nguyên tắc phỏng đoán (rule
+of thumb). Thay vì duyệt toàn bộ không gian tìm kiếm, heuristic sử dụng
+các quy tắc hoặc chiến lược để ưu tiên những hướng đi có khả năng dẫn
+đến lời giải tốt. Điều này giúp giảm đáng kể chi phí tính toán, đặc biệt
+trong các bài toán NP-hard (như tối ưu hóa, tìm đường, lập lịch).
+
+Heuristic cũng phổ biến khái niệm tìm kiếm gần đúng (approximate
+search). Ví dụ, trong bài toán tìm đường, thay vì duyệt toàn bộ đồ thị,
+heuristic có thể dựa vào khoảng cách ước lượng (như Euclidean distance)
+để hướng dẫn quá trình tìm kiếm.
+
+Do không gian tìm kiếm phương án tối ưu là quá lớn, em sử dụng phương
+pháp Heuristic (dựa trên kinh nghiệm) thông qua thuật toán tham lam
+(Greedy).
+
+Tại mỗi bước (mỗi khung giờ), thuật toán sẽ chọn ngẫu nhiên một ứng viên
+tốt nhất thỏa mãn các ràng buộc hiện tại mà không cần quay lui
+(Backtracking). Cách tiếp cận này tuy đơn giản nhưng đảm bảo tốc độ phản
+hồi nhanh và kết quả luôn khả thi.
+
+\newpage
+\section{CHƯƠNG 2: PHÂN TÍCH VÀ THIẾT KẾ
+WEB}\label{chux1b0ux1a1ng-2-phuxe2n-tuxedch-vuxe0-thiux1ebft-kux1ebf-web}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924007}{}\textbf{Phân tích Tác
+  nhân hệ thống (System Actors Analysis)}
+\end{enumerate}
+
+Trong kỹ nghệ phần mềm, bước đầu tiên của thiết kế hệ thống là xác định
+chính xác "ai" sẽ tương tác với phần mềm. Đối với hệ thống Dana Travel,
+việc phân tích tác nhân không chỉ dừng lại ở việc định danh
+(Guest/Admin) mà phải đi sâu vào đặc điểm hành vi để thiết kế cơ chế bảo
+mật và trải nghiệm tương ứng. Đặc tả yêu cầu hệ thống
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924008}{}\textbf{Tác nhân: Khách
+  du lịch vãng lai (Guest User)}
+\end{enumerate}
+
+Đây là đối tượng sử dụng chính, chiếm đa số lưu lượng truy cập của hệ
+thống.
+
+\begin{itemize}
+\item
+  Đặc điểm kỹ thuật:
+
+  \begin{itemize}
+  \item
+    Trạng thái phiên (Session State): Stateless (Phi trạng thái). Hệ
+    thống không duy trì kết nối bền vững (Persistent Connection) với
+    Guest. Mọi dữ liệu về phiên làm việc của họ (lịch trình đang tạo dở,
+    lịch sử chat) được lưu trữ hoàn toàn tại phía Client (Trình duyệt)
+    thông qua localStorage hoặc sessionStorage.
+  \item
+    Quyền hạn truy cập (Access Control): Guest có quyền đọc (READ) dữ
+    liệu công khai từ API /api/locations và quyền ghi (WRITE) hạn chế
+    vào các endpoint xử lý logic như /api/itinerary/generate hay
+    /api/chat. Họ tuyệt đối không có quyền truy cập vào các API quản trị
+    (/api/admin/*).
+  \end{itemize}
+\item
+  Hành vi tương tác (Interaction Behavior):
+
+  \begin{itemize}
+  \item
+    Guest thường có xu hướng thoát trang ngay lập tức nếu gặp rào cản
+    đăng nhập. Do đó, quyết định thiết kế quan trọng ở đây là
+    "Anonymous-First" (Ẩn danh trước tiên). Hệ thống chấp nhận đánh đổi
+    việc không thu thập được email người dùng để đổi lấy tỷ lệ chuyển
+    đổi (Conversion Rate) cao hơn cho chức năng tạo lịch trình.
+
+    \begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \item
+      \protect\phantomsection\label{_Toc215924009}{}\textbf{Tác nhân:
+      Quản trị viên hệ thống (System Administrator)}
+    \end{enumerate}
+  \end{itemize}
+\end{itemize}
+
+Đây là nhóm tác nhân nội bộ, chịu trách nhiệm duy trì tính đúng đắn của
+dữ liệu.
+
+\begin{itemize}
+\item
+  Đặc điểm kỹ thuật:
+
+  \begin{itemize}
+  \item
+    Cơ chế xác thực (Authentication): Bắt buộc phải thông qua quy trình
+    đăng nhập bảo mật. Hệ thống sử dụng cơ chế Token-based (JWT hoặc
+    Session Cookie) để định danh Admin trong mỗi request gửi lên Server.
+  \item
+    Phân quyền (Authorization): Admin có toàn quyền (FULL ACCESS) trên
+    các bảng dữ liệu Location, Knowledge, SystemConfig.
+  \end{itemize}
+\item
+  Trách nhiệm vận hành:
+
+  \begin{itemize}
+  \item
+    Admin không chỉ nhập liệu mà còn đóng vai trò "Huấn luyện viên AI".
+    Thông qua việc cập nhật bảng Knowledge, Admin gián tiếp điều chỉnh
+    câu trả lời của Chatbot mà không cần can thiệp vào mã nguồn
+    (Codebase).
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924010}{}\textbf{Xây dựng Chân
+    dung người dùng (User Personas \& Algorithm Mapping)}
+  \end{enumerate}
+\end{itemize}
+
+Để thuật toán xếp lịch hoạt động hiệu quả, hệ thống không thể đối xử với
+mọi người dùng như nhau. Em đã mô hình hóa 3 chân dung người dùng điển
+hình. Các chân dung này không chỉ là lý thuyết marketing mà được ánh xạ
+trực tiếp vào các tham số lọc của thuật toán generateDayScheduleStrict.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924011}{}\textbf{Persona A: "Sinh
+  viên du lịch bụi" (The Budget Backpacker)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Mô tả: Nhóm khách trẻ, sinh viên, đi một mình hoặc nhóm bạn nhỏ.
+\item
+  Tham số đầu vào hệ thống:
+
+  \begin{itemize}
+  \item
+    tripType: "SOLO" hoặc "FRIENDS".
+  \item
+    budget: "BUDGET" (Thấp).
+  \end{itemize}
+\item
+  Ánh xạ vào logic thuật toán (Algorithm Mapping):
+
+  \begin{itemize}
+  \item
+    Bộ lọc giá (Price Filter): Khi phát hiện Persona này, thuật toán
+    kích hoạt bộ lọc nghiêm ngặt priceLevel ===
+    \textquotesingle BUDGET\textquotesingle{} (\textless{} 100.000 VNĐ).
+    Các địa điểm có priceLevel ===
+    \textquotesingle LUXURY\textquotesingle{} sẽ bị loại bỏ hoàn toàn
+    khỏi không gian tìm kiếm (Search Space).
+  \item
+    Ưu tiên loại hình: Thuật toán tăng trọng số (Weight) cho các địa
+    điểm có tag street\_food (ẩm thực đường phố) và các địa điểm tham
+    quan miễn phí (Cầu Rồng, Biển Mỹ Khê).
+  \item
+    Chấp nhận rủi ro: Persona này chấp nhận di chuyển xa để tiết kiệm
+    chi phí, do đó bán kính tìm kiếm địa điểm (nếu có tính năng bản đồ)
+    sẽ được mở rộng tối đa.
+
+    \begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \item
+      \protect\phantomsection\label{_Toc215924012}{}\textbf{Persona B:
+      "Gia đình nghỉ dưỡng" (The Family Vacationer)}
+    \end{enumerate}
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Mô tả: Gia đình có trẻ nhỏ hoặc người lớn tuổi, chú trọng sự an toàn
+  và tiện nghi.
+\item
+  Tham số đầu vào hệ thống:
+
+  \begin{itemize}
+  \item
+    tripType: "FAMILY".
+  \item
+    budget: "MODERATE" hoặc "LUXURY".
+  \end{itemize}
+\item
+  Ánh xạ vào logic thuật toán:
+
+  \begin{itemize}
+  \item
+    Bộ lọc an toàn (Safety Filter): Thuật toán sẽ kiểm tra thẻ tag
+    family\_friendly. Các địa điểm có tính chất mạo hiểm (leo núi,
+    trekking) hoặc ồn ào (bar, pub) sẽ bị loại bỏ.
+  \item
+    Mật độ lịch trình (Density Control): Đối với nhóm FAMILY, thuật toán
+    giới hạn số lượng địa điểm tối đa trong một buổi là 2 địa điểm (thay
+    vì 3-4 như nhóm sinh viên) để đảm bảo sức khỏe cho thành viên đoàn.
+  \item
+    Ưu tiên tiện ích: Ưu tiên chọn các nhà hàng có không gian rộng, có
+    ghế trẻ em (dựa trên mô tả trong DB).
+
+    \begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \item
+      \protect\phantomsection\label{_Toc215924013}{}\textbf{Persona C:
+      "Cặp đôi lãng mạn" (The Honeymooners)}
+    \end{enumerate}
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Mô tả: Các cặp đôi đi trăng mật hoặc kỷ niệm, sẵn sàng chi trả cho
+  trải nghiệm cảm xúc.
+\item
+  Tham số đầu vào hệ thống:
+
+  \begin{itemize}
+  \item
+    tripType: "COUPLE".
+  \item
+    budget: "MODERATE" hoặc "LUXURY".
+  \end{itemize}
+\item
+  Ánh xạ vào logic thuật toán:
+
+  \begin{itemize}
+  \item
+    Bộ lọc cảm xúc (Vibe Filter): Thuật toán ưu tiên tìm kiếm các từ
+    khóa romantic, view\_dep, private trong trường tags hoặc description
+    của địa điểm.
+  \item
+    Sắp xếp thời gian: Bữa tối (Dinner) của nhóm này sẽ luôn được ưu
+    tiên chọn các nhà hàng ven sông hoặc ven biển, và khung giờ buổi tối
+    sẽ gợi ý các hoạt động nhẹ nhàng như "Du thuyền sông Hàn" hoặc "Cafe
+    Acoustic".
+  \end{itemize}
+\end{itemize}
+
+Việc phân định rạch ròi các Persona này giúp hệ thống biến một input đơn
+giản (Loại nhóm) thành một tập hợp các quy tắc logic phức tạp, từ đó
+sinh ra các lịch trình mang tính cá nhân hóa cao (Personalization),
+tránh tình trạng "râu ông nọ cắm cằm bà kia".
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924014}{}\textbf{Đặc tả chi tiết
+  yêu cầu chức năng} \textbf{: Lập lịch trình tự động (Automated
+  Itinerary Generation)}
+\end{enumerate}
+
+Đây là chức năng cốt lõi (Core Feature), định hình giá trị của sản phẩm.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924015}{}\textbf{Dữ liệu đầu vào
+  (Input)}
+\end{enumerate}
+
+Người dùng cung cấp một tập hợp các tham số ràng buộc (C) thông qua Form
+giao diện:
+
+\begin{itemize}
+\item
+  D (Duration): Số nguyên, \(1 \leq D \leq 7\). (Giới hạn 7 ngày để đảm
+  bảo hiệu năng tính toán).
+\item
+  T (Trip Type): Enum \{SOLO, COUPLE, FAMILY, FRIENDS\}.
+\item
+  B (Budget): Enum \{BUDGET, MODERATE, LUXURY\}.
+\item
+  I (Interests - Tùy chọn): Mảng String \{culture, food, nature, ...\}.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924016}{}\textbf{Quy trình xử
+    lý (Process)}
+  \end{enumerate}
+\end{itemize}
+
+Hệ thống thực hiện quy trình xử lý tuần tự qua 4 bước tại Backend
+
+Bước 1 - Tiền xử lý (Pre-processing): Controller nhận Request, validate
+dữ liệu (đảm bảo số ngày không âm, budget hợp lệ).
+
+Bước 2 - Truy vấn dữ liệu thô (Raw Data Retrieval): Service gọi xuống
+Database (Prisma) để lấy toàn bộ danh sách địa điểm đang hoạt động
+(status = \textquotesingle ACTIVE\textquotesingle). Lưu ý: Tại bước này
+chưa lọc kỹ, chỉ lấy dữ liệu thô lên RAM.
+
+Bước 3 - Lọc và Sắp xếp (Filtering \& Scheduling): Đây là bước chạy
+thuật toán generateDayScheduleStrict.
+
+\begin{itemize}
+\item
+  Hệ thống khởi tạo một mảng rỗng ItineraryResult.
+\item
+  Vòng lặp chạy từ Day 1 đến Day D.
+\item
+  Trong mỗi ngày, chạy tiếp vòng lặp qua 7 pha (Sáng/Trưa/Chiều/Tối...).
+  Tại mỗi pha, áp dụng các luật logic (như đã phân tích ở Persona) để
+  chọn ra ứng viên tốt nhất.
+\item
+  Cơ chế "Backtracking" nhẹ: Nếu một ngày không tìm được địa điểm ăn
+  trưa, hệ thống sẽ thử nới lỏng điều kiện ngân sách để tìm lại.
+\end{itemize}
+
+Bước 4 - Đóng gói (Packaging): Kết quả được format lại theo cấu trúc
+JSON chuẩn, kèm theo các thông tin bổ trợ (tổng chi phí ước tính, tổng
+số địa điểm).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924017}{}\textbf{Dữ liệu đầu ra
+  (Output)}
+\end{enumerate}
+
+Một đối tượng JSON có cấu trúc phân cấp:
+
+\{
+
+~ "tripDetails": \{ "duration": 3, "type": "COUPLE" \},
+
+~ "schedule": {[}
+
+~ ~ \{
+
+~ ~ ~ "day": 1,
+
+~ ~ ~ "activities": {[}
+
+~ ~ ~ ~ \{ "time": "08:00", "place": "Biển Mỹ Khê", "type": "BEACH" \},
+
+~ ~ ~ ~ \{ "time": "12:00", "place": "Bánh tráng cuốn thịt heo", "type":
+"FOOD" \}
+
+~ ~ ~ {]}
+
+~ ~ \},
+
+~ ~ ...
+
+~ {]}
+
+\}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924018}{}\textbf{Đặc tả chức
+  năng: Trợ lý ảo tư vấn (AI Chatbot Consultation)}
+\end{enumerate}
+
+Chức năng này giải quyết nhu cầu tra cứu thông tin phi cấu trúc mà thuật
+toán lập lịch không làm được.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924019}{}\textbf{Dữ liệu đầu vào
+  (Input)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  message: Chuỗi văn bản tự do của người dùng (Ví dụ: "Hôm nay trời mưa
+  thì đi đâu?").
+\item
+  history: Mảng các tin nhắn trước đó (để AI hiểu ngữ cảnh hội thoại).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924020}{}\textbf{Quy trình xử
+    lý (Process) Quy trình áp dụng kỹ thuật RAG (Retrieval Augmented
+    Generation):}
+  \end{enumerate}
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Phân tích ý định (Intent Recognition): Hệ thống quét từ khóa trong câu
+  hỏi. Nếu phát hiện từ khóa liên quan đến địa điểm (ví dụ: "Bà Nà",
+  "Hội An"), hệ thống kích hoạt chế độ "Tra cứu dữ liệu".
+\item
+  Truy xuất ngữ cảnh (Context Retrieval): Hệ thống thực hiện câu lệnh
+  truy vấn LIKE hoặc Full-text Search vào bảng Location và Knowledge.
+  Mục tiêu là tìm ra các đoạn văn bản sự thật (Ground Truth). Ví dụ: Tìm
+  thấy bản ghi "Bà Nà Hills - Giá vé 900k - Mở cửa 7h-22h".
+\item
+  Kỹ thuật Prompt Engineering: Hệ thống ghép câu hỏi của người dùng và
+  dữ liệu vừa tìm được vào một khuôn mẫu (Template):
+\end{enumerate}
+
+\begin{quote}
+"Bạn là trợ lý du lịch Dana Travel. Dữ liệu hệ thống cho biết: {[}Bà Nà
+Hills giá 900k...{]}. Hãy trả lời câu hỏi: {[}Vé Bà Nà bao nhiêu?{]} dựa
+trên dữ liệu trên."
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\item
+  Gọi API (LLM Inference): Gửi Prompt đã ghép sang Google Gemini API và
+  chờ phản hồi.
+\item
+  Hậu xử lý (Post-processing): Nhận văn bản trả về, lọc bỏ các ký tự lạ
+  (nếu có) và lưu vào lịch sử chat.
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\phantomsection\label{_Toc215924021}{}\textbf{Dữ liệu đầu ra
+    (Output)}
+  \end{enumerate}
+\end{enumerate}
+
+Chuỗi văn bản trả lời tự nhiên, chính xác, có trích dẫn số liệu từ
+Database (nếu có)\textbf{\hfill\break
+}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924022}{}\textbf{Đặc tả chức
+  năng: Quản trị dữ liệu (Data Management)}
+\end{enumerate}
+
+Chức năng dành riêng cho Admin để duy trì hệ thống.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924023}{}\textbf{Quản lý Địa điểm
+  (CRUD Locations)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Input: Form nhập liệu gồm Tên, Mô tả, Giá, Giờ mở cửa, Ảnh, Tọa độ.
+\item
+  Process:
+\end{itemize}
+
+\begin{itemize}
+\item
+  Validate dữ liệu: Giờ mở cửa phải nhỏ hơn Giờ đóng cửa, Giá tiền không
+  được âm.
+\item
+  Lưu vào Database thông qua Prisma create hoặc update.
+\end{itemize}
+
+\begin{itemize}
+\item
+  Output: Thông báo thành công/thất bại và cập nhật danh sách hiển thị
+  ngay lập tức.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924024}{}\textbf{Quản lý Tri
+    thức (Knowledge Base Management)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Mục tiêu: Cung cấp "não bộ" cho AI.
+\item
+  Cơ chế: Admin nhập các đoạn văn bản (Text Chunks) về các chủ đề chung
+  (Thời tiết, Mẹo vặt, Văn hóa). Khi AI gặp câu hỏi không tìm thấy địa
+  điểm cụ thể, nó sẽ dùng dữ liệu từ bảng này để trả lời. Ví dụ: Dữ liệu
+  "Tháng 10-12 là mùa mưa bão" sẽ giúp AI trả lời câu hỏi "Tháng 11 đi
+  Đà Nẵng có ổn không?".
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924025}{}\textbf{Thống kê và
+    Giám sát (Monitoring)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Hệ thống ghi lại nhật ký (AccessLog) mỗi khi có người dùng tạo lịch
+  trình hoặc chat.
+\item
+  Admin xem được các chỉ số: Số lượng lịch trình được tạo trong ngày,
+  Top địa điểm được gợi ý nhiều nhất. Điều này giúp Admin biết xu hướng
+  du lịch để cập nhật dữ liệu (ví dụ: thấy người dùng hay hỏi về "Cắm
+  trại", Admin sẽ thêm các địa điểm Camping vào DB).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924026}{}\textbf{Hiệu năng
+    (Performance Efficiency)}
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924027}{}\textbf{Thời gian
+      phản hồi (Response Time Latency)}
+    \end{enumerate}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Chỉ tiêu: Hệ thống phải đảm bảo thời gian phản hồi cho chức năng sinh
+  lịch trình (POST /api/itinerary/generate) là dưới 2000ms (2 giây) đối
+  với lịch trình 7 ngày.
+\item
+  Phân tích kỹ thuật: Thuật toán sinh lịch trình hiện tại có độ phức tạp
+  tính toán là \$O(D \textbackslash times P \textbackslash times L)\$,
+  trong đó \$D\$ là số ngày (max 7), \$P\$ là số pha trong ngày (cố định
+  7), và \$L\$ là số lượng địa điểm trong Database
+  (\textasciitilde100-200). Với không gian mẫu nhỏ này, việc xử lý trên
+  Node.js (V8 Engine) chỉ mất khoảng 50-100ms cho việc tính toán CPU.
+\item
+  Yếu tố độ trễ: Phần lớn thời gian trễ sẽ đến từ Network Latency (đường
+  truyền mạng) và Database Query. Để tối ưu, hệ thống sử dụng cơ chế
+  Eager Loading (tải dữ liệu một lần) thay vì Lazy Loading (tải lắt
+  nhắt) khi truy vấn danh sách địa điểm từ SQLite.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924028}{}\textbf{Khả năng chịu
+    tải (Throughput)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Chỉ tiêu: Hệ thống hỗ trợ tối thiểu 50 Concurrent Users (người dùng
+  đồng thời) trên cấu hình phần cứng cơ bản (1 vCPU, 1GB RAM).
+\item
+  Giải pháp: Kiến trúc Node.js đơn luồng (Single-thread) với
+  Non-blocking I/O cho phép xử lý hàng nghìn kết nối đồng thời mà không
+  bị tắc nghẽn (Blocking). Các tác vụ nặng như gọi API Google Gemini
+  được xử lý bất đồng bộ (Asynchronous), giải phóng Event Loop để tiếp
+  nhận request mới ngay lập tức.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924029}{}\textbf{Tính tin cậy
+    và Sẵn sàng (Reliability \& Availability)}
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924030}{}\textbf{Cơ chế hoạt
+      động độc lập (Offline Capability)}
+    \end{enumerate}
+  \end{enumerate}
+\end{itemize}
+
+Mặc dù là Web App, hệ thống được thiết kế để giảm thiểu sự phụ thuộc vào
+dịch vụ bên thứ 3. Nếu API Google Gemini bị lỗi (Downtime) hoặc hết
+quota, chức năng Chatbot sẽ trả về thông báo lỗi thân thiện ("Bot đang
+bận"), nhưng chức năng cốt lõi là Sinh lịch trình vẫn hoạt động bình
+thường 100\% do chạy hoàn toàn bằng logic nội bộ (Rule-based Algorithm)
+trên Server.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924031}{}\textbf{Xử lý lỗi toàn
+  cục (Global Error Handling)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Hệ thống áp dụng mẫu thiết kế (Design Pattern) "Centralized Error
+  Handling". Tất cả các ngoại lệ (Exceptions) không được bắt (Uncaught)
+  trong Controller hay Service đều được chuyển về một Middleware duy
+  nhất là error.handler.middleware.js.
+\item
+  Lợi ích: Đảm bảo Server không bao giờ bị "Crash" (sập) do một lỗi
+  logic nhỏ, đồng thời chuẩn hóa định dạng lỗi trả về cho Frontend (luôn
+  là JSON \{ success: false, message: ... \}), giúp giao diện không bị
+  trắng trang (White Screen of Death).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924032}{}\textbf{An toàn và Bảo
+    mật thông tin (Security)}
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924033}{}\textbf{Kiểm soát
+      truy cập (Access Control)}
+    \end{enumerate}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Phía Guest: Áp dụng nguyên lý "Quyền tối thiểu" (Least Privilege). API
+  dành cho Guest chỉ cho phép phương thức GET trên tài nguyên công khai.
+  Các phương thức POST bị giới hạn rate-limit (ví dụ: 10 request/phút)
+  để chống tấn công DDoS.
+\item
+  Phía Admin: Toàn bộ các route bắt đầu bằng /api/admin/* được bảo vệ
+  bởi middleware adminAuth. Middleware này kiểm tra sự tồn tại và tính
+  hợp lệ của Session Token trong Header của request. Bất kỳ truy cập nào
+  không có Token sẽ bị từ chối với mã lỗi HTTP 401 (Unauthorized).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924034}{}\textbf{Bảo mật dữ
+    liệu nhạy cảm}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Mật khẩu của Admin không bao giờ được lưu dưới dạng văn bản thuần
+  (Plain Text). Hệ thống sử dụng thư viện bcrypt để băm (Hash) mật khẩu
+  kèm theo Salt (muối - chuỗi ngẫu nhiên) trước khi lưu vào Database.
+  Điều này đảm bảo ngay cả khi file Database bị đánh cắp, hacker cũng
+  không thể dịch ngược ra mật khẩu gốc.
+\item
+  Hệ thống sử dụng cơ chế CORS (Cross-Origin Resource Sharing) để chỉ
+  cho phép các tên miền (Domain) tin cậy được gọi API, ngăn chặn các
+  trang web độc hại khác mạo danh người dùng gửi request.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924035}{}\textbf{Khả năng bảo
+    trì và Mở rộng (Maintainability \& Scalability)}
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924036}{}\textbf{Kiến trúc
+      Modular Monolith}
+    \end{enumerate}
+  \end{enumerate}
+\end{itemize}
+
+Mã nguồn được tổ chức theo module (Chat, Itinerary, Location). Mỗi
+module có đầy đủ các tầng Controller-Service-Route riêng biệt. Điều này
+giúp việc bảo trì dễ dàng: khi muốn sửa lỗi Chatbot, lập trình viên chỉ
+cần thao tác trong thư mục src/services/chatbot.service.js mà không sợ
+ảnh hưởng đến logic tạo lịch trình.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924037}{}\textbf{Khả năng mở rộng
+  Database}
+\end{enumerate}
+
+Hiện tại hệ thống dùng SQLite cho sự tiện lợi. Tuy nhiên, nhờ sử dụng
+Prisma ORM làm lớp trừu tượng (Abstraction Layer), việc chuyển đổi sang
+MySQL hay PostgreSQL trong tương lai (khi lượng người dùng tăng lên hàng
+triệu) chỉ đơn giản là thay đổi chuỗi kết nối (Connection String) trong
+file .env mà không cần viết lại bất kỳ dòng code logic nào.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924038}{}\textbf{Quy trình nghiệp
+  vụ Sinh lịch trình du lịch (Itinerary Generation Process)}
+\end{enumerate}
+
+Đây là quy trình phức tạp nhất, nơi "trí tuệ" của hệ thống được thể
+hiện. Quy trình này biến đổi dữ liệu đầu vào thô sơ thành một kế hoạch
+chi tiết.
+
+\begin{itemize}
+\item
+  B1: Tiếp nhận và Validate (Input Validation Layer)
+
+  \begin{itemize}
+  \item
+    Người dùng gửi form \{ duration: 3, budget: "MODERATE" \}.
+  \item
+    Logic kiểm tra:
+
+    \begin{itemize}
+    \item
+      Nếu duration \textless{} 1 hoặc duration \textgreater{} 7
+      -\textgreater{} Trả lỗi 400 (Bad Request).
+    \item
+      Nếu budget không thuộc tập \{BUDGET, MODERATE, LUXURY\}
+      -\textgreater{} Gán mặc định là MODERATE.
+    \end{itemize}
+  \end{itemize}
+\item
+  B2: Khởi tạo không gian tìm kiếm (Search Space Initialization)
+
+  \begin{itemize}
+  \item
+    Hệ thống tải toàn bộ địa điểm có trạng thái ACTIVE vào bộ nhớ.
+  \item
+    Phân loại dữ liệu: Dữ liệu được chia thành các "Bucket" (xô) nhỏ hơn
+    để tối ưu tốc độ truy xuất:
+
+    \begin{itemize}
+    \item
+      foodLocations: Danh sách quán ăn.
+    \item
+      attractionLocations: Danh sách điểm tham quan.
+    \item
+      beachLocations: Danh sách bãi biển.
+    \item
+      coffeeLocations: Danh sách quán cafe/bar.
+    \end{itemize}
+  \end{itemize}
+\item
+  B3: Vòng lặp Heuristic (The Heuristic Loop)
+
+  \begin{itemize}
+  \item
+    Quy trình chạy vòng lặp for (day = 1 to duration). Trong mỗi ngày,
+    hệ thống thực hiện tuần tự 7 bước gán (Assignment Steps).
+  \item
+    Cơ chế Backtracking cục bộ: Tại mỗi bước (ví dụ: Chọn quán ăn trưa),
+    hệ thống thử chọn một địa điểm ngẫu nhiên trong "Bucket" tương ứng.
+
+    \begin{itemize}
+    \item
+      Kiểm tra 1: Quán này đã đi chưa? (Check visitedSet).
+    \item
+      Kiểm tra 2: Quán có mở cửa lúc 12:00 không? (Check openingTime).
+    \item
+      Kiểm tra 3: Giá quán có phù hợp Budget không? (Check priceLevel).
+    \end{itemize}
+  \item
+    Nếu cả 3 kiểm tra đều PASS -\textgreater{} Thêm vào lịch trình
+    -\textgreater{} Đánh dấu đã đi.
+  \item
+    Nếu FAIL -\textgreater{} Thử quán khác. Nếu thử hết danh sách vẫn
+    không được -\textgreater{} Kích hoạt cơ chế Relaxation (Nới lỏng
+    ràng buộc giá) để chọn đại một quán bất kỳ (đảm bảo không bị null).
+  \end{itemize}
+\item
+  B4: Hậu xử lý và Định dạng (Post-processing)
+
+  \begin{itemize}
+  \item
+    Tính toán tổng chi phí ước tính = Tổng averagePrice của tất cả địa
+    điểm đã chọn.
+  \item
+    Gắn thêm các thông tin bổ trợ như hình ảnh, mô tả ngắn vào JSON kết
+    quả.
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924039}{}\textbf{Quy trình
+    nghiệp vụ: Hội thoại thông minh (Conversation Flow)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Luồng dữ liệu (Data Flow Diagram - Level 1):
+\end{itemize}
+
+\includegraphics[width=3.85591in,height=3.38894in,alt={A diagram of a child\textquotesingle s development AI-generated content may be incorrect.}]{media/image17.png}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2102}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4598}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3300}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+\textbf{Pha}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Mô Tả}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\textbf{Dữ Liệu Chuyển}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Tạo Lịch Trình (1-10)} & Người dùng nhập yêu cầu → Frontend →
+API → Service → Database → Tính Toán → Trả Kết Quả & Form JSON, Danh
+sách địa điểm, Lịch trình, Khoảng cách \\
+\textbf{Tương Tác Chat (11-20)} & Người dùng gửi tin nhắn → API →
+Service → Gemini → Lưu Log → Trả Phản Hồi & Tin nhắn văn bản, Phản hồi
+AI, Log chat \\
+\textbf{Lưu Trữ} & Dữ liệu tạm thời lưu trên máy khách, dữ liệu quan
+trọng lưu DB & localStorage, PostgreSQL/SQLite \\
+\end{longtable}
+}
+
+\begin{itemize}
+\item
+  \textbf{Điểm kiểm soát logic (Logic Gate):}
+
+  \begin{itemize}
+  \item
+    Trong quá trình này, có một điểm kiểm soát quan trọng tại bước 3.
+    Nếu Database Query trả về rỗng (tức là người dùng hỏi về một địa
+    điểm lạ hoắc không có trong hệ thống, ví dụ "Tháp Eiffel"), Service
+    sẽ chuyển hướng sang truy vấn bảng Knowledge (Tri thức chung). Nếu
+    bảng Knowledge cũng không có, Service sẽ chèn một chỉ thị vào
+    Prompt: "Dữ liệu không có thông tin này, hãy trả lời khéo léo là bạn
+    chưa được cập nhật dữ liệu về địa điểm đó". Điều này ngăn chặn việc
+    AI tự bịa ra thông tin sai sự thật về một địa điểm không tồn tại.
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924040}{}\textbf{Sơ đồ trạng
+    thái của Địa điểm (Entity State Diagram)}
+  \end{enumerate}
+\end{itemize}
+
+\includegraphics[width=5.20471in,height=3.48364in,alt={A diagram of a diagram AI-generated content may be incorrect.}]{media/image18.png}\textbf{\hfill\break
+}
+
+\textbf{Bảng chuyển đổi trạng thái chi tiết:}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1925}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2294}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2044}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1597}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2141}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Trạng Thái Hiện Tại}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Sự Kiện}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Trạng Thái Tiếp Theo}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Điều Kiện}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Ghi Chú}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Chưa Kich Hoạt & Admin bật (active=true) & KichHoạt & - & Địa điểm sẵn
+sàng sử dụng \\
+Kich Hoạt & Admin chỉnh sửa & ChỉnhSửa & - & Đang cập nhật thông tin \\
+Chỉnh Sửa & Lưu hoàn thành & KichHoạt & Data hợp lệ & Quay về trạng thái
+chính \\
+Kich Hoạt & Tạm dừng hoạt động & TamDừng & Có lý do & Sẽ quay lại \\
+Tam Dừng & Quay lại hoạt động & KichHoạt & - & Xác nhận không còn sự
+cố \\
+Bất Kỳ & Xoá logic & XóaMềm & Quyết định Admin & deleted\_at được ghi
+lại \\
+XóaMềm & Khôi phục & Trạng thái cũ & Admin yêu cầu & deleted\_at =
+null \\
+\end{longtable}
+}
+
+\textbf{\hfill\break
+}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924041}{}\textbf{Kiến trúc tổng
+  thể (High-Level Architecture)}
+\end{enumerate}
+
+Hệ thống được xây dựng dựa trên mô hình Client-Server truyền thống nhưng
+được hiện đại hóa bằng các công nghệ mới nhất.
+
+\includegraphics[width=6.53125in,height=5.34444in,alt={A diagram of a company AI-generated content may be incorrect.}]{media/image19.png}
+
+\begin{itemize}
+\item
+  Tầng Client (Frontend):
+
+  \begin{itemize}
+  \item
+    Được xây dựng dưới dạng Single Page Application (SPA) sử dụng thư
+    viện ReactJS.
+  \item
+    Tầng này chịu trách nhiệm hiển thị giao diện (Presentation) và quản
+    lý trạng thái phiên làm việc (Session State).
+  \item
+    Mã nguồn Frontend được biên dịch và đóng gói bởi Vite, một công cụ
+    build tool thế hệ mới sử dụng ES Modules để tối ưu hóa tốc độ tải
+    trang.
+  \end{itemize}
+\item
+  Tầng Server (Backend):
+
+  \begin{itemize}
+  \item
+    Đóng vai trò là trung tâm xử lý logic (Business Logic Center).
+    Server cung cấp các RESTful API để Client giao tiếp.
+  \item
+    Điểm đặc biệt trong kiến trúc Backend của Dana Travel là sự áp dụng
+    triệt để mô hình Middleware Pipeline của Express.js. Mọi yêu cầu
+    (Request) đi vào hệ thống đều phải tuần tự đi qua các lớp lọc:
+    Logger (Ghi nhật ký) -\textgreater{} CORS (Bảo mật nguồn gốc)
+    -\textgreater{} Body Parser (Phân tích dữ liệu) -\textgreater{}
+    Router (Định tuyến) -\textgreater{} Controller.
+  \end{itemize}
+\item
+  Tầng Dữ liệu (Persistence Layer):
+
+  \begin{itemize}
+  \item
+    Sử dụng SQLite làm động cơ lưu trữ (Storage Engine).
+  \item
+    Sử dụng Prisma ORM làm lớp trừu tượng hóa dữ liệu (Data Abstraction
+    Layer). Thay vì Client hay Server giao tiếp trực tiếp với file .db,
+    mọi thao tác đều phải thông qua Prisma Client để đảm bảo an toàn
+    kiểu dữ liệu (Type Safety).
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924042}{}\textbf{Thiết kế chi
+    tiết kiến trúc Backend (Layered Architecture)}
+  \end{enumerate}
+\end{itemize}
+
+Để tránh tình trạng "Spaghetti Code" (Mã nguồn rối rắm), Backend được tổ
+chức nghiêm ngặt theo mô hình 3 lớp (3-Tier Architecture):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924043}{}\textbf{Lớp Định tuyến
+  và Điều khiển (Controller Layer)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Đây là lớp giao tiếp (Interface Layer). Nhiệm vụ duy nhất của nó là
+  tiếp nhận HTTP Request, giải mã các tham số (req.body, req.query) và
+  thực hiện kiểm tra sơ bộ (Basic Validation).
+\item
+  Ví dụ minh họa: Trong itinerary.controller.js, hàm generateItinerary
+  chỉ kiểm tra xem người dùng có gửi lên duration hay không. Nếu có, nó
+  chuyển quyền xử lý cho Service. Nó tuyệt đối không chứa logic thuật
+  toán xếp lịch.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924044}{}\textbf{Lớp Dịch vụ
+    (Service Layer)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Đây là nơi chứa toàn bộ \textbf{Logic Nghiệp vụ (Business Logic)}.
+\item
+  Các thuật toán phức tạp như generateDayScheduleStrict (xếp lịch 7 pha)
+  hay logic gọi AI RAG đều nằm ở đây.
+\item
+  Lớp Service hoạt động độc lập với giao thức HTTP. Tức là, nếu sau này
+  chuyển từ Web sang Mobile App hay CLI (Command Line Interface), logic
+  trong Service vẫn tái sử dụng được 100\% mà không cần sửa đổi.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924045}{}\textbf{Lớp Truy cập
+    Dữ liệu (Data Access Layer / Repository)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Trong đồ án này, Prisma Client đóng vai trò là lớp Repository.
+\item
+  Nó ẩn đi sự phức tạp của câu lệnh SQL. Thay vì viết SELECT * FROM
+  Location WHERE type = \textquotesingle FOOD\textquotesingle, lập trình
+  viên chỉ cần gọi prisma.location.findMany(\{ where: \{ type:
+  \textquotesingle FOOD\textquotesingle{} \} \}). Điều này giúp code dễ
+  đọc hơn và tránh lỗi SQL Injection.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924046}{}\textbf{Thiết kế Kiến
+    trúc Frontend (Component-Based Architecture)}
+  \end{enumerate}
+\end{itemize}
+
+Phía Client được thiết kế theo tư duy "Feature-based Folder Structure"
+(Cấu trúc thư mục theo tính năng), thay vì chia theo loại file (không
+gom tất cả css vào 1 chỗ, js vào 1 chỗ).
+
+\begin{itemize}
+\item
+  Cấu trúc thư mục:
+
+  \begin{itemize}
+  \item
+    src/features/itinerary: Chứa tất cả code liên quan đến lịch trình
+    (Component hiển thị thẻ, Logic gọi API tạo lịch).
+  \item
+    src/features/bot: Chứa giao diện chat và logic xử lý tin nhắn.
+  \item
+    src/features/trip-form: Chứa form nhập liệu.
+  \end{itemize}
+\item
+  Lợi ích: Kiến trúc này giúp dự án dễ dàng mở rộng (Scalable). Khi muốn
+  thêm tính năng mới (ví dụ: Booking), chỉ cần tạo thư mục
+  src/features/booking mà không làm ảnh hưởng đến các phần khác.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924047}{}\textbf{Chiến lược Mô
+    hình hóa Dữ liệu}
+  \end{enumerate}
+\end{itemize}
+
+Hệ thống sử dụng chiến lược "Code-First" thông qua Prisma ORM. Thay vì
+tạo bảng thủ công bằng lệnh SQL CREATE TABLE, em định nghĩa cấu trúc dữ
+liệu bằng ngôn ngữ Schema của Prisma (schema.prisma). Cách tiếp cận này
+giúp quản lý phiên bản cơ sở dữ liệu (Database Version Control) dễ dàng
+thông qua các file Migration.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924048}{}\textbf{Đặc tả chi tiết
+  các Bảng dữ liệu (Table Specifications)}
+\end{enumerate}
+
+Dưới đây là phân tích sâu về các quyết định thiết kế cho từng bảng:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924049}{}\textbf{Bảng Location
+  (Địa điểm) Đây là bảng trung tâm (Core Table).}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  id (String - UUID): Sử dụng UUID giúp che giấu tổng số lượng bản ghi
+  của hệ thống, tăng tính bảo mật so với ID tự tăng.
+\item
+  type (Enum LocationType):
+
+  \begin{itemize}
+  \item
+    Quyết định thiết kế: Sử dụng Enum thay vì String.
+  \item
+    Lý do: Giới hạn miền giá trị chỉ trong các loại ATTRACTION, FOOD,
+    BEACH, ACCOMMODATION, ACTIVITY. Điều này ngăn chặn việc nhập liệu
+    sai (ví dụ: nhập "FOD" thay vì "FOOD") làm hỏng thuật toán lọc.
+  \end{itemize}
+\item
+  priceLevel (Enum PriceLevel):
+
+  \begin{itemize}
+  \item
+    Ý nghĩa: Phân loại mức giá thành BUDGET (Rẻ), MODERATE (Vừa), LUXURY
+    (Đắt).
+  \item
+    Ứng dụng: Thuật toán xếp lịch sử dụng trường này để khớp với ngân
+    sách người dùng chọn.
+  \end{itemize}
+\item
+  averagePrice (Int): Lưu giá trị số học để tính tổng chi phí chuyến đi.
+\item
+  openingTime/closingTime (String): Lưu dưới dạng chuỗi "HH:mm". Hệ
+  thống có một module tiện ích time.utils.js để chuyển đổi chuỗi này
+  thành số phút trong ngày (Minutes from midnight) phục vụ việc so sánh
+  logic (ví dụ: 08:00 = 480 phút).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924050}{}\textbf{Bảng Knowledge
+    (Tri thức AI)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Mục đích: Lưu trữ dữ liệu phi cấu trúc (Unstructured Data) để phục vụ
+  Chatbot.
+\item
+  topic (String): Chủ đề tri thức (Ví dụ: "Weather", "Culture").
+\item
+  content (String): Nội dung văn bản dài (Text Blob).
+\item
+  Cơ chế hoạt động: Khi người dùng hỏi một câu không liên quan đến địa
+  điểm cụ thể (ví dụ: "Đà Nẵng mùa này có mưa không?"), hệ thống sẽ thực
+  hiện Full-Text Search trên trường content của bảng này để tìm câu trả
+  lời.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924051}{}\textbf{Bảng Admin
+    (Quản trị viên)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  username (String): Tên đăng nhập (Unique).
+\item
+  passwordHash (String): Mật khẩu đã mã hóa.
+\item
+  Bảo mật: Tuyệt đối không lưu mật khẩu thô. Hệ thống sử dụng thuật toán
+  băm (Hashing) một chiều. Khi Admin đăng nhập, mật khẩu nhập vào sẽ
+  được băm lại và so sánh với chuỗi hash trong DB.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924052}{}\textbf{Bảng AccessLog
+    (Nhật ký truy cập)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  endpoint (String): Đường dẫn API được gọi.
+\item
+  method (String): GET/POST.
+\item
+  timestamp (DateTime): Thời điểm gọi.
+\item
+  Chiến lược ghi log: Bảng này được thiết kế độc lập, không có khóa
+  ngoại (Foreign Key
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924053}{}\textbf{Chiến lược Tối
+    ưu hóa Hiệu năng Cơ sở dữ liệu (Database Performance Strategy)}
+  \end{enumerate}
+\end{itemize}
+
+Vì hệ thống Dana Travel có đặc thù là Read-Heavy (Tác vụ đọc chiếm 90\%
+so với tác vụ ghi), đặc biệt là khi thuật toán xếp lịch phải quét qua
+bảng Location liên tục, việc tối ưu hóa truy vấn là bắt buộc để đạt chỉ
+tiêu phản hồi dưới 2 giây.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924054}{}\textbf{Chiến lược đánh
+  chỉ mục (Indexing Strategy)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Mặc dù SQLite là cơ sở dữ liệu dạng file, việc đánh chỉ mục vẫn mang
+  lại hiệu quả vượt trội. Dựa trên tần suất truy vấn của thuật toán
+  generate Day Schedule Strict, hệ thống thiết kế các chỉ mục (Index)
+  trên các trường sau:
+
+  \begin{itemize}
+  \item
+    Index trên type: Do 100\% các truy vấn lọc địa điểm đều bắt đầu bằng
+    điều kiện WHERE type = ... (Ví dụ: Lấy danh sách quán ăn, lấy danh
+    sách khách sạn).
+  \item
+    Index trên priceLevel: Phục vụ cho các bộ lọc ngân sách.
+  \end{itemize}
+\item
+  Việc này giúp độ phức tạp tìm kiếm giảm từ \$O(N)\$ (Quét toàn bộ bảng
+  - Full Table Scan) xuống còn \$O(log N)\$ (Tìm kiếm nhị phân trên cây
+  B-Tree).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924055}{}\textbf{Quản lý kết
+    nối (Connection Management)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Hệ thống sử dụng mẫu thiết kế \textbf{Singleton} cho PrismaClient
+  trong file src/utils/prisma.js.
+\item
+  Cơ chế: Thay vì khởi tạo một kết nối mới đến file dev.db mỗi khi có
+  request (gây tốn tài nguyên I/O), hệ thống chỉ khởi tạo một thể hiện
+  (Instance) duy nhất và tái sử dụng nó cho toàn bộ vòng đời ứng dụng.
+  Điều này ngăn chặn lỗi "Too many open files" khi lượng người dùng tăng
+  cao.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924056}{}\textbf{Tối ưu hóa
+    truy vấn dữ liệu (Query Optimization)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Selective Projection (Chọn lọc trường): Khi thuật toán sinh lịch chạy,
+  nó chỉ cần các trường id, name, type, priceLevel, openingTime. Hệ
+  thống cấu hình Prisma chỉ SELECT đúng các cột này, bỏ qua cột
+  description (vốn chứa văn bản dài). Việc này giảm thiểu đáng kể dung
+  lượng dữ liệu truyền từ ổ cứng lên RAM, giúp thuật toán chạy nhanh
+  hơn.
+\item
+  Batch Processing (Xử lý theo lô): Khi cần lấy thông tin chi tiết cho
+  lịch trình 5 ngày (khoảng 15-20 địa điểm), thay vì gọi 20 câu lệnh
+  SELECT riêng lẻ, hệ thống gom ID lại và dùng toán tử IN (SELECT * FROM
+  Location WHERE id IN (...)) để lấy dữ liệu trong một lần truy xuất duy
+  nhất.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924057}{}\textbf{Định nghĩa bài
+    toán và Không gian tìm kiếm}
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924058}{}\textbf{Mô hình toán
+      học:}
+    \end{enumerate}
+  \end{enumerate}
+\end{itemize}
+
+Bài toán đặt ra là sắp xếp một tập hợp các địa điểm
+\(L\  = \ \backslash\{ l\_ 1,\ l\_ 2,\ ...,\ l\_ n\backslash\}\) vào các
+khe thời gian S =
+\{\(s\_\{ morning\},\ s\_\{ lunch\},\ s\_\{ afternoon\)\}, ...\} của D
+ngày. Mục tiêu là tìm ra một cấu hình C sao cho tối đa hóa sự hài lòng
+của người dùng dựa trên sở thích (Interests) và ngân sách (Budget), đồng
+thời không vi phạm các ràng buộc cứng.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924059}{}\textbf{Các ràng buộc
+  cứng (Hard Constraints):}
+\end{enumerate}
+
+Thuật toán buộc phải tuân thủ các quy tắc sau, nếu vi phạm, lịch trình
+bị coi là không hợp lệ (Invalid):
+
+\begin{itemize}
+\item
+  C\_\{time\} (Ràng buộc thời gian): Địa điểm l được chọn vào khe \$s\$
+  phải thỏa mãn: \(OpenTime(l)\  \leq Time(s)\  \leq CloseTime(l)\). Ví
+  dụ: Không thể xếp Chợ đêm Sơn Trà (mở 18:00) vào buổi sáng.
+\item
+  C\_\{category\} (Ràng buộc loại hình): Loại hình của địa điểm phải
+  khớp với ngữ nghĩa của khe thời gian.
+  \(Type(l)\  \in \ AllowedTypes(s).\) Ví dụ: Khe LUNCH bắt buộc phải là
+  FOOD.
+\item
+  C\_\{unique\} (Ràng buộc duy nhất): Một địa điểm không được xuất hiện
+  quá 1 lần trong toàn bộ chuyến đi. \(Count(l)\  \leq 1\).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924060}{}\textbf{Thiết kế chi
+    tiết Giải thuật 7 Pha (The 7-Phase Algorithm)}
+  \end{enumerate}
+\end{itemize}
+
+Thay vì sử dụng các thuật toán quay lui (Backtracking) phức tạp có thể
+gây chậm trễ, em thiết kế một quy trình tuyến tính gồm 7 pha xử lý tuần
+tự cho mỗi ngày. Mỗi pha đóng vai trò như một bộ lọc (Filter Pipeline)
+để chọn ra ứng viên tốt nhất.
+
+Dưới đây là phân tích logic chi tiết từng pha dựa trên mã nguồn:
+
+\begin{itemize}
+\item
+  Pha 1: Bữa sáng (Breakfast Selection)
+
+  \begin{itemize}
+  \item
+    Input: Danh sách toàn bộ địa điểm FOOD.
+  \item
+    Logic lọc:
+    location.tags.includes(\textquotesingle breakfast\textquotesingle).
+    Hệ thống ưu tiên chọn các món ăn nước (Bún, Phở, Mì Quảng) thay vì
+    cơm hay hải sản vào buổi sáng.
+  \item
+    Cơ chế Random có trọng số: Nếu người dùng chọn ngân sách BUDGET, các
+    quán ăn vỉa hè sẽ có xác suất được chọn cao hơn.
+  \end{itemize}
+\item
+  Pha 2: Hoạt động chính buổi sáng (Morning Core Activity)
+
+  \begin{itemize}
+  \item
+    Chiến lược Heuristic: "Đi xa trước, về gần sau". Thuật toán ưu tiên
+    chọn các địa điểm tham quan (ATTRACTION) nằm xa trung tâm hoặc các
+    bãi biển (BEACH) vào buổi sáng để tận dụng thời tiết mát mẻ và ánh
+    sáng tốt để chụp ảnh.
+  \item
+    Kiểm tra giờ mở cửa: Hệ thống gọi hàm tiện ích isValidOpenTime(loc,
+    \textquotesingle08:30\textquotesingle) để đảm bảo địa điểm đã mở cửa
+    đón khách.
+  \end{itemize}
+\item
+  Pha 3: Bữa trưa (Lunch)
+
+  \begin{itemize}
+  \item
+    Ràng buộc: Phải là FOOD.
+  \item
+    Kiểm tra trùng lặp: Hệ thống kiểm tra ID quán ăn trưa với ID quán ăn
+    sáng đã chọn ở Pha 1. Nếu trùng, thuật toán sẽ lặp lại bước chọn
+    (Retry) tối đa 3 lần để tìm quán khác.
+  \end{itemize}
+\item
+  Pha 4: Hoạt động chính buổi chiều (Afternoon Core Activity)
+
+  \begin{itemize}
+  \item
+    Bộ nhớ trạng thái (State Memory): Hệ thống duy trì một biến
+    usedLocationIds (kiểu dữ liệu Set) xuyên suốt quá trình sinh lịch.
+    Trước khi chốt địa điểm chiều, thuật toán kiểm tra: if
+    (usedLocationIds.has(candidate.id)) continue;. Điều này đảm bảo dù
+    đi 5 hay 7 ngày, khách cũng không bao giờ bị gợi ý lặp lại một địa
+    điểm.
+  \item
+    Đa dạng hóa: Nếu buổi sáng đã đi Biển, thuật toán sẽ ưu tiên chọn
+    Bảo tàng hoặc Khu vui chơi trong nhà vào buổi chiều để cân bằng trải
+    nghiệm.
+  \end{itemize}
+\item
+  Pha 5: Bữa tối (Dinner)
+
+  \begin{itemize}
+  \item
+    Logic Ngân sách (Budget Logic): Đây là pha nhạy cảm nhất về giá.
+
+    \begin{itemize}
+    \item
+      Nếu Budget == LUXURY: Bộ lọc chỉ giữ lại các nhà hàng có
+      priceLevel == LUXURY.
+    \item
+      Nếu Budget == BUDGET: Bộ lọc tìm các quán BUDGET hoặc MODERATE.
+    \end{itemize}
+  \item
+    Fail-safe: Trong trường hợp không tìm thấy nhà hàng đúng mức giá (ví
+    dụ: khu vực đó toàn nhà hàng đắt đỏ), thuật toán sẽ tự động "hạ
+    chuẩn" hoặc "nâng chuẩn" (Relaxation) để đảm bảo người dùng vẫn có
+    chỗ ăn tối thay vì để trống lịch trình.
+  \end{itemize}
+\item
+  Pha 6: Hoạt động Tối (Evening/Nightlife)
+
+  \begin{itemize}
+  \item
+    Bộ lọc đặc biệt: Thuật toán chỉ xét các địa điểm có loại hình
+    ACTIVITY (Hoạt động) hoặc COFFEE (Quán cafe).
+  \item
+    Logic thời gian: Tự động loại bỏ các địa điểm đóng cửa trước 21:00.
+    Ưu tiên các địa điểm có tag nightlife (như Chợ đêm, Du thuyền, Cầu
+    Rồng).
+  \end{itemize}
+\item
+  Pha 7: Về nghỉ (Return)
+
+  \begin{itemize}
+  \item
+    Kết thúc chu trình xử lý một ngày, cập nhật lại danh sách
+    usedLocationIds và chuyển sang ngày tiếp theo (Day N+1).
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924061}{}\textbf{Cơ chế
+    Fallback và Xử lý ngoại lệ (Fallback Mechanism)}
+  \end{enumerate}
+\end{itemize}
+
+Một điểm yếu của các thuật toán lọc cứng (Strict Filtering) là dễ rơi
+vào trạng thái "Không có kết quả" (Empty Result). Để khắc phục, em cài
+đặt cơ chế Fallback đa tầng:
+
+\begin{itemize}
+\item
+  Tầng 1 (Strict Match): Tìm chính xác theo Type + Price + Tag.
+\item
+  Tầng 2 (Price Relaxation): Nếu Tầng 1 rỗng, bỏ điều kiện Price, chỉ
+  tìm theo Type + Tag. (Chấp nhận ăn đắt hơn hoặc rẻ hơn dự kiến một
+  chút).
+\item
+  Tầng 3 (Tag Relaxation): Nếu Tầng 2 rỗng, bỏ tiếp Tag, chỉ tìm theo
+  Type. (Ví dụ: Không tìm được quán có tag "Lãng mạn" thì chọn quán ăn
+  thường).
+\item
+  Tầng 4 (Popularity Default): Nếu tất cả đều thất bại, hệ thống chọn
+  địa điểm phổ biến nhất trong Database để lấp vào chỗ trống.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924062}{}\textbf{Kiến trúc
+    Module AI (AI Module Architecture)}
+  \end{enumerate}
+\end{itemize}
+
+Module này được tách biệt trong chatbot.service.js và gemini.adapter.js,
+hoạt động theo quy trình 3 bước: Hiểu - Tra cứu - Phản hồi.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924063}{}\textbf{Tầng Adapter
+  (Lớp thích ứng):}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Em sử dụng mẫu thiết kế Adapter (Adapter Pattern) để đóng gói việc
+  giao tiếp với Google Gemini API.
+\item
+  Lợi ích: Nếu sau này muốn chuyển sang sử dụng OpenAI (ChatGPT) hay
+  Claude, em chỉ cần viết lại file openai.adapter.js mà không cần sửa
+  đổi logic nghiệp vụ chính. Điều này đảm bảo tính linh hoạt và khả năng
+  bảo trì lâu dài cho hệ thống.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924064}{}\textbf{Cơ chế RAG
+    (Retrieval Augmented Generation):}
+  \end{enumerate}
+\end{itemize}
+
+Đây là kỹ thuật cốt lõi giúp Chatbot thông minh hơn các bot chat thông
+thường.
+
+\begin{itemize}
+\item
+  Bước 1 - Trích xuất từ khóa (Keyword Extraction): Khi người dùng hỏi
+  "Giá vé Bà Nà bao nhiêu?", hệ thống không gửi ngay câu hỏi này cho
+  Google. Trước hết, nó phân tích và trích xuất từ khóa "Bà Nà".
+\item
+  Bước 2 - Truy vấn ngữ cảnh (Context Retrieval): Hệ thống thực hiện
+  truy vấn vào cơ sở dữ liệu nội bộ (Bảng Location): SELECT * FROM
+  Location WHERE name LIKE \textquotesingle\%Bà Nà\%\textquotesingle.
+  Kết quả trả về là một bản ghi dữ liệu thô: \{name: "Bà Nà Hills",
+  price: 900000, open: "07:00"\}.
+\item
+  Bước 3 - Tiêm ngữ cảnh (Context Injection): Dữ liệu thô này được
+  chuyển đổi thành văn bản tự nhiên và ghép vào câu lệnh (Prompt) gửi
+  cho AI.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924065}{}\textbf{Kỹ thuật
+    Prompt Engineering (Kỹ nghệ ra lệnh cho AI)}
+  \end{enumerate}
+\end{itemize}
+
+Chất lượng câu trả lời của AI phụ thuộc 80\% vào cách chúng ta đặt câu
+lệnh (Prompt). Trong file gemini.adapter.js, em đã thiết kế một khuôn
+mẫu Prompt (System Prompt Template) chuyên biệt cho du lịch:
+
+"Bạn là DanaAI, một trợ lý du lịch ảo chuyên nghiệp, thân thiện và am
+hiểu về Đà Nẵng.
+
+Nhiệm vụ của bạn là trả lời câu hỏi của người dùng dựa trên THÔNG TIN
+ĐƯỢC CUNG CẤP dưới đây.
+
+{[}THÔNG TIN NGỮ CẢNH TỪ DATABASE{]}
+
+- Địa điểm: Bà Nà Hills
+
+- Giá vé: 900.000 VNĐ
+
+- Giờ mở cửa: 07:00 - 22:00
+
+{[}YÊU CẦU BẮT BUỘC{]}
+
+1. Chỉ sử dụng thông tin trong phần ngữ cảnh để trả lời.
+
+2. Nếu thông tin không có trong ngữ cảnh, hãy xin lỗi và nói rằng bạn
+chưa có dữ liệu đó. Tuyệt đối không tự bịa ra thông tin.
+
+3. Trả lời ngắn gọn, súc tích, giọng điệu vui vẻ.
+
+4. Định dạng câu trả lời bằng Markdown (dùng dấu * để liệt kê ý)."
+
+\begin{itemize}
+\item
+  Phân tích chiến lược Prompt:
+
+  \begin{itemize}
+  \item
+    Persona (Nhân cách): Định hình AI là "DanaAI", tạo cảm giác gần gũi
+    thương hiệu.
+  \item
+    Grounding (Neo thông tin): Yêu cầu số 1 và 2 buộc AI phải "neo" câu
+    trả lời vào dữ liệu thật, loại bỏ hoàn toàn khả năng chém gió sai sự
+    thật.
+  \item
+    Formatting (Định dạng): Yêu cầu số 4 giúp câu trả lời hiển thị đẹp
+    mắt trên giao diện Frontend (có gạch đầu dòng, bôi đậm).
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924066}{}\textbf{Quản lý lịch
+    sử hội thoại (Conversation History Management)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Để Chatbot có thể hiểu được mạch câu chuyện (Context Window), hệ thống
+  lưu trữ tạm thời lịch sử chat của phiên làm việc.
+
+  \begin{itemize}
+  \item
+    Khi người dùng hỏi câu tiếp theo: "Ở đó có gì chơi?", AI sẽ tự hiểu
+    "Ở đó" chính là "Bà Nà Hills" đã nhắc đến ở câu trước.
+  \item
+    Tối ưu hóa: Do giới hạn token của API Gemini, em chỉ gửi kèm 5-10
+    cặp câu hỏi-đáp gần nhất để đảm bảo tốc độ phản hồi nhanh và tiết
+    kiệm chi phí API.
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924067}{}\textbf{Chiến lược
+    thiết kế trải nghiệm (UX Strategy)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Triết lý Mobile-First: Dựa trên phân tích chân dung người dùng
+  (Persona) ở Phần 1, đa số khách du lịch sử dụng điện thoại khi đang di
+  chuyển. Do đó, hệ thống sử dụng Framework Tailwind CSS với các lớp
+  tiện ích Responsive (w-full, md:w-1/2) để đảm bảo giao diện không bị
+  vỡ trên màn hình nhỏ.
+\item
+  Quy tắc "3 Click": Người dùng phải nhận được kết quả (Lịch trình)
+  trong tối đa 3 lần nhấp chuột từ Trang chủ:
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Click chọn Số ngày \& Sở thích.
+\item
+  Click nút "Tạo lịch trình".
+\item
+  Kết quả hiển thị ngay lập tức.
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\phantomsection\label{_Toc215924068}{}\textbf{Thiết kế chi
+    tiết các màn hình (Screen Design)}
+
+    \begin{enumerate}
+    \def\labelenumiii{\arabic{enumiii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924069}{}\textbf{Màn hình
+      Nhập liệu thông minh (Smart Input Form)}
+    \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Vấn đề: Các form truyền thống bắt người dùng nhập tay (text input) rất
+  dễ sai sót và gây nản lòng.
+\item
+  Giải pháp:
+
+  \begin{itemize}
+  \item
+    Duration Slider: Sử dụng thanh trượt (range input) cho việc chọn số
+    ngày (1 đến 7). Điều này ngăn chặn việc nhập số âm hoặc ký tự lạ.
+  \item
+    Interest Chips: Sở thích (Ăn uống, Văn hóa...) được hiển thị dưới
+    dạng các "viên thuốc" (Chips/Tags) có thể chọn/bỏ chọn nhanh chóng.
+  \item
+    Visual Feedback: Khi người dùng thay đổi ngân sách (Ví dụ: từ Thấp
+    lên Cao), giao diện sẽ hiển thị gợi ý tức thì ("Gợi ý: Phù hợp cho
+    nghỉ dưỡng sang trọng") để người dùng hiểu rõ lựa chọn của mình.
+
+    \begin{enumerate}
+    \def\labelenumi{\arabic{enumi}.}
+    \item
+      \protect\phantomsection\label{_Toc215924070}{}\textbf{Màn hình Kết
+      quả Lịch trình (Itinerary Timeline)}
+    \end{enumerate}
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Cấu trúc hiển thị: Sử dụng mô hình Vertical Timeline (Dòng thời gian
+  dọc).
+\item
+  Thẻ thông tin (Itinerary Card): Mỗi hoạt động là một thẻ độc lập chứa:
+
+  \begin{itemize}
+  \item
+    Ảnh đại diện: (Lấy từ Database) giúp kích thích thị giác.
+  \item
+    Giờ giấc: (08:00 - 10:00) được làm nổi bật.
+  \item
+    Huy hiệu (Badge): Hiển thị loại hình (FOOD màu cam, BEACH màu xanh
+    dương) giúp người dùng lướt nhanh (scan) nội dung dễ dàng.
+  \end{itemize}
+\item
+  Tính năng tương tác: Người dùng có thể bấm vào tên địa điểm để mở ra
+  cửa sổ chi tiết (Modal) xem địa chỉ bản đồ hoặc giá vé cụ thể.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924071}{}\textbf{Giao diện
+    Chatbot (Conversational UI)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Vị trí: Nút nổi (Floating Action Button) ở góc dưới bên phải màn hình,
+  luôn hiển thị đè lên mọi nội dung khác.
+\item
+  Hiệu ứng:
+
+  \begin{itemize}
+  \item
+    Typing Indicator: Khi chờ AI xử lý (thường mất 2-3s), hiển thị hiệu
+    ứng "ba chấm nhấp nháy" để người dùng biết hệ thống không bị treo.
+  \item
+    Markdown Rendering: Câu trả lời của AI được định dạng đẹp mắt (in
+    đậm, gạch đầu dòng) thay vì một khối văn bản dày đặc, giúp thông tin
+    dễ đọc hơn.
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924072}{}\textbf{Cơ chế Bảo mật
+    đa lớp (Layered Security)}
+
+    \begin{enumerate}
+    \def\labelenumii{\arabic{enumii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924073}{}\textbf{Bảo mật ở
+      mức Ứng dụng (Application Level)}
+    \end{enumerate}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Input Validation (Kiểm tra đầu vào): Mọi dữ liệu gửi lên từ Client đều
+  bị coi là "không đáng tin". Tại itinerary.controller.js, hệ thống kiểm
+  tra kiểu dữ liệu (Type Check) và phạm vi giá trị (Range Check). Ví dụ:
+  Nếu budget gửi lên là chuỗi script độc hại
+  \textless script\textgreater alert(1)\textless/script\textgreater, hệ
+  thống sẽ từ chối xử lý ngay lập tức để chống tấn công XSS.
+\item
+  Rate Limiting: Để chống spam API Chatbot (gây tốn chi phí Gemini), hệ
+  thống giới hạn mỗi IP chỉ được gửi tối đa 20 tin nhắn/phút.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924074}{}\textbf{Bảo mật ở mức
+    Quản trị (Admin Security)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Password Hashing: Sử dụng thuật toán Bcrypt với salt rounds = 10. Ngay
+  cả khi hacker dump được database, họ chỉ thấy chuỗi ký tự vô nghĩa
+  \$2b\$10\$EpIy..., không thể dịch ngược ra mật khẩu gốc.
+\item
+  Authentication Middleware: Middleware adminAuth chặn tất cả các
+  request vào /api/admin. Nó kiểm tra token trong Header Authorization.
+  Nếu token không hợp lệ hoặc hết hạn, trả về lỗi 401 Unauthorized ngay
+  lập tức, không tốn tài nguyên xử lý logic.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924075}{}\textbf{Chiến lược
+    Quản lý Lỗi (Error Handling Strategy)}
+  \end{enumerate}
+\end{itemize}
+
+Một hệ thống tốt không phải là hệ thống không bao giờ lỗi, mà là hệ
+thống biết cách xử lý lỗi một cách duyên dáng (Graceful Degradation).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924076}{}\textbf{Centralized
+  Error Handling (Xử lý lỗi tập trung)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Thay vì dùng try-catch lắt nhắt ở khắp nơi, hệ thống sử dụng một
+  Middleware xử lý lỗi toàn cục error.handler.middleware.js.
+\item
+  \emph{Cơ chế:} Khi có lỗi xảy ra ở bất kỳ đâu (DB chết, Logic sai),
+  lỗi sẽ được next(error) chuyển về middleware này.
+\item
+  \emph{Phản hồi:} Middleware sẽ ghi log chi tiết ra file (cho Admin
+  xem) và trả về thông báo lỗi chung chung "Đã có lỗi xảy ra, vui lòng
+  thử lại" (cho User xem). Điều này giúp che giấu thông tin kỹ thuật
+  nhạy cảm (như stack trace) khỏi người dùng cuối.
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924077}{}\textbf{Fallback Logic
+    (Logic dự phòng)}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  \emph{Kịch bản:} Khi thuật toán sinh lịch không tìm thấy nhà hàng phù
+  hợp (do lọc quá kỹ).
+\item
+  \emph{Xử lý:} Thay vì trả về màn hình trắng hoặc lỗi 500, hệ thống tự
+  động kích hoạt chế độ "Tìm kiếm mở rộng" (như đã phân tích ở Phần 7),
+  đảm bảo người dùng luôn nhận được một kết quả khả dĩ nhất.
+\end{itemize}
+
+\textbf{\hfill\break
+}
+
+\protect\phantomsection\label{citations}{}\textbf{CHƯƠNG 3:} \textbf{KẾT
+QUẢ VÀ ỨNG DỤNG}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924079}{}\textbf{Môi trường và
+  công cụ phát triển}
+\end{enumerate}
+
+Để đảm bảo tính nhất quán trong quá trình phát triển và vận hành, hệ
+thống được xây dựng dựa trên các cấu hình phần cứng và phần mềm cụ thể
+như sau:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924080}{}\textbf{Cấu hình phần
+  cứng (Development Environment)}
+\end{enumerate}
+
+Hệ thống được phát triển và thử nghiệm trên máy trạm cục bộ (Localhost)
+với thông số:
+
+\begin{itemize}
+\item
+  Vi xử lý (CPU): AMD Ryzen 5 5600H with Radeon Graphics (3.30 GHz)
+\item
+  Bộ nhớ trong (RAM): 16GB DDR4 (Đảm bảo khả năng chạy đồng thời cả
+  Backend Node.js, Frontend Vite server.
+\item
+  Ổ cứng: SSD NVMe 512GB (Tăng tốc độ đọc ghi dữ liệu Database SQLite).
+\item
+  Hệ điều hành: Windows 11 Home 64-bit
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924081}{}\textbf{Nền tảng và
+    Thư viện Phần mềm Danh sách các công nghệ cốt lõi được sử dụng trong
+    mã nguồn:}
+  \end{enumerate}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Hệ thống sử dụng bộ công nghệ (Tech Stack) dựa trên hệ sinh thái
+  JavaScript:
+
+  \begin{itemize}
+  \item
+    Phía Máy chủ (Backend):
+  \item
+    Node.js Runtime: Phiên bản v18.x (LTS). Đây là phiên bản hỗ trợ dài
+    hạn, đảm bảo tính ổn định cho các module xử lý bất đồng bộ.
+  \item
+    Express.js Framework (v4.18): Dùng để xây dựng RESTful API.
+  \item
+    Prisma ORM (v5.x): Công cụ ánh xạ cơ sở dữ liệu.
+  \item
+    Google Generative AI SDK: Thư viện chính chủ của Google để kết nối
+    với mô hình Gemini Pro.
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Phía Giao diện (Frontend):
+
+  \begin{itemize}
+  \item
+    React (v18.2): Thư viện UI cốt lõi.
+  \item
+    Vite (v5.x): Công cụ đóng gói (Bundler) thế hệ mới, thay thế cho
+    Webpack để tăng tốc độ khởi động server phát triển.
+  \item
+    Tailwind CSS (v3.4): Framework CSS ưu tiên tiện ích.
+  \item
+    Lucide React: Bộ icon mã nguồn mở, nhẹ và đồng bộ..
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924082}{}\textbf{Quy trình cài
+    đặt và triển khai (deployment guide)}
+  \end{enumerate}
+\end{itemize}
+
+Để chuyển đổi từ mã nguồn sang ứng dụng chạy thực tế, quy trình cài đặt
+được thực hiện nghiêm ngặt theo các bước sau:
+
+Bước 1: Thiết lập cấu hình môi trường (Environment Variables)
+
+Hệ thống yêu cầu các biến môi trường nhạy cảm để hoạt động. Tạo tệp .env
+tại thư mục gốc của Backend và cấu hình các thông số:
+
+\# Cấu hình Server
+
+PORT=3000
+
+NODE\_ENV=development
+
+\# Kết nối Cơ sở dữ liệu SQLite
+
+DATABASE\_URL="file:./dev.db"
+
+\# Khóa API cho Google Gemini (Bắt buộc cho Chatbot)
+
+GEMINI\_API\_KEY="AIzaSyA\_xxxxxxxxxxxxxxxxxxxxxx"
+
+\# Cấu hình bảo mật JWT (Cho Admin)
+
+JWT\_SECRET="danatravel\_secret\_key\_2024"
+
+Bước 2: Khởi tạo Cơ sở dữ liệu (Database Migration \& Seeding)
+
+Sử dụng Prisma để đồng bộ cấu trúc bảng từ file schema.prisma vào file
+dev.db và nạp dữ liệu mẫu:
+
+\begin{itemize}
+\item
+  Lệnh tạo bảng: npx prisma migrate dev -\/-name init\_schema
+\item
+  Lệnh nạp dữ liệu mẫu (Seed): npx prisma db seed
+
+  \begin{itemize}
+  \item
+    Kết quả: Hệ thống tự động chèn 50 địa điểm du lịch, 5 tài khoản
+    admin và 20 câu hỏi tri thức mẫu vào database.
+  \end{itemize}
+\end{itemize}
+
+Bước 3: Khởi chạy các dịch vụ (Start Services)
+
+Hệ thống hoạt động trên hai tiến trình song song:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Backend Service: Tại thư mục /Backend, chạy lệnh npm run dev. Server
+  sẽ lắng nghe tại cổng http://localhost:3000 và kết nối thành công đến
+  SQLite.
+\item
+  Frontend Service: Tại thư mục /Frontend, chạy lệnh npm run dev. Vite
+  sẽ khởi động Hot-reload Server tại cổng http://localhost:5173.
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\phantomsection\label{_Toc215924083}{}\textbf{Kết quả hiện
+    thực hóa các chức năng (detailed implementation)}
+
+    \begin{enumerate}
+    \def\labelenumiii{\arabic{enumiii}.}
+    \item
+      \protect\phantomsection\label{_Toc215924084}{}\textbf{Phân hệ
+      Khách du lịch - Trang chủ (Home Page)}
+    \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+Mô tả giao diện: Giao diện trang chủ được thiết kế theo phong cách tối
+giản (Minimalism) với tông màu chủ đạo là Xanh biển (Blue-500) và Trắng,
+tạo cảm giác thân thiện của du lịch biển Đà Nẵng.
+
+Thanh điều hướng (Sticky Navbar): Luôn hiển thị ở trên cùng khi cuộn
+trang, giúp truy cập nhanh vào các mục "Lập kế hoạch", "Chatbot", "Tin
+tức".
+
+Xử lý kỹ thuật: Khi người dùng truy cập, useEffect hook trong React sẽ
+gọi API GET /api/locations?featured=true. Backend Controller sẽ truy vấn
+bảng Location, lọc lấy 4 bản ghi và trả về JSON. Frontend nhận dữ liệu
+và sử dụng hàm map() để render ra danh sách các Component LocationCard.
+
+\begin{quote}
+\includegraphics[width=5.65284in,height=2.57909in,alt={A screenshot of a computer AI-generated content may be incorrect.}]{media/image20.png}
+\end{quote}
+
+Hình 3.1: Giao diện Trang chủ
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924085}{}\textbf{Phân hệ Khách du
+  lịch - Lập lịch trình thông minh (Smart Itinerary)}
+\end{enumerate}
+
+Đây là chức năng cốt lõi, thể hiện tính "thông minh" của hệ thống.
+
+\begin{itemize}
+\item
+  Bước A: Nhập liệu (Input)
+
+  \begin{itemize}
+  \item
+    Người dùng tương tác với một Form khảo sát đa bước (Multi-step
+    Form):
+  \end{itemize}
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    Ngân sách: Nhập số tiền (VD: 3.000.000 VNĐ). Hệ thống có validation
+    chặn số âm.
+  \item
+    Thời gian: Chọn số ngày đi (VD: 3 ngày).
+  \item
+    Sở thích (Tags): Chọn các từ khóa như Biển, Văn hóa, Check-in.
+  \end{enumerate}
+\end{itemize}
+
+\includegraphics[width=2.81269in,height=1.33376in,alt={A screenshot of a computer AI-generated content may be incorrect.}]{media/image21.png}\includegraphics[width=2.54125in,height=1.26218in,alt={A screenshot of a computer AI-generated content may be incorrect.}]{media/image22.png}\includegraphics[width=3.02222in,height=1.48138in,alt={A screenshot of a computer AI-generated content may be incorrect.}]{media/image23.png}\includegraphics[width=2.6558in,height=1.56101in,alt={A screenshot of a computer AI-generated content may be incorrect.}]{media/image24.png}
+
+\includegraphics[width=2.43634in,height=1.77784in,alt={A screenshot of a website AI-generated content may be incorrect.}]{media/image25.png}
+
+Hình 3.2: Giao diện Form nhập thông tin tạo lịch trình
+
+\begin{itemize}
+\item
+  Bước B: Xử lý Thuật toán (Processing)
+
+  \begin{itemize}
+  \item
+    Khi nhấn nút "Tạo lịch trình", Frontend gửi POST Request kèm body
+    JSON \{budget: 3000000, days: 3, tags: {[}"beach", "culture"{]} \}.
+  \end{itemize}
+\end{itemize}
+
+\begin{quote}
+Tại Backend, thuật toán Greedy thực hiện:
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Lọc danh sách địa điểm theo tags.
+\item
+  Phân bổ ngân sách ăn uống (30\% tổng quỹ).
+\item
+  Duyệt vòng lặp để chọn điểm tham quan gần nhất (Nearest Neighbor) cho
+  từng buổi Sáng/Chiều/Tối.
+\item
+  Tính toán chi phí di chuyển dự kiến dựa trên bảng giá Transport.
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Bước C: Hiển thị kết quả (Output)
+
+  \begin{itemize}
+  \item
+    Màn hình kết quả hiển thị một Timeline dọc chi tiết:
+
+    \begin{itemize}
+    \item
+      Phân chia rõ ràng: Ngày 1 \textgreater{} Buổi Sáng \textgreater{}
+      Địa điểm A \textgreater{} Buổi Trưa \textgreater{} Ăn tại quán B.
+    \item
+      Dashboard tài chính: Hiển thị biểu đồ thanh (Progress Bar) so sánh
+      Chi phí dự kiến vs Ngân sách ban đầu. Nếu vượt ngân sách, thanh
+      này chuyển màu đỏ cảnh báo.
+    \item
+      Bản đồ: Tích hợp Google Maps Iframe để hiển thị vị trí của địa
+      điểm đang chọn.
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\begin{quote}
+\includegraphics[width=4.27588in,height=2.58462in,alt={A screenshot of a computer AI-generated content may be incorrect.}]{media/image26.png}
+\end{quote}
+
+Hình 3.3: Màn hình Kết quả lịch trình chi tiết từng ngày
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924086}{}\textbf{Phân hệ Khách du
+  lịch - Trợ lý ảo AI (RAG Chatbot)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Mô tả giao diện:
+\end{itemize}
+
+\begin{quote}
+Chatbot được thiết kế dưới dạng Widget nổi ở góc phải màn hình. Khi mở
+ra, giao diện giống các ứng dụng nhắn tin hiện đại (Zalo/Messenger) với
+bong bóng chat (Chat bubbles).
+\end{quote}
+
+\begin{itemize}
+\item
+  Luồng xử lý RAG (Retrieval-Augmented Generation):
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    User hỏi: "Vé Bà Nà Hills bao nhiêu tiền?".
+  \item
+    Backend nhận câu hỏi, thực hiện tìm kiếm Full-text Search trong bảng
+    Location và Knowledge.
+  \item
+    Kết quả tìm thấy: Bản ghi \{ name: "Bà Nà Hills", ticket: 900000 \}.
+  \item
+    Hệ thống tạo Prompt: "Dựa vào dữ liệu: Bà Nà giá 900k. Hãy trả lời
+    câu hỏi: Vé Bà Nà bao nhiêu?".
+  \item
+    Google Gemini API trả về câu trả lời tự nhiên: "Chào bạn, hiện tại
+    vé Bà Nà Hills là 900.000đ nhé.".
+  \end{enumerate}
+\end{itemize}
+
+Ưu điểm: Nếu hỏi về một địa điểm không có ở Đà Nẵng (VD: Tháp Eiffel),
+hệ thống sẽ không tìm thấy dữ liệu trong DB và AI sẽ trả lời "Xin lỗi,
+tôi không có thông tin về địa điểm này tại Đà Nẵng", tránh việc AI bịa
+đặt thông tin.
+
+\begin{quote}
+\includegraphics[width=6.33564in,height=4.74045in,alt={A screenshot of a chat AI-generated content may be incorrect.}]{media/image27.png}
+\end{quote}
+
+Hình 3.4: Giao diện hội thoại với Chatbot và minh họa câu trả lời chính
+xác
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924087}{}\textbf{Phân hệ Quản trị
+  viên (Admin Dashboard)}
+\end{enumerate}
+
+\begin{itemize}
+\item
+  Mô tả giao diện:
+\end{itemize}
+
+\begin{itemize}
+\item
+  Giao diện quản trị sử dụng Layout riêng biệt với Sidebar bên trái chứa
+  các menu: Tổng quan, Địa điểm, Tri thức AI, Tài khoản.
+\end{itemize}
+
+\begin{itemize}
+\item
+  Chức năng Thống kê (Analytics):
+\end{itemize}
+
+\begin{itemize}
+\item
+  Sử dụng thư viện Chart.js để vẽ biểu đồ:
+
+  \begin{itemize}
+  \item
+    Biểu đồ tròn (Pie Chart): Thể hiện tỉ lệ sở thích của người dùng
+    (VD: 40\% thích Biển, 30\% thích Núi).
+  \item
+    Biểu đồ cột (Bar Chart): Thống kê số lượng lịch trình được tạo trong
+    7 ngày gần nhất.
+  \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+\item
+  Chức năng Quản lý Địa điểm (CRUD):
+\end{itemize}
+
+\begin{quote}
+Bảng dữ liệu (Data Table) cho phép Admin tìm kiếm, phân trang.
+\end{quote}
+
+\begin{itemize}
+\item
+  Thêm mới: Form cho phép nhập Tên, Giá vé, Tọa độ, Upload link ảnh,
+  Nhập Menu (dạng JSON).
+\item
+  Sửa/Xóa: Cập nhật thông tin địa điểm theo thời gian thực.
+\end{itemize}
+
+\begin{quote}
+\includegraphics[width=3.98256in,height=3.75771in,alt={A screenshot of a computer AI-generated content may be incorrect.}]{media/image28.png}
+\end{quote}
+
+Hình 3.5: Giao diện Dashboard thống kê và Quản lý danh sách địa điểm
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924088}{}\textbf{KỊCH BẢN KIỂM
+  THỬ VÀ KẾT QUẢ (SYSTEM TESTING)}
+\end{enumerate}
+
+\textbf{Bảng 3.1: Kiểm thử chức năng Tạo lịch trình (Generate
+Itinerary)}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1065}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1852}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1890}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2047}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2045}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1101}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Mã Test}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Mô tả kịch bản}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Dữ liệu đầu vào}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kết quả mong đợi}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kết quả thực tế}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kết luận}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+IT\_01 & Tạo lịch trình thành công với ngân sách trung bình & Budget:
+5.000.000, Days: 3, People: 2, Tags: Biển & Hệ thống sinh lịch trình đủ
+3 ngày, ưu tiên các điểm ven biển. Tổng chi phí \textless{} 5tr. & Lịch
+trình hợp lý, tổng chi phí 4.2tr & Đạt \\
+IT\_02 & Xử lý khi ngân sách quá thấp & Budget: 200.000, Days: 2,
+People: 2 & Days: 2, People: 2Hệ thống cảnh báo không đủ ngân sách hoặc
+chỉ gợi ý các điểm miễn phí (cầu Rồng, biển). & Thông báo: "Ngân sách
+quá thấp để thực hiện chuyến đi 2 ngày". & Đạt \\
+IT\_03 & Kiểm tra ràng buộc thời gian & Chọn đi "Chợ đêm Helio" (mở cửa
+17h) & Thuật toán phải xếp Chợ đêm vào buổi Tối, không được xếp vào buổi
+Sáng. & Chợ đêm Helio xuất hiện ở Slot Tối Ngày 1. & Đạt \\
+\end{longtable}
+}
+
+\textbf{Bảng 3.2: Kiểm thử chức năng Chatbot RAG}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1075}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1846}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1874}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2056}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1961}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1188}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Mã Test}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Mô tả kịch bản}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Câu hỏi đầu vào}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kết quả mong đợi}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kết quả thực tế}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{Kết luận}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+CB\_01 & Hỏi thông tin giá vé chính xác & "Vé Núi Thần Tài giá bao
+nhiêu?" & Bot trả lời đúng giá trong DB (450k) thay vì giá cũ trên mạng.
+& "Hiện tại vé Núi Thần Tài là 450.000 VNĐ". & Đạt \\
+CB\_02 & Hỏi thông tin ngoài phạm vi & "Thời tiết Hà Nội hôm nay?" & Bot
+từ chối trả lời hoặc lái về chủ đề Đà Nẵng. & "Xin lỗi, tôi chỉ hỗ trợ
+thông tin du lịch Đà Nẵng". & Đạt \\
+CB\_03 & Hỏi về địa chỉ quán ăn & "Địa chỉ Bánh xèo Bà Dưỡng?" & Bot
+cung cấp chính xác địa chỉ trong bảng Location. & "Bánh xèo Bà Dưỡng ở
+K280/23 Hoàng Diệu...". & Đạt \\
+\end{longtable}
+}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\phantomsection\label{_Toc215924089}{}\textbf{Đánh giá hiệu
+  năng (performance evaluation)}
+\end{enumerate}
+
+Nhóm sử dụng công cụ Google Lighthouse và Postman để đo lường hiệu năng
+hệ thống.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\phantomsection\label{_Toc215924090}{}\textbf{Hiệu năng phía
+  Máy chủ (Backend Latency)}
+\end{enumerate}
+
+Thời gian phản hồi trung bình (Average Response Time) của các API chính:
+
+\begin{itemize}
+\item
+  GET /api/locations: 45ms (Rất nhanh do truy vấn index SQLite).
+\item
+  POST /api/itinerary/generate: 180ms - 300ms (Chấp nhận được cho thuật
+  toán tính toán phức tạp).
+\item
+  POST /api/chat: 2.5s - 3.5s (Phụ thuộc vào tốc độ phản hồi của Google
+  Gemini API).
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    \protect\phantomsection\label{_Toc215924091}{}\textbf{Hiệu năng phía
+    Máy khách (Frontend Metrics)}
+  \end{enumerate}
+\end{itemize}
+
+Điểm số Lighthouse trên trình duyệt Chrome:
+
+\begin{itemize}
+\item
+  Performance: 92/100.
+\item
+  Accessibility: 95/100.
+\item
+  SEO: 100/100.
+\item
+  Thời gian tải nội dung đầu tiên (FCP): 0.8s.
+\end{itemize}
+
+=\textgreater{} Nhận xét: Việc sử dụng kiến trúc SPA và công cụ build
+Vite giúp ứng dụng có tốc độ tải trang gần như tức thời, mang lại trải
+nghiệm mượt mà cho người dùng.
+
+\newpage
+\section{KẾT LUẬN}\label{kux1ebft-luux1eadn}
+
+\textbf{1. Các kết quả đạt được}
+
+Về mặt nghiên cứu lý thuyết:
+
+\begin{itemize}
+\item
+  Nắm vững kiến trúc phát triển ứng dụng Web hiện đại theo mô hình
+  Client-Server tách biệt, sử dụng ReactJS cho phía người dùng và
+  Node.js cho phía máy chủ.
+\item
+  Hiểu và vận dụng thành công kỹ thuật RAG (Retrieval-Augmented
+  Generation) để tích hợp các Mô hình ngôn ngữ lớn (LLM) vào bài toán
+  thực tế, giúp kiểm soát tính chính xác của dữ liệu đầu ra từ AI.
+\item
+  Nghiên cứu sâu về bài toán thỏa mãn ràng buộc (CSP) và áp dụng giải
+  thuật Tham lam (Greedy) để giải quyết vấn đề lập lịch trình du lịch.
+\end{itemize}
+
+Về mặt sản phẩm ứng dụng: Hệ thống DanaTravel đã được cài đặt và vận
+hành ổn định với các chức năng chính:
+
+\begin{itemize}
+\item
+  Chức năng Lập lịch trình thông minh: Hệ thống đã tự động hóa việc sinh
+  ra các lộ trình du lịch chi tiết từng buổi (Sáng/Trưa/Chiều/Tối) dựa
+  trên ngân sách và sở thích của người dùng. Thuật toán
+  generate-day-schedule-strict hoạt động hiệu quả, đảm bảo tổng chi phí
+  không vượt quá ngân sách dự kiến và tối ưu hóa khoảng cách di chuyển
+  giữa các điểm.
+\item
+  Chức năng Chatbot AI tư vấn: Xây dựng thành công trợ lý ảo sử dụng
+  Google Gemini, có khả năng trả lời chính xác các câu hỏi về giá vé,
+  địa chỉ, giờ mở cửa nhờ vào cơ sở dữ liệu tri thức nội bộ, khắc phục
+  được hiện tượng "ảo giác" thường gặp ở AI.
+\item
+  Hệ thống quản trị (Admin Dashboard): Cung cấp công cụ toàn diện cho
+  quản trị viên để quản lý danh sách địa điểm (Location), cập nhật tri
+  thức cho AI (Knowledge Base) và theo dõi thống kê xu hướng tìm kiếm
+  của người dùng.
+\end{itemize}
+
+\textbf{2. Hạn chế và hướng phát triển}
+
+Bên cạnh những kết quả đạt được, đồ án vẫn còn một số hạn chế do giới
+hạn về thời gian và nguồn lực:
+
+\begin{itemize}
+\item
+  Dữ liệu bản đồ hiện tại dựa trên khoảng cách đường chim bay, chưa tính
+  toán được tình trạng giao thông thực tế.
+\item
+  Chưa tích hợp cổng thanh toán trực tuyến để hỗ trợ người dùng đặt vé
+  ngay trên ứng dụng.
+\end{itemize}
+
+Hướng phát triển trong tương lai:
+
+\begin{itemize}
+\item
+  Tích hợp Google Maps API để tính toán thời gian di chuyển chính xác
+  hơn.
+\item
+  Phát triển phiên bản ứng dụng di động (Mobile App) để tăng tính tiện
+  dụng cho du khách khi đang di chuyển.
+\item
+  Mở rộng tính năng gợi ý dựa trên cộng đồng (User Reviews) để làm phong
+  phú thêm dữ liệu hệ thống.
+\end{itemize}
+
+Đồ án này là bước khởi đầu quan trọng, tạo tiền đề vững chắc để em tiếp
+tục nghiên cứu và phát triển các ứng dụng du lịch thông minh hơn trong
+tương lai.
+
+\newpage
+\section{TÀI LIỆU THAM KHẢO}\label{tuxe0i-liux1ec7u-tham-khux1ea3o}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Chart.js Contributors. (n.d.). Chart.js: Simple yet flexible
+  JavaScript charting for designers \& developers. Retrieved from
+  \url{https://www.chartjs.org/docs/latest/}
+\item
+  Express Contributors. (n.d.). Express: Fast, unopinionated, minimalist
+  web framework for Node.js. Retrieved from \url{https://expressjs.com/}
+\item
+  Framer. (n.d.). Framer Motion documentation. Retrieved from
+  \url{https://www.framer.com/motion/}
+\item
+  Google. (n.d.). Gemini API overview. Google AI for Developers.
+  Retrieved from \url{https://ai.google.dev/docs}
+\item
+  Meta. (n.d.). React: The library for web and native user interfaces.
+  Retrieved from \url{https://react.dev/reference/react}
+\item
+  OpenJS Foundation. (n.d.). Node.js documentation. Retrieved from
+  \url{https://nodejs.org/en/docs/}
+\item
+  Prisma Data, Inc. (n.d.). Prisma ORM documentation. Retrieved from
+  \url{https://www.prisma.io/docs/}
+\item
+  SQLite Consortium. (n.d.). SQLite documentation. Retrieved from
+  \url{https://www.sqlite.org/docs.html}
+\item
+  Tailwind Labs. (n.d.). Tailwind CSS documentation. Retrieved from
+  \url{https://tailwindcss.com/docs/}
+\item
+  You, E. (n.d.). Vite: Next generation frontend tooling. Retrieved from
+  \url{https://vitejs.dev/guide/}
+\end{enumerate}
+
+\newpage
+\section{PHỤ LỤC}\label{phux1ee5-lux1ee5c}
+
+\textbf{PHỤ LỤC 1. HƯỚNG DẪN CÀI ĐẶT VÀ TRIỂN KHAI HỆ THỐNG} (Trích xuất
+từ tài liệu README.md và hướng dẫn vận hành)
+
+\textbf{1. Yêu cầu phần mềm (Prerequisites)} Để chạy được mã nguồn dự
+án, máy tính cần cài đặt sẵn các công cụ sau:
+
+\begin{itemize}
+\item
+  Node.js: Phiên bản 18.x LTS trở lên.
+\item
+  Git: Để quản lý mã nguồn.
+\item
+  Visual Studio Code: Trình soạn thảo mã nguồn khuyến nghị.
+\end{itemize}
+
+\textbf{2. Cấu hình Biến môi trường (.env)} Tạo file .env trong thư mục
+Backend với các thông số cấu hình sau:
+
+\# -\/-\/- CẤU HÌNH SERVER -\/-\/-
+
+PORT=3000
+
+NODE\_ENV="development"
+
+\# -\/-\/- CẤU HÌNH CƠ SỞ DỮ LIỆU (SQLITE) -\/-\/-
+
+\# Đường dẫn đến file database cục bộ
+
+DATABASE\_URL="file:./dev.db"
+
+\# -\/-\/- CẤU HÌNH AI \& BẢO MẬT -\/-\/-
+
+\# API Key của Google Gemini (Lấy tại aistudio.google.com)
+
+GEMINI\_API\_KEY="AIzaSyA\_YOUR\_SECRET\_KEY\_HERE"
+
+\# Secret Key dùng để mã hóa Token đăng nhập Admin
+
+JWT\_SECRET="danatravel\_super\_secret\_key\_2024"
+
+\textbf{3. Các bước cài đặt chi tiết}
+
+Bước 1: Khởi chạy Backend (Máy chủ)
+
+\begin{quote}
+cd Backend
+
+npm install ~ ~ ~ ~ ~ ~ ~ ~ \# 1. Cài đặt các thư viện phụ thuộc
+(node\_modules)
+
+npx prisma migrate dev ~ ~ ~\# 2. Khởi tạo cấu trúc Database từ file
+schema
+
+npx prisma db seed ~ ~ ~ ~ ~\# 3. Nạp dữ liệu mẫu (Locations, Knowledge)
+
+npm run dev ~ ~ ~ ~ ~ ~ ~ ~ \# 4. Chạy server ở chế độ Development
+\end{quote}
+
+Kết quả: Server sẽ lắng nghe tại \url{http://localhost:3000}.
+
+Bước 2: Khởi chạy Frontend (Giao diện)
+
+cd Frontend
+
+npm install ~ ~ ~ ~ ~ ~ ~ ~ \# 1. Cài đặt thư viện React, Vite, Tailwind
+
+npm run dev ~ ~ ~ ~ ~ ~ ~ ~ \# 2. Khởi động Web Server
+
+Kết quả: Truy cập ứng dụng tại \url{http://localhost:5173}.
+
+\textbf{PHỤ LỤC 2. THIẾT KẾ CƠ SỞ DỮ LIỆU (DATABASE SCHEMA)} (Trích xuất
+từ file Backend/prisma/schema.prisma)
+
+Dưới đây là mã nguồn định nghĩa các bảng dữ liệu chính bằng ngôn ngữ
+Prisma Schema:
+
+// 1. Bảng Địa điểm - Lưu trữ thông tin cốt lõi
+
+model Location \{
+
+~ id ~ ~ ~ ~ ~String ~ @id @default(uuid())
+
+~ name ~ ~ ~ ~String
+
+~ type ~ ~ ~ ~String ~ // Phân loại:
+\textquotesingle visit\textquotesingle{} (tham quan),
+\textquotesingle food\textquotesingle{} (ăn uống)
+
+~ address ~ ~ String?
+
+~ lat ~ ~ ~ ~ Float? ~ // Tọa độ Vĩ độ
+
+~ lng ~ ~ ~ ~ Float? ~ // Tọa độ Kinh độ
+
+~ ticket ~ ~ ~Float? ~ // Giá vé / Chi phí trung bình
+
+~ openTime ~ ~String? ~// Giờ mở cửa (Format: "HH:mm")
+
+~ closeTime ~ String? ~// Giờ đóng cửa
+
+~
+
+~ // Các trường JSON linh hoạt
+
+~ tags ~ ~ ~ ~String? ~// Lưu mảng sở thích: {[}"biển", "sống ảo"{]}
+
+~ menu ~ ~ ~ ~String? ~// Lưu danh sách món ăn: {[}\{"name": "Mì Quảng",
+"price": 30000\}{]}
+
+~
+
+~ description String?
+
+~ suggestedDuration Int? // Thời gian tham quan gợi ý (phút)
+
+~ createdAt ~ DateTime @default(now())
+
+~ updatedAt ~ DateTime @updatedAt
+
+\}
+
+// 2. Bảng Tri thức - Dùng cho Chatbot RAG
+
+model Knowledge \{
+
+~ id ~ ~ ~ ~String ~ @id @default(uuid())
+
+~ question ~String ~ // Câu hỏi mẫu
+
+~ answer ~ ~String ~ // Câu trả lời chuẩn
+
+~ keywords ~String? ~// Từ khóa phục vụ tìm kiếm Full-text
+
+~ updatedAt DateTime @updatedAt
+
+\}
+
+// 3. Bảng Xu hướng - Phục vụ Thống kê Admin
+
+model SearchTrend \{
+
+~ id ~ ~ ~ ~String ~ @id @default(uuid())
+
+~ tags ~ ~ ~String ~ // Các tag người dùng đã chọn
+
+~ duration ~String? ~// "3 ngày", "4 ngày"
+
+~ budget ~ ~Float? ~ // Ngân sách người dùng nhập
+
+~ people ~ ~Int? ~ ~ // Số lượng người đi
+
+~ createdAt DateTime @default(now())
+
+\}
+
+\textbf{PHỤ LỤC 3. MÃ NGUỒN THUẬT TOÁN LẬP LỊCH TRÌNH (CORE ALGORITHM)}
+(Trích xuất từ file Backend/src/utils/generate-day-schedule-strict.js)
+
+Đây là đoạn mã thể hiện tư duy giải thuật Tham lam (Greedy) kết hợp Quay
+lui (Backtracking) để chọn địa điểm tối ưu:
+
+/**
+
+~* Hàm lõi: Tìm địa điểm tốt nhất tiếp theo
+
+~* @param \{Object\} currentLocation - Tọa độ điểm hiện tại
+
+~* @param \{Array\} candidates - Danh sách địa điểm ứng viên
+
+~* @param \{Number\} remainingBudget - Ngân sách còn lại
+
+~* @param \{String\} currentTime - Thời gian hiện tại (VD: "09:00")
+
+~*/
+
+function findBestNextSpot(currentLocation, candidates, remainingBudget,
+currentTime) \{
+
+~ ~ let bestSpot = null;
+
+~ ~ let minScore = Infinity; // Điểm số càng thấp càng tốt (Ưu tiên gần
++ rẻ)
+
+~ ~ for (const spot of candidates) \{
+
+~ ~ ~ ~ // 1. Tính khoảng cách địa lý (Haversine Formula)
+
+~ ~ ~ ~ const distance = calculateDistance(
+
+~ ~ ~ ~ ~ ~ currentLocation.lat, currentLocation.lng,
+
+~ ~ ~ ~ ~ ~ spot.lat, spot.lng
+
+~ ~ ~ ~ );
+
+~ ~ ~ ~ // 2. Kiểm tra các ràng buộc cứng (Hard Constraints)
+
+~ ~ ~ ~ // - Phải đủ tiền vé
+
+~ ~ ~ ~ if (spot.ticket \textgreater{} remainingBudget) continue;
+
+~ ~ ~ ~ // - Phải đang mở cửa
+
+~ ~ ~ ~ if (!isOpenAt(spot.openTime, spot.closeTime, currentTime))
+continue;
+
+~ ~ ~ ~ // 3. Tính điểm heuristic (Trọng số: 70\% khoảng cách, 30\% giá
+vé)
+
+~ ~ ~ ~ // Mục tiêu: Tìm điểm gần nhất nhưng không quá đắt
+
+~ ~ ~ ~ const score = (distance * 0.7) + (spot.ticket * 0.0001 * 0.3);
+
+~ ~ ~ ~ if (score \textless{} minScore) \{
+
+~ ~ ~ ~ ~ ~ minScore = score;
+
+~ ~ ~ ~ ~ ~ bestSpot = \{ ...spot, estimatedDistance: distance \};
+
+~ ~ ~ ~ \}
+
+~ ~ \}
+
+~ ~ return bestSpot;
+
+\}
+
+/**
+
+~* Hàm chính: Sinh lịch trình cho 1 ngày
+
+~*/
+
+export const generateDaySchedule = async (dayIndex, budget, tags)
+=\textgreater{} \{
+
+~ ~ // ... Khởi tạo các biến ...
+
+~ ~
+
+~ ~ // Chiến lược: Cố định bữa ăn trước (Skeleton Strategy)
+
+~ ~ const lunch = pickRandomFoodSpot(budget * 0.2, tags);
+
+~ ~ const dinner = pickRandomFoodSpot(budget * 0.2, tags);
+
+~ ~ // Điền vào Slot Sáng (Từ Khách sạn -\textgreater{} Ăn trưa)
+
+~ ~ let currentPos = HOTEL\_LOCATION;
+
+~ ~ const morningSpot = findBestNextSpot(currentPos, attractions,
+budget, \textquotesingle08:00\textquotesingle);
+
+~ ~
+
+~ ~ // ... Logic lặp để điền các slot còn lại ...
+
+~ ~ return dailyItinerary;
+
+\};
+
+\textbf{PHỤ LỤC 4. MÃ NGUỒN TÍCH HỢP CHATBOT AI (RAG SERVICE)} (Trích
+xuất từ file Backend/src/services/chatbot.service.js)
+
+Đoạn mã xử lý logic Retrieval-Augmented Generation (RAG) để đảm bảo
+Chatbot trả lời chính xác dữ liệu từ Database:
+
+import \{ GoogleGenerativeAI \} from "@google/generative-ai";
+
+import \{ prisma \} from "../utils/prisma.js";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI\_API\_KEY);
+
+const model = genAI.getGenerativeModel(\{ model: "gemini-1.5-flash" \});
+
+export const processUserMessage = async (userMessage) =\textgreater{} \{
+
+~ try \{
+
+~ ~ // BƯỚC 1: TRUY XUẤT DỮ LIỆU (RETRIEVAL)
+
+~ ~ // Tìm kiếm từ khóa trong bảng Location và Knowledge
+
+~ ~ const relevantLocations = await prisma.location.findMany(\{
+
+~ ~ ~ where: \{
+
+~ ~ ~ ~ OR: {[}
+
+~ ~ ~ ~ ~ ~ \{ name: \{ contains: userMessage \} \},
+
+~ ~ ~ ~ ~ ~ \{ tags: \{ contains: userMessage \} \}
+
+~ ~ ~ ~ {]}
+
+~ ~ ~ \},
+
+~ ~ ~ take: 3 // Lấy 3 kết quả tốt nhất
+
+~ ~ \});
+
+~ ~ // BƯỚC 2: TẠO NGỮ CẢNH (CONTEXT AUGMENTATION)
+
+~ ~ let contextData = "Dữ liệu hệ thống:\textbackslash n";
+
+~ ~ relevantLocations.forEach(loc =\textgreater{} \{
+
+~ ~ ~ ~ contextData += `- \$\{loc.name\}: Giá vé \$\{loc.ticket\} VNĐ,
+Địa chỉ: \$\{loc.address\}\textbackslash n`;
+
+~ ~ \});
+
+~ ~ // BƯỚC 3: XÂY DỰNG PROMPT
+
+~ ~ const prompt = `
+
+~ ~ ~ Bạn là trợ lý ảo DanaTravel.
+
+~ ~ ~ Dựa vào dữ liệu chính xác sau đây:
+
+~ ~ ~ \$\{contextData\}
+
+~ ~ ~
+
+~ ~ ~ Hãy trả lời câu hỏi của người dùng: "\$\{userMessage\}"
+
+~ ~ ~ Yêu cầu: Trả lời ngắn gọn, thân thiện, chỉ dùng thông tin được
+cung cấp.
+
+~ ~ `;
+
+~ ~ // BƯỚC 4: GỌI GOOGLE GEMINI (GENERATION)
+
+~ ~ const result = await model.generateContent(prompt);
+
+~ ~ const response = result.response.text();
+
+~ ~ return response;
+
+~ \} catch (error) \{
+
+~ ~ console.error("Chatbot Error:", error);
+
+~ ~ return "Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại sau.";
+
+~ \}
+
+\};
+
+\end{document}

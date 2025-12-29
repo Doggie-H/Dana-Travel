@@ -36,7 +36,7 @@ async function callGeminiAPI(prompt) {
   try {
     // Sử dụng AbortController để giới hạn thời gian chờ (Timeout) là 10 giây
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000); 
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
     const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
       method: "POST",
@@ -112,11 +112,11 @@ async function buildSystemPrompt(itinerary, userRequest) {
     prompt += `Tổng quan: ${itinerary.days.length} ngày, `;
     const totalActivities = itinerary.days.reduce((sum, d) => sum + (d.items?.length || 0), 0);
     prompt += `${totalActivities} hoạt động\n`;
-    
+
     if (itinerary.totalCost) {
       prompt += `Tổng chi phí dự kiến: ${itinerary.totalCost.toLocaleString()} VND\n`;
     }
-    
+
     // Chi tiết từng ngày
     itinerary.days.forEach((day, idx) => {
       prompt += `\n--- Ngày ${idx + 1} (${day.date || 'Không có ngày'}) ---\n`;
@@ -133,7 +133,7 @@ async function buildSystemPrompt(itinerary, userRequest) {
         prompt += `Chưa có hoạt động nào.\n`;
       }
     });
-    
+
     prompt += `\nKhi người dùng hỏi về lịch trình, hãy PHÂN TÍCH chi tiết: điểm mạnh, điểm cần cải thiện, gợi ý bổ sung. Đừng chỉ liệt kê lại!\n`;
   } else {
     prompt += `\n=== LỊCH TRÌNH ===\nNgười dùng CHƯA TẠO lịch trình nào. Nếu họ hỏi về lịch trình, nhắc họ tạo lịch trình trước.\n`;
@@ -184,26 +184,50 @@ export async function processChatWithAI(message, context = {}) {
     return null; // Fallback nếu AI không trả lời
   }
 
-  // 3. Làm sạch phản hồi (Xóa markdown json block nếu AI lỡ thêm vào)
+  // 3. Làm sạch phản hồi
+  // Regex để tìm khối JSON {...} (bao gồm cả nested braces đơn giản)
   let cleanText = aiResponse.replace(/```json/g, "").replace(/```/g, "").trim();
-  
-  try {
-    // 4. Parse JSON
-    const parsed = JSON.parse(cleanText);
+
+  // Hàm helper để extract JSON từ chuỗi hỗn tạp
+  const extractJSON = (text) => {
+    try {
+      // 1. Thử parse trực tiếp
+      return JSON.parse(text);
+    } catch (e) {
+      // 2. Tìm substring bắt đầu bằng '{' và kết thúc bằng '}'
+      const firstOpen = text.indexOf('{');
+      const lastClose = text.lastIndexOf('}');
+      if (firstOpen !== -1 && lastClose > firstOpen) {
+        try {
+          const jsonSubstring = text.substring(firstOpen, lastClose + 1);
+          return JSON.parse(jsonSubstring);
+        } catch (innerErr) {
+          return null;
+        }
+      }
+      return null;
+    }
+  };
+
+  const parsed = extractJSON(cleanText);
+
+  if (parsed && parsed.reply) {
     return {
       reply: parsed.reply,
       quickReplies: parsed.quickReplies || [],
       action: parsed.action,
-      data: parsed.data
-    };
-  } catch (e) {
-    console.error("Lỗi parse JSON từ AI:", e);
-    // Fallback nếu AI trả về text thường thay vì JSON
-    return {
-      reply: cleanText,
-      quickReplies: []
+      data: parsed.data,
+      suggestions: parsed.suggestions // Quan trọng: Đảm bảo pass suggestions
     };
   }
+
+  // Fallback: Nếu không parse được JSON, trả về text gốc (nhưng cố gắng loại bỏ JSON artifact nếu có)
+  // Nếu text bắt đầu bằng '{"reply":', có thể nó bị cắt cụt hoặc lỗi cú pháp nhẹ
+  console.warn("AI didn't return valid JSON. Fallback to raw text.");
+  return {
+    reply: cleanText,
+    quickReplies: []
+  };
 }
 
 export default {

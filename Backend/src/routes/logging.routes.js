@@ -1,4 +1,9 @@
 
+/**
+ * Định nghĩa API cho Logging.
+ * POST /api/logs/error
+ */
+
 import express from "express";
 import { logError } from "../controllers/logging.controller.js";
 

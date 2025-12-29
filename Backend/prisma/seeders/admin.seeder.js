@@ -1,4 +1,10 @@
 
+/**
+ * ADMIN SEEDER
+ * 
+ * Khởi tạo tài khoản Admin mặc định cho hệ thống.
+ * Tài khoản này có quyền truy cập vào trang Admin Dashboard.
+ */
 import { randomUUID } from 'crypto';
 
 export const seedAdmin = async (prisma) => {

@@ -1,7 +1,13 @@
 
+/**
+ * SYSTEM SEEDER
+ * 
+ * Khởi tạo các cấu hình hệ thống (System Settings) và AI Prompts.
+ * Bao gồm: Chế độ bảo trì, Persona của Chatbot...
+ */
 export const seedSystem = async (prisma) => {
   console.log('Seeding System Settings & AI Prompts...');
-  
+
   // System Settings
   await prisma.systemSetting.upsert({
     where: { key: 'maintenance_mode' },
